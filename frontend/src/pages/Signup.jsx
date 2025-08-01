@@ -1,0 +1,92 @@
+import React from 'react'
+import { NavLink } from 'react-router-dom';
+import { FaInstagram } from "react-icons/fa";
+import { FaSquareThreads } from "react-icons/fa6";
+import { FaFacebookSquare } from "react-icons/fa";
+import { useState } from 'react';
+import axios from 'axios'
+
+const Signup = () => {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [otpVisible, setOtpVisible] = useState(false);
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:8080/register', {
+        name,
+        email,
+        password,
+      })
+      alert(response.data.message);
+
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
+
+  const otpsend = async (req, res) => {
+    const response = await axios.get('http://localhost:8080/sendmail')
+    if(response){
+      setOtpVisible(true);
+    }
+  }
+
+  return (
+    <>
+      <div className='pt-10 flex  h-[89vh] justify-center bg-[#FAF9F6]'>
+        <form action="" method='' onSubmit={handleRegister} className=' w-[80%] h-120'>
+          <div className='flex justify-center  items-center mt-10 mb-5 flex-col gap-1'>
+            <p className='font-[poppins] w-100 mb-5'>Welcome to <span className='font-bold text-red-600 '>CR7</span></p>
+            <label className='font-bold text-red-600 font-mono w-100'>Username</label>
+            <input required type="text" placeholder='Name' className='pl-2 placeholder:font-bold   border  focus:outline-red-600  mb-3 rounded w-100 h-10 b ' onChange={(e) => {
+              setName(e.target.value)
+            }} />
+            <label className='font-bold text-red-600 font-mono w-100 '>Gmail</label>
+            <input type="text" required placeholder='Gmail' className='pl-2 placeholder:font-bold  border mb-3 rounded w-100 h-10  focus:outline-red-600' onChange={(e) => {
+              setEmail(e.target.value)
+            }} />
+            <label className='font-bold font-mono text-red-600 w-100'>Password</label>
+            <input type="password"  required placeholder='Password' className='pl-2 placeholder:font-bold  border rounded w-100 h-10  focus:outline-red-600' onChange={(e) => {
+              setPassword(e.target.value)
+            }} />
+          </div>
+          <div className='flex  flex-col items-center justify-center'>
+            {otpVisible ?
+              <div className='pb-5 flex flex-col'>
+                <label className='font-bold font-mono text-red-600 w-100'>Enter the OTP</label>
+                <input type="text" required placeholder='OTP' className='pl-2 placeholder:font-bold  border rounded w-100 h-10  focus:outline-red-600' />
+                <p className='text-blue-700 text-sm'>Resend OTP</p>
+              </div> : ''
+            }
+            {
+              otpVisible ?
+                <div>
+                  <button type='submit' className='border rounded font-bold font-[poppins] w-100 h-10  bg-red-400 text-white'>Sign Up</button>
+                </div>
+                :
+                <>
+                  <button className='border rounded font-bold font-[poppins] w-100 h-10  bg-red-400 text-white' onClick={otpsend}>Send OTP</button>
+                </>
+            }
+
+          </div>
+          <div className='flex justify-center mb-5'>
+            <NavLink to='/login' className='text-sm text-blue-700'>
+              Already have an account? Log in
+            </NavLink>
+          </div>
+          <div className='flex text-3xl items-center justify-center gap-5'>
+            <div><FaFacebookSquare className='text-blue-700' /></div>
+            <div><FaInstagram className='text-pink-600' /></div>
+            <div><FaSquareThreads /></div>
+          </div>
+        </form>
+      </div>
+    </>
+  )
+}
+
+export default Signup
