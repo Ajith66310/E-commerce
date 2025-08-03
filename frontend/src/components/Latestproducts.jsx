@@ -14,9 +14,9 @@ const Latestproducts = () => {
 
   return (
     <>
-    <div className='bg-[#FAF9F6]  pt-10'>
+    <div className='bg-[#FAF9F6] -mt-6  h-screen'>
 
-      <Title text1={'New Arrivals'} text2={'latest trends,handpicked just for you!'} />
+      <Title text1={'NEW ARRIVALS'} text2={'LATEST TRENDS,HANDPICKED JUST FOR YOU!'} />
 
       <div className=' grid grid-cols-2 gap-5 w-100 m-auto  md:grid-cols-4 md:w-180  lg:grid-cols-6 lg:w-[95%]'>
         {

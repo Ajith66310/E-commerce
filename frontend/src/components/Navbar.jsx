@@ -19,9 +19,10 @@ const Navbar = () => {
       y: 20,
       ease: "power3.inOut",
     }, {
-      opacity: 2,
+      opacity: 1,
       y: 0,
-      delay: 0.3,
+      stagger:0.5,
+      delay: 0.2,
     })
 
     tl.fromTo("#nav-links", {
@@ -39,7 +40,7 @@ const Navbar = () => {
       <div className={`${userIcon ? 'hidden' : ' bg-[#FAF9F6]  z-50   md:h-20 w-full grid md:grid-cols-3  '}`} >
 
         <div id='brand-name' className=' flex items-center  pl-10 '>
-          <p className=' text-3xl font-serif text-red-700  max-md:hidden '>BONKERS</p>
+          <p className=' text-3xl font-serif text-red-700  max-md:hidden font-extrabold'>BONKERS CORNER</p>
         </div>
 
         <div id='nav-links' className=' max-md:hidden flex max:md-20  justify-center  gap-3 items-center' >
