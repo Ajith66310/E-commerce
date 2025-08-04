@@ -40,33 +40,33 @@ const Navbar = () => {
       <div className={`${userIcon ? 'hidden' : ' bg-[#FAF9F6]  z-50   md:h-20 w-full grid md:grid-cols-3  '}`} >
 
         <div id='brand-name' className=' flex items-center  pl-10 '>
-          <p className=' text-3xl font-serif text-red-700  max-md:hidden font-extrabold'>BONKERS CORNER</p>
+          <p className=' text-3xl font-serif text-red-500  max-md:hidden font-extrabold'>BONKERS CORNER</p>
         </div>
 
         <div id='nav-links' className=' max-md:hidden flex max:md-20  justify-center  gap-3 items-center' >
           <NavLink to='/' className='flex flex-col items-center '>
-            <p className=' font-serif hover:text-black text-red-700  '>HOME</p>
-            <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 hidden' />
+            <p className=' font-serif hover:text-black text-red-500  hover:translate-y-1 hover:transition '>HOME</p>
+            <hr className='w-2/4 border-none h-[1.5px] bg-gray-500 hidden' />
           </NavLink>
           <NavLink to='/fashion' className='flex flex-col items-center '>
-            <p className=' font-serif hover:text-black text-red-700' >FASHION</p>
-            <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 hidden' />
+            <p className=' font-serif hover:text-black text-red-500 hover:translate-y-1 hover:transition' >FASHION</p>
+            <hr className='w-2/4 border-none h-[1.5px] bg-gray-500 hidden' />
           </NavLink>
           <NavLink to='/wishlist' className='flex flex-col items-center '>
-            <p className='font-serif hover:text-black text-red-700 ' >FAVOURITE</p>
-            <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 hidden' />
+            <p className='font-serif hover:text-black text-red-500 hover:translate-y-1 hover:transition' >FAVOURITE</p>
+            <hr className='w-2/4 border-none h-[1.5px] bg-gray-500 hidden' />
           </NavLink>
           <NavLink to='/contact' className='flex flex-col items-center '>
-            <p className='font-serif hover:text-black text-red-700' >CONTACT</p>
-            <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 hidden' />
+            <p className='font-serif hover:text-black text-red-500 hover:translate-y-1 hover:transition' >CONTACT</p>
+            <hr className='w-2/4 border-none h-[1.5px] bg-gray-500 hidden' />
           </NavLink>
         </div>
 
         <div id='nav-items' className='flex items-center max-md:hidden gap-3  justify-end text-2xl  pr-10'>
           <NavLink to='/login'>
-            <GoPerson className="cursor-pointer text-red-800 hover:text-black " />
+            <GoPerson className="cursor-pointer text-red-500 hover:text-black " />
           </NavLink>
-          <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-black text-3xl cursor-pointer text-red-800' />
+          <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-black text-3xl cursor-pointer text-red-500' />
           {/* <FaCartShopping  /> */}
         </div>
       </div>
@@ -75,11 +75,11 @@ const Navbar = () => {
       <div className={` ${userIcon || cartIcon ? ' hidden' : 'md:hidden  items-center z-50 fixed w-full h-15 grid grid-cols-2 bg-transparent'}`}>
         <div className='font-sans text-xl   pl-5 '>
           {/* <img  alt=""  className='h-15 ' /> */}
-          <p className=' text-1xl font-serif text-red-700 '>CR7</p>
+          <p className=' text-1xl font-serif text-red-500 '>CR7</p>
         </div>
         <div className='pr-3 flex justify-end space-x-2 items-center text-sm'>
-          <GoPerson onClick={() => setUserIcon(true)} className="cursor-pointer text text-red-700" />
-          <CiShoppingCart onClick={() => setCartIcon(true)} className='mt-1 cursor-pointer text-red-700' />
+          <GoPerson onClick={() => setUserIcon(true)} className="cursor-pointer text text-red-500" />
+          <CiShoppingCart onClick={() => setCartIcon(true)} className='mt-1 cursor-pointer text-red-500' />
         </div>
       </div>
       {/* user icon  */}

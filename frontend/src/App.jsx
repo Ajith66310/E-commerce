@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Route,Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Contact from './pages/Contact';
@@ -10,26 +10,29 @@ import Wishlist from './pages/Wishlist';
 import Signup from './pages/Signup';
 import SendMail from './pages/SendMail';
 import ResetPassword from './pages/ResetPassword';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const App = () => {
-return (
- <BrowserRouter>
- <Routes>
-<Route path='/'  element={<Header/>}>   
-<Route index  element={<Home/>} />  
-<Route path='login'  element={<Login/>} />  
-<Route path='signup'  element={<Signup/>} />  
-<Route path='fashion' element={<Fashion/>} />  
-<Route path='contact' element={<Contact/>} />  
-<Route path='sendmail' element={<SendMail/>} />  
-<Route path='resetpassword' element={<ResetPassword/>} />  
-<Route path='contact' element={<Contact/>} />  
-<Route path='wishlist' element={<Wishlist/>} />  
-<Route path='*' element={<NotFound/>} />  
-</Route>
- </Routes>
- </BrowserRouter>
+  return (
+    <BrowserRouter>
+      <Routes>
+        <ToastContainer />
+        <Route path='/' element={<Header />}>
+          <Route index element={<Home />} />
+          <Route path='login' element={<Login />} />
+          <Route path='signup' element={<Signup />} />
+          <Route path='fashion' element={<Fashion />} />
+          <Route path='contact' element={<Contact />} />
+          <Route path='sendmail' element={<SendMail />} />
+          <Route path='resetpassword' element={<ResetPassword />} />
+          <Route path='contact' element={<Contact />} />
+          <Route path='wishlist' element={<Wishlist />} />
+          <Route path='*' element={<NotFound />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 

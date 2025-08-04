@@ -1,17 +1,15 @@
+import sendMail from '../middleware/nodemailer.js';
 import userModel from '../models/userModel.js'
+
 
 const register = async(req,res)=>{
   try {
-  const {name,email,password} = req.body;
-  const user = new userModel({
-    name,
-    email,
-    password,
-  } )
- await user.save();    
-   console.log(user);
-   
-  res.json({message:'user Registered'} )
+  const {email} = req.body;
+  const data = await userModel.findOne({email : email})
+  if(data){
+    return res.json({message:"user Exists"})
+  }
+    sendMail(email)  
   } catch (error) {
     console.log(error);
     
