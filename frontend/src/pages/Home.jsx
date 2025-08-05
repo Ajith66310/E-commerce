@@ -1,4 +1,5 @@
-import Hero from '../components/Hero'
+
+import Footer from '../components/Footer'
 import Header from '../components/Header'
 import Latestproducts from '../components/Latestproducts'
 
@@ -10,8 +11,9 @@ const Home = () => {
 
   return (
     <>
-    <Hero/>
+ 
     <Latestproducts/>
+        <Footer/>
     </>
   )
 }

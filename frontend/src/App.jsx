@@ -10,7 +10,7 @@ import Wishlist from './pages/Wishlist';
 import Signup from './pages/Signup';
 import SendMail from './pages/SendMail';
 import ResetPassword from './pages/ResetPassword';
-import 'react-toastify/dist/ReactToastify.css';
+import Footer from './components/Footer';
 
 
 
@@ -18,7 +18,6 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <ToastContainer />
         <Route path='/' element={<Header />}>
           <Route index element={<Home />} />
           <Route path='login' element={<Login />} />
