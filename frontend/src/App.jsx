@@ -10,13 +10,14 @@ import Wishlist from './pages/Wishlist';
 import Signup from './pages/Signup';
 import SendMail from './pages/SendMail';
 import ResetPassword from './pages/ResetPassword';
-import Footer from './components/Footer';
-
-
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import RegisterOtpVerify from './components/RegisterOtpVerify';
 
 const App = () => {
   return (
     <BrowserRouter>
+           <ToastContainer position="top-left" autoClose={2000}/>
       <Routes>
         <Route path='/' element={<Header />}>
           <Route index element={<Home />} />
@@ -28,9 +29,11 @@ const App = () => {
           <Route path='resetpassword' element={<ResetPassword />} />
           <Route path='contact' element={<Contact />} />
           <Route path='wishlist' element={<Wishlist />} />
+          <Route path='otpverify' element={<RegisterOtpVerify/>} />
           <Route path='*' element={<NotFound />} />
         </Route>
       </Routes>
+
     </BrowserRouter>
   )
 }

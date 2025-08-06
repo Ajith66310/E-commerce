@@ -1,8 +1,8 @@
 import nodemailer from 'nodemailer';
 
-const sendMail = (email)=>{
+const sendMail = (email,otp)=>{
 
-  const otp = Math.round(Math.random()*10000)+111111
+
   console.log(email);
   
   let transporter = nodemailer.createTransport({

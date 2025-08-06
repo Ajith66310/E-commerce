@@ -1,10 +1,11 @@
 import express from 'express'
-import { register,login } from '../controllers/userController.js';
-import sendMail from '../middleware/nodemailer.js';
+import { register,login, otpverify } from '../controllers/userController.js';
+
 
 const userRouter = express.Router();
 
 userRouter.post('/register',register)
+userRouter.post('/otpverify',otpverify)
 userRouter.post('/login',login)
 
 export default userRouter;

@@ -1,15 +1,18 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom';
+import {  NavLink, useNavigate } from 'react-router-dom';
 import { FaInstagram } from "react-icons/fa";
 import { FaSquareThreads } from "react-icons/fa6";
 import { FaFacebookSquare } from "react-icons/fa";
 import { useState } from 'react';
 import axios from 'axios'
+import { toast } from 'react-toastify';
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
@@ -18,11 +21,10 @@ const Signup = () => {
         email,
         password,
       })
-   
-
+      toast.success(response.data.message)
+      navigate( "/otpverify" ,{state:{name,email,password}})
     } catch (error) {
       console.log(error);
-
     }
   }
 
