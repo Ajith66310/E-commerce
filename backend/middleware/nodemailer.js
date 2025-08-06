@@ -1,9 +1,6 @@
 import nodemailer from 'nodemailer';
 
 const sendMail = (email,otp)=>{
-
-
-  console.log(email);
   
   let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -16,7 +13,7 @@ const sendMail = (email,otp)=>{
 let mailOptions = {
   from: 'neverbuyfromherekettow@gmail.com',
   to: email,
-  subject: 'Sending Email using Node.js',
+  subject: 'Your 6-digits OTP(One-Time-Password)',
   text:`${otp}`,
 };
 
