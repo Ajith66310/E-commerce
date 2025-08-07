@@ -5,7 +5,20 @@ import bcrypt from 'bcrypt'
 
 const registerOtpMail = async(req,res)=>{
   try {
-  const {email} = req.body;
+  const {name,email,password} = req.body;
+
+  const regexEmail = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+
+  if (!regexEmail.test(email)) {
+  return res.status(400).json({ message: "Invalid Email format" });
+  }
+
+  const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+    if (!regexPassword.test(password)) {
+  return res.status(400).json({ message: "Atleast one uppercase,lowercase,digits,special characters" });
+  }
+
   const data = await userModel.findOne({email : email})
   if(data){
     return res.status(404).json({message:"user Exists"})
@@ -33,18 +46,17 @@ const signupOtpVerify = async(req,res)=>{
   bcrypt.compare(otp,data.otp,(err,result)=>{
     if (err || !result) {
       return res.status(400).json({ message: "Invalid OTP. Please try again." });
-    }  
+    } 
+  })
+    const pass = await bcrypt.hash(password,10) 
     const user = new userModel({
       name,
       email,
-      password,
+      password:pass,
       otp,
     })
     user.save()
     res.status(200).json({message:"Login Successfully"})
-
-  })
-
 }
 
 const login = async(req,res)=>{

@@ -20,20 +20,26 @@ const Signup = () => {
   const registerOtpMail = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8080/registerotpmail', {
+      const response = await axios.post(`${import.meta.env.VITE_URL}/registerotpmail`, {
+        name,
         email,
+        password,
       })
       toast.success(response.data.message)
       setSignup(true)
     } catch (error) {
-      console.log(error);
+       if (error.response && error.response.data && error.response.data.message) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("An error occurred. Please try again.");
+    }
     }
   }
  
   const signupOtpHandle = async (e) => {
     e.preventDefault();
     try {
-     const response = await axios.post('http://localhost:8080/signupotpverify',{
+     const response = await axios.post(`${import.meta.env.VITE_URL}/signupotpverify`,{
       name,
       email,
       password,
@@ -62,11 +68,11 @@ const Signup = () => {
                   setName(e.target.value)
                 }} />
                 <label className='font-bold text-red-600 font-mono w-100 '>Gmail</label>
-                <input type="text" required placeholder='Gmail' className='pl-2 placeholder:font-bold  border mb-3 rounded w-100 h-10  focus:outline-red-600' onChange={(e) => {
+                <input type="email" required placeholder='Gmail' className='pl-2 placeholder:font-bold  border mb-3 rounded w-100 h-10  focus:outline-red-600' onChange={(e) => {
                   setEmail(e.target.value)
                 }} />
                 <label className='font-bold font-mono text-red-600 w-100'>Password</label>
-                <input type="password" required placeholder='Password' className='pl-2 placeholder:font-bold  border rounded w-100 h-10  focus:outline-red-600' onChange={(e) => {
+                <input type="text" required placeholder='Password' className='pl-2 placeholder:font-bold  border rounded w-100 h-10  focus:outline-red-600' onChange={(e) => {
                   setPassword(e.target.value)
                 }} />
               </div>
