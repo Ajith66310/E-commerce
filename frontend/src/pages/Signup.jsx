@@ -12,14 +12,12 @@ const Signup = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [otp, setOtp] = useState('');
   const [signup, setSignup] = useState(false);
-  
-  const handleRegister = async (e) => {
-    
-   
-  }
 
-  const registerOtpMail = async(e)=>{
+ 
+
+  const registerOtpMail = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:8080/registerotpmail', {
@@ -31,7 +29,26 @@ const Signup = () => {
       console.log(error);
     }
   }
-
+ 
+  const signupOtpHandle = async (e) => {
+    e.preventDefault();
+    try {
+     const response = await axios.post('http://localhost:8080/signupotpverify',{
+      name,
+      email,
+      password,
+      otp
+    }) 
+    toast.success(response.data.message);
+    navigate("/")
+    } catch (error) {
+       if (error.response && error.response.data && error.response.data.message) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("An error occurred. Please try again.");
+    }
+    }
+  }
   return (
     <>
       {
@@ -56,7 +73,7 @@ const Signup = () => {
               <div className='flex  flex-col items-center justify-center'>
 
                 <div>
-                  <button type='submit' className='border rounded font-bold font-[poppins] w-100 h-10  bg-red-400 text-white' >Register</button>
+                  <button type='submit' className='border rounded font-bold font-[poppins] w-100 h-10  bg-red-400 text-white'>Register</button>
                 </div>
 
 
@@ -75,11 +92,11 @@ const Signup = () => {
           </div>
           :
           <div className='pt-10 flex  h-[89vh] justify-center items-center bg-[#FAF9F6]'>
-            <form action="" method='' className=' w-[80%] h-120'>
+            <form action="" method='' onSubmit={signupOtpHandle} className=' w-[80%] h-120'>
               <div className='flex justify-center  items-center mt-10 mb-5 flex-col gap-1'>
                 <label className='font-bold font-mono text-red-600 w-100'>Enter your 6-digits OTP(One-Time-Password)</label>
                 <input type="number" required placeholder='OTP' className='pl-2 placeholder:font-bold  border rounded w-100 h-10  focus:outline-red-600' onChange={(e) => {
-                  setPassword(e.target.value)
+                  setOtp(e.target.value)
                 }} />
               </div>
               <div className='flex justify-center items-center'>
