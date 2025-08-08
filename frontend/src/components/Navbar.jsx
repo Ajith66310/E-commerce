@@ -45,19 +45,19 @@ const Navbar = () => {
 
         <div id='nav-links' className=' max-md:hidden flex max:md-20  justify-center  gap-3 items-center' >
           <NavLink to='/' className='flex flex-col items-center '>
-            <p className=' font-serif hover:text-black text-red-500  hover:translate-y-1 hover:transition '>HOME</p>
+            <p className=' font-serif hover:text-black text-red-500   '>HOME</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-500 hidden' />
           </NavLink>
           <NavLink to='/fashion' className='flex flex-col items-center '>
-            <p className=' font-serif hover:text-black text-red-500 hover:translate-y-1 hover:transition' >FASHION</p>
+            <p className=' font-serif hover:text-black text-red-500 ' >FASHION</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-500 hidden' />
           </NavLink>
           <NavLink to='/wishlist' className='flex flex-col items-center '>
-            <p className='font-serif hover:text-black text-red-500 hover:translate-y-1 hover:transition' >FAVOURITE</p>
+            <p className='font-serif hover:text-black text-red-500 ' >FAVOURITE</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-500 hidden' />
           </NavLink>
           <NavLink to='/contact' className='flex flex-col items-center '>
-            <p className='font-serif hover:text-black text-red-500 hover:translate-y-1 hover:transition' >CONTACT</p>
+            <p className='font-serif hover:text-black text-red-500 ' >CONTACT</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-500 hidden' />
           </NavLink>
         </div>

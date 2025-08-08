@@ -2,6 +2,7 @@ import sendMail from '../middleware/nodemailer.js';
 import otpModel from '../models/otpModel.js';
 import userModel from '../models/userModel.js'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken';
 
 const registerOtpMail = async(req,res)=>{
   try {
@@ -56,10 +57,31 @@ const signupOtpVerify = async(req,res)=>{
       otp,
     })
     user.save()
-    res.status(200).json({message:"Login Successfully"})
-}
+    res.status(200).json({message:"User Registered"})
+
+  }
 
 const login = async(req,res)=>{
+
+  const {email,password} = req.body;
+ 
+  const data = await userModel.findOne({email : email});
+  
+  if (!data){
+   return  res.status(400).json({message:"Enter a valid email"})
+  }
+  
+   bcrypt.compare(password,data.password,(err,result)=>{
+   if(err || !result){
+   return res.status(400).json({message:"Enter a valid password"})
+   }
+   if(result){
+     const token =  jwt.sign(data.name,process.env.SECRET_KEY);
+     return res.status(200).json({message:'Login Successfully',token})
+   }
+  })
+  
+  
 
 }
 
