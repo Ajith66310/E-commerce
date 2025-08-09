@@ -46,7 +46,7 @@ const Signup = () => {
       otp
     }) 
     toast.success(response.data.message);
-    navigate("/")
+    navigate("/login")
     } catch (error) {
        if (error.response && error.response.data && error.response.data.message) {
       toast.error(error.response.data.message);

@@ -19,7 +19,7 @@ const Login = () => {
     password,
    })   
    toast.success(response.data.message)
-   localStorage.setItem("token",  response.data.token); 
+   localStorage.setItem("token",response.data.token); 
    navigate('/')
     } catch (error) {
       if(error.response && error.response.data && error.response.data.message ){

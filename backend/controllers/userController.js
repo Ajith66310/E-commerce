@@ -56,7 +56,7 @@ const signupOtpVerify = async(req,res)=>{
       password:pass,
       otp,
     })
-    user.save()
+    await user.save()
     res.status(200).json({message:"User Registered"})
 
   }

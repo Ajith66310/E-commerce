@@ -1,25 +1,17 @@
-import { useContext } from 'react';
+import React, { createContext } from 'react';
 
-export const userContext = createContext()
+export const UserContext = createContext();
 
- const userContextProvider = ({children}) => {
- 
-
-
+const UserContextProvider = ({ children }) => {
   const value = {
-
-  }
-
-
+    // add any state or functions you want to share here
+  };
 
   return (
-    <userContext.Provider value={value}>
+    <UserContext.Provider value={value}>
       {children}
-    </userContext.Provider>
-  )
-}
+    </UserContext.Provider>
+  );
+};
 
-export default userContextProvider;
-
-
-
+export default UserContextProvider;
