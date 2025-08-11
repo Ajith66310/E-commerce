@@ -20,7 +20,7 @@ const Login = () => {
    })   
    toast.success(response.data.message)
    localStorage.setItem("token",response.data.token); 
-   navigate('/')
+   navigate('/',)
     } catch (error) {
       if(error.response && error.response.data && error.response.data.message ){
         toast.error(error.response.data.message)

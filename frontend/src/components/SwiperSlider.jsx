@@ -17,7 +17,7 @@ export default function SwiperSlider() {
     <>
       <Swiper
         style={{
-          '--swiper-navigation-color': '#fff',
+          '--swiper-navigation-color': 'red',
           '--swiper-pagination-color': '#fff',
         }}
         speed={600}
@@ -33,7 +33,7 @@ export default function SwiperSlider() {
           slot="container-start"
           className="parallax-bg"
           style={{
-            backgroundImage: `url(${bgLanding})`, 
+            // backgroundImage: `url(${bgLanding})`, 
           }}
           data-swiper-parallax="-23%"
         ></div>

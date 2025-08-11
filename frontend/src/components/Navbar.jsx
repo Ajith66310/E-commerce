@@ -1,17 +1,19 @@
 import { useState } from 'react'
 import { FaUser } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom'
+import { Navigate, NavLink, useNavigate } from 'react-router-dom'
 import { FaCartShopping } from "react-icons/fa6";
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap';
 import { CiShoppingCart } from "react-icons/ci";
 import { GoPerson } from "react-icons/go";
+import axios from 'axios';
 
 const Navbar = () => {
 
   const [userIcon, setUserIcon] = useState(false)
   const [cartIcon, setCartIcon] = useState(false)
-
+  
+  
   useGSAP(() => {
     const tl = gsap.timeline();
     tl.fromTo("#brand-name,#nav-items", {
@@ -21,10 +23,10 @@ const Navbar = () => {
     }, {
       opacity: 1,
       y: 0,
-      stagger:0.5,
+      stagger: 0.5,
       delay: 0.2,
     })
-
+    
     tl.fromTo("#nav-links", {
       opacity: 0,
       y: -20,
@@ -34,6 +36,19 @@ const Navbar = () => {
       y: 0,
     })
   }, [])
+  
+  const navigate = useNavigate();
+  
+  // const handleLogout = async () => {
+  //   const response = await axios.post(`${import.meta.env.VITE_URL}/logout`, 
+
+  //   )
+  // }
+
+  const handleLogout = ()=>{
+    localStorage.removeItem("token");
+    navigate("/login");
+  }
 
   return (
     <>
@@ -63,6 +78,7 @@ const Navbar = () => {
         </div>
 
         <div id='nav-items' className='flex items-center max-md:hidden gap-3  justify-end text-2xl  pr-10'>
+          <button className='border' onClick={handleLogout}>Logout</button>
           <NavLink to='/login'>
             <GoPerson className="cursor-pointer text-red-500 hover:text-black " />
           </NavLink>
