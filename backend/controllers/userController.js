@@ -3,6 +3,7 @@ import otpModel from '../models/otpModel.js';
 import userModel from '../models/userModel.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
+import { compareOtp } from '../utils/otpverify.js';
 
 const registerOtpMail = async(req,res)=>{
   try {
@@ -40,37 +41,40 @@ const registerOtpMail = async(req,res)=>{
 }
 
 const signupOtpVerify = async(req,res)=>{
-
   const {name,email,password,otp} = req.body;
-  const data = await otpModel.findOne({email})
 
-  bcrypt.compare(otp,data.otp,(err,result)=>{
-    if (err || !result) {
-      return res.status(400).json({ message: "Invalid OTP. Please try again." });
-    } 
-  })
-    const pass = await bcrypt.hash(password,10) 
-    const user = new userModel({
+  const data = await otpModel.findOne({email})
+  
+
+  if (!data) {
+    return res.status(400).json({ message: "OTP not found. Please request again." });
+  }
+
+  const isValid = await compareOtp(otp, data.otp);
+  if (!isValid) {
+    return res.status(400).json({ message: "Invalid OTP. Please try again." });
+  }
+  const pass = await bcrypt.hash(password,10) 
+  
+  const user = new userModel({
       name,
       email,
       password:pass,
       otp,
     })
+  
     await user.save()
+  
     res.status(200).json({message:"User Registered"})
 
   }
 
 const login = async(req,res)=>{
-
   const {email,password} = req.body;
- 
   const data = await userModel.findOne({email : email});
-  
   if (!data){
    return  res.status(400).json({message:"Enter a valid email"})
   }
-  
    bcrypt.compare(password,data.password,(err,result)=>{
    if(err || !result){
    return res.status(400).json({message:"Enter a valid password"})
@@ -84,7 +88,11 @@ const login = async(req,res)=>{
 
 const resetOtpMail = async(req,res)=>{
     const {email} = req.body;
-    console.log(email);
+
+  const data = await userModel.findOne({email : email});
+  if (!data){
+   return  res.status(400).json({message:"Enter a valid email"})
+  }
     const otp = Math.round(Math.random()*10000)+111111;
     const hashedOtp = await bcrypt.hash(otp.toString(),10)
     const user = new otpModel({
@@ -96,4 +104,20 @@ const resetOtpMail = async(req,res)=>{
     return res.status(200).json({message:"Otp send successfully"})
 }
 
-export {registerOtpMail,signupOtpVerify,resetOtpMail,login};
+const resetOtpVerify = async(req,res)=>{
+
+ const {email,otp} = req.body;
+
+ const data = await otpModel.findOne({email})
+  
+  if (!data) {
+    return res.status(400).json({ message: "OTP not found. Please request again." });
+  }
+
+  const isValid = await compareOtp(otp, data.otp);
+  if (!isValid) {
+    return res.status(400).json({ message: "Invalid OTP. Please try again." });
+  }
+}
+
+export {resetOtpVerify,registerOtpMail,signupOtpVerify,resetOtpMail,login};
