@@ -12,6 +12,7 @@ const Navbar = () => {
 
   const [userIcon, setUserIcon] = useState(false)
   const [cartIcon, setCartIcon] = useState(false)
+  const navigate = useNavigate();
   
   
   useGSAP(() => {
@@ -37,13 +38,6 @@ const Navbar = () => {
     })
   }, [])
   
-  const navigate = useNavigate();
-  
-  // const handleLogout = async () => {
-  //   const response = await axios.post(`${import.meta.env.VITE_URL}/logout`, 
-
-  //   )
-  // }
 
   const handleLogout = ()=>{
     localStorage.removeItem("token");

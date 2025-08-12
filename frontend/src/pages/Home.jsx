@@ -13,9 +13,9 @@ const Home = () => {
   return (
     <>
 
-   <SwiperSlider/>
-    <Latestproducts/>
-        <Footer/>
+      <SwiperSlider />
+      <Latestproducts />
+      <Footer />
     </>
   )
 }

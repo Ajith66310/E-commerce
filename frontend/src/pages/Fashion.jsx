@@ -6,9 +6,7 @@ const Fashion = () => {
   const navigate = useNavigate()
   return (
      <>
-     <button className='mt-20 ml-20 border-1 ' onClick={()=>{
-    navigate(-1)
-     }} >back</button>
+    
      </>
   )
 }

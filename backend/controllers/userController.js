@@ -24,7 +24,7 @@ const registerOtpMail = async(req,res)=>{
   if(data){
     return res.status(404).json({message:"user Exists"})
   }else{
-    const otp = Math.round(Math.random()*10000)+111111
+    const otp = Math.round(Math.random()*10000)+111111;
     const hashedOtp = await bcrypt.hash(otp.toString(),10)
     const user = new otpModel({
       email,
@@ -82,6 +82,18 @@ const login = async(req,res)=>{
   })
 }
 
+const resetOtpMail = async(req,res)=>{
+    const {email} = req.body;
+    console.log(email);
+    const otp = Math.round(Math.random()*10000)+111111;
+    const hashedOtp = await bcrypt.hash(otp.toString(),10)
+    const user = new otpModel({
+      email,
+      otp:hashedOtp,
+    })
+    user.save()
+    sendMail(email,otp); 
+    return res.status(200).json({message:"Otp send successfully"})
+}
 
-
-export {registerOtpMail,signupOtpVerify,login};
+export {registerOtpMail,signupOtpVerify,resetOtpMail,login};
