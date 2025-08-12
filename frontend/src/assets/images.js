@@ -3,10 +3,11 @@ import hero_img2 from './hero_img2.webp';
 import p1 from './p1.jpg';
 import p2 from '../assets/p2.jpg';
 import p3 from '../assets/p3.jpg';
+import bglanding from './bg-landing.jpg';
 import p4 from '../assets/p4.jpg';
 
-
 const images = {
+  bglanding,
   hero_img,
   hero_img2,
  p1,

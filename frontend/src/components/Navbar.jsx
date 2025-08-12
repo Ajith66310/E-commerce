@@ -7,8 +7,10 @@ import gsap from 'gsap';
 import { CiShoppingCart } from "react-icons/ci";
 import { GoPerson } from "react-icons/go";
 import axios from 'axios';
+import { IoIosLogOut } from "react-icons/io";
 
 const Navbar = () => {
+
 
   const [userIcon, setUserIcon] = useState(false)
   const [cartIcon, setCartIcon] = useState(false)
@@ -46,38 +48,37 @@ const Navbar = () => {
 
   return (
     <>
-      <div className={`${userIcon ? 'hidden' : ' bg-[#FAF9F6]  z-50   md:h-20 w-full grid md:grid-cols-3  '}`} >
+      <div className={`${userIcon ? 'hidden' : ' bg-[transparent] absolute z-50  md:h-20 w-full grid md:grid-cols-3  '}`} >
 
         <div id='brand-name' className=' flex items-center  pl-10 '>
-          <p className=' text-3xl font-serif text-red-500  max-md:hidden font-extrabold'>BONKERS CORNER</p>
+          <p className=' text-3xl font-serif text-red-800  max-md:hidden font-extrabold'>BONKERS CORNER</p>
         </div>
 
         <div id='nav-links' className=' max-md:hidden flex max:md-20  justify-center  gap-3 items-center' >
           <NavLink to='/' className='flex flex-col items-center '>
-            <p className=' font-serif hover:text-black text-red-500   '>HOME</p>
-            <hr className='w-2/4 border-none h-[1.5px] bg-gray-500 hidden' />
+            <p className=' font-serif hover:text-black text-red-800   '>HOME</p>
+            <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>
           <NavLink to='/fashion' className='flex flex-col items-center '>
-            <p className=' font-serif hover:text-black text-red-500 ' >FASHION</p>
-            <hr className='w-2/4 border-none h-[1.5px] bg-gray-500 hidden' />
+            <p className=' font-serif hover:text-black text-red-800 ' >FASHION</p>
+            <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>
           <NavLink to='/wishlist' className='flex flex-col items-center '>
-            <p className='font-serif hover:text-black text-red-500 ' >FAVOURITE</p>
-            <hr className='w-2/4 border-none h-[1.5px] bg-gray-500 hidden' />
+            <p className='font-serif hover:text-black text-red-800 ' >FAVOURITE</p>
+            <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>
           <NavLink to='/contact' className='flex flex-col items-center '>
-            <p className='font-serif hover:text-black text-red-500 ' >CONTACT</p>
-            <hr className='w-2/4 border-none h-[1.5px] bg-gray-500 hidden' />
+            <p className='font-serif hover:text-black text-red-800 ' >CONTACT</p>
+            <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>
         </div>
 
         <div id='nav-items' className='flex items-center max-md:hidden gap-3  justify-end text-2xl  pr-10'>
-          <button className='border' onClick={handleLogout}>Logout</button>
           <NavLink to='/login'>
-            <GoPerson className="cursor-pointer text-red-500 hover:text-black " />
+            <GoPerson className="cursor-pointer text-red-800 hover:text-black " />
           </NavLink>
-          <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-black text-3xl cursor-pointer text-red-500' />
-          {/* <FaCartShopping  /> */}
+          <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-black text-3xl cursor-pointer text-red-800' />
+          <IoIosLogOut className="cursor-pointer text-red-800 hover:text-black " onClick={handleLogout}/> 
         </div>
       </div>
 
@@ -85,11 +86,11 @@ const Navbar = () => {
       <div className={` ${userIcon || cartIcon ? ' hidden' : 'md:hidden  items-center z-50 fixed w-full h-15 grid grid-cols-2 bg-transparent'}`}>
         <div className='font-sans text-xl   pl-5 '>
           {/* <img  alt=""  className='h-15 ' /> */}
-          <p className=' text-1xl font-serif text-red-500 '>CR7</p>
+          <p className=' text-1xl font-serif text-red-800 '>CR7</p>
         </div>
         <div className='pr-3 flex justify-end space-x-2 items-center text-sm'>
-          <GoPerson onClick={() => setUserIcon(true)} className="cursor-pointer text text-red-500" />
-          <CiShoppingCart onClick={() => setCartIcon(true)} className='mt-1 cursor-pointer text-red-500' />
+          <GoPerson onClick={() => setUserIcon(true)} className="cursor-pointer text text-red-800" />
+          <CiShoppingCart onClick={() => setCartIcon(true)} className='mt-1 cursor-pointer text-red-800' />
         </div>
       </div>
       {/* user icon  */}

@@ -1,15 +1,15 @@
 import React, { useRef, useState } from 'react';
-// Import Swiper React components
+
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-// Import Swiper styles
+
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import bgLanding from './bg-landing.avif';
+import images from '../assets/images.js';
 import './Swiper.css';
 
-// import required modules
+
 import { Parallax, Pagination, Navigation } from 'swiper/modules';
 
 export default function SwiperSlider() {
@@ -33,7 +33,7 @@ export default function SwiperSlider() {
           slot="container-start"
           className="parallax-bg"
           style={{
-            // backgroundImage: `url(${bgLanding})`, 
+            backgroundImage: `url(${images.bglanding})`,
           }}
           data-swiper-parallax="-23%"
         ></div>
