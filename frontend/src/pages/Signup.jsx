@@ -59,7 +59,7 @@ const Signup = () => {
     <>
       {
         signup === false ?
-          <div className='pt-10 flex  h-[89vh] justify-center bg-[#FAF9F6]'>
+          <div className='pt-30 flex  h-[100vh] justify-center bg-[#FAF9F6]'>
             <form action="" method='' onSubmit={registerOtpMail} className=' w-[80%] h-120'>
               <div className='flex justify-center  items-center mt-10 mb-5 flex-col gap-1'>
                 <p className='font-[poppins] w-100 mb-5'>Welcome to <span className='font-bold text-red-600 '>CR7</span></p>

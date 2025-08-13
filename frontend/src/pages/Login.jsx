@@ -32,7 +32,7 @@ const Login = () => {
 
   return (
     <>
-      <div className='pt-20 flex h-[89vh] justify-center bg-[#FAF9F6]'>
+      <div className='pt-40 flex h-[100vh] justify-center bg-[#FAF9F6]'>
         <form action="" method='' onSubmit={loginHandle} className=' w-[80%] h-120'>
           <div className='flex justify-center items-center  mt-10 mb-5 flex-col gap-1'>
             <p className='font-[poppins] w-100 mb-5'>Welcome,<span className='font-bold'>Ajith k v</span></p>

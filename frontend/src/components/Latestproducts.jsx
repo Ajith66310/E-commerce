@@ -14,7 +14,7 @@ const Latestproducts = () => {
 
   return (
     <>
-    <div className='bg-[#FAF9F6] mt-6  h-screen'>
+    <div className='bg-[#FAF9F6] -mt-6  h-screen pt-10'>
 
       <Title text1={'NEW ARRIVALS'} text2={'LATEST TRENDS,HANDPICKED JUST FOR YOU!'} />
 
