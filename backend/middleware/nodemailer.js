@@ -1,30 +1,29 @@
 import nodemailer from 'nodemailer';
 
-const sendMail = (email,otp,subject)=>{
-  
-  let transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'neverbuyfromherekettow@gmail.com',
-      pass: 'ckkt qixn hstj qzyp'
-    }
-  });
-  
-let mailOptions = {
-  from: 'neverbuyfromherekettow@gmail.com',
-  to: email,
-  subject: `${subject}`,
-  text:`${otp }`,
-};
+const sendMail = async (email, subject, message) => {
+  try {
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'neverbuyfromherekettow@gmail.com',
+        pass: 'ckkt qixn hstj qzyp'
+      }
+    });
 
-transporter.sendMail(mailOptions, function(error, info){
-  if (error) {
-    console.log(error);
-  } else {
-    console.log('Email sent: ' + info.response);
+    let mailOptions = {
+      from: 'neverbuyfromherekettow@gmail.com',
+      to: email,
+      subject,
+      text: message
+    };
+
+    let info = await transporter.sendMail(mailOptions);
+    console.log(`Email sent: ${info.response}`);
+    return true;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return false;
   }
-});
-
-}
+};
 
 export default sendMail;

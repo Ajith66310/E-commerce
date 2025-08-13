@@ -25,14 +25,17 @@ const registerOtpMail = async(req,res)=>{
   if(data){
     return res.status(404).json({message:"user Exists"})
   }else{
-    const otp = Math.round(Math.random()*10000)+111111;
-    const hashedOtp = await bcrypt.hash(otp.toString(),10)
-    const user = new otpModel({
-      email,
-      otp:hashedOtp,
-    })
-    user.save()
-    sendMail(email,otp); 
+const otp = Math.floor(100000 + Math.random() * 900000);
+const hashedOtp = await bcrypt.hash(otp.toString(), 10);
+
+await otpModel.create({ email, otp: hashedOtp });
+
+await sendMail(
+  email,
+  'Your Registration OTP',
+  `Your OTP for registration is: ${otp}. It will expire in 5 minutes.`
+);
+
     return res.status(200).json({message:"Otp send successfully"})
   }
   } catch (error) {
@@ -98,15 +101,17 @@ const resetOtpMail = async(req,res)=>{
   if (!data){
    return  res.status(400).json({message:"Enter a valid email"})
   }
-    const otp = Math.round(Math.random()*10000)+111111;
-    const hashedOtp = await bcrypt.hash(otp.toString(),10)
-    const otpmodel = new otpModel({
-      email,
-      otp:hashedOtp,
-    })
-    await otpmodel.save()
-    const subject = 'Your 6-digits OTP(One-Time-Password)'
-    sendMail(email,otp,subject); 
+const otp = Math.floor(100000 + Math.random() * 900000);
+const hashedOtp = await bcrypt.hash(otp.toString(), 10);
+
+await otpModel.create({ email, otp: hashedOtp });
+
+await sendMail(
+  email,
+  'Your Password Reset OTP',
+  `Your OTP for password reset is: ${otp}. It will expire in 5 minutes.`
+);
+
     return res.status(200).json({message:"Otp send successfully"})
 }
 
@@ -127,8 +132,14 @@ const resetOtpVerify = async(req,res)=>{
     return res.status(400).json({ message: "Invalid OTP. Please try again." });
   }
   if (isValid) {
-    const subject = 'Link for resetting password'
-    sendMail(email,otp,subject)
+  const resetLink = `https://localhost:5173/resetpassword`;
+
+   await sendMail(
+  email,
+  'Password Reset Link',
+  `Click this link to reset your password: ${resetLink}`
+  );
+
     return res.status(200).json({ message: "Reset link sent to the mail" });
   }
 }
