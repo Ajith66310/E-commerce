@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import {  useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -8,7 +8,7 @@ const ResetPassword = () => {
   const { token } = useParams();
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-
+  const navigate = useNavigate()
   const handleResetSubmit = async(e) => {
     e.preventDefault()
     try {
@@ -18,6 +18,7 @@ const ResetPassword = () => {
         confirmPassword,
       })
       toast.success(response.data.message)
+      navigate('/')
     } catch (error) {
       if(error.response && error.response.data && error.response.data.message){
         toast.error(error.response.data.message)

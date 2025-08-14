@@ -193,13 +193,14 @@ if(!userData){
   return res.status(400).json({message:"Can't find the user with this email"})
  }
 
- const hashedPass = await bcrypt.hash(confirmPassword,10)
 
- userData.password = hashedPass;
-
- await userData.save()
- console.log(userData);
- 
+ if(userData){
+   const hashedPass = await bcrypt.hash(confirmPassword,10)
+   userData.password = hashedPass;
+   await userData.save()
+   return res.status(200).json({message:"Your password reset successfully"})
+  }
+   
 }
 
 export {resetOtpVerify,registerOtpMail,signupOtpVerify,resetOtpMail,login,resetPassword};

@@ -5,7 +5,8 @@ import p2 from '../assets/p2.jpg';
 import p3 from '../assets/p3.jpg';
 import bglanding from './bg-landing.jpg';
 import p4 from '../assets/p4.jpg';
-
+import img1 from '../assets/img1.jpg'
+import img2 from '../assets/img2.avif'
 const images = {
   bglanding,
   hero_img,
@@ -14,7 +15,8 @@ const images = {
  p2,
  p3,
  p4,
-
+img2,
+img1,
 };
 
 export const products = [

@@ -56,29 +56,29 @@ const Navbar = () => {
 
         <div id='nav-links' className=' max-md:hidden flex max:md-20  justify-center  gap-3 items-center' >
           <NavLink to='/' className='flex flex-col items-center '>
-            <p className=' font-serif hover:text-black text-red-800   '>HOME</p>
+            <p className=' font-serif hover:text-red-900 text-red-800   '>HOME</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>
           <NavLink to='/fashion' className='flex flex-col items-center '>
-            <p className=' font-serif hover:text-black text-red-800 ' >FASHION</p>
+            <p className=' font-serif hover:text-red-900 text-red-800 ' >FASHION</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>
           <NavLink to='/wishlist' className='flex flex-col items-center '>
-            <p className='font-serif hover:text-black text-red-800 ' >FAVOURITE</p>
+            <p className='font-serif hover:text-red-900 text-red-800 ' >FAVOURITE</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>
           <NavLink to='/contact' className='flex flex-col items-center '>
-            <p className='font-serif hover:text-black text-red-800 ' >CONTACT</p>
+            <p className='font-serif hover:text-red-900 text-red-800 ' >CONTACT</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>
         </div>
 
         <div id='nav-items' className='flex items-center max-md:hidden gap-3  justify-end text-2xl  pr-10'>
           <NavLink to='/login'>
-            <GoPerson className="cursor-pointer text-red-800 hover:text-black " />
+            <GoPerson className="cursor-pointer text-red-800 hover:text-red-900 " />
           </NavLink>
-          <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-black text-3xl cursor-pointer text-red-800' />
-          <IoIosLogOut className="cursor-pointer text-red-800 hover:text-black " onClick={handleLogout}/> 
+          <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-red-900 text-3xl cursor-pointer text-red-800' />
+          <IoIosLogOut className="cursor-pointer text-red-800 hover:text-red-900 " onClick={handleLogout}/> 
         </div>
       </div>
 
