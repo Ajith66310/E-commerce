@@ -132,7 +132,11 @@ const resetOtpVerify = async(req,res)=>{
     return res.status(400).json({ message: "Invalid OTP. Please try again." });
   }
   if (isValid) {
-  const resetLink = `http://localhost:5173/resetpassword`;
+      
+    const token =  jwt.sign({email},process.env.SECRET_KEY,{ expiresIn: "15m" });
+    
+
+  const resetLink = `http://localhost:5173/resetpassword/${token}`;
 
    await sendMail(
   email,
@@ -144,4 +148,21 @@ const resetOtpVerify = async(req,res)=>{
   }
 }
 
-export {resetOtpVerify,registerOtpMail,signupOtpVerify,resetOtpMail,login};
+const resetPassword =(req,res)=>{
+
+const {token,password,confirmPassword} = req.body;
+
+console.log(token);
+console.log(password);
+console.log(confirmPassword);
+
+
+if(password !== confirmPassword){
+  res.status(400).json({message:"Enter Matching Password"})
+}
+
+const decode = jwt.verify(token,process.env.SECRET_KEY)
+
+}
+
+export {resetOtpVerify,registerOtpMail,signupOtpVerify,resetOtpMail,login,resetPassword};

@@ -1,10 +1,32 @@
 import React from 'react'
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const ResetPassword = () => {
+  const { token } = useParams();
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+
+  const handleResetSubmit = async(e) => {
+    e.preventDefault()
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_URL}/resetpassword`, {
+        token,
+        password,
+        confirmPassword,
+      })
+      toast.success(response.data.message)
+    } catch (error) {
+
+    }
+  }
+
   return (
     <>
       <div className="flex h-screen justify-center items-center bg-[#FAF9F6] px-4">
-        <form className="w-[90%] max-w-md p-6 bg-white shadow-md rounded-xl border border-gray-200">
+        <form onSubmit={handleResetSubmit} className="w-[90%] max-w-md p-6 bg-white shadow-md rounded-xl border border-gray-200">
 
           {/* Title */}
           <div className="text-center mb-6">
@@ -22,12 +44,18 @@ const ResetPassword = () => {
               type="password"
               required
               placeholder="New Password"
+              onChange={(e)=>{
+                setPassword(e.target.value)
+              }}
               className="pl-3 py-2 placeholder:font-semibold placeholder:text-gray-500 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-red-400 transition"
             />
             <input
               type="password"
               required
               placeholder="Confirm Password"
+            onChange={(e)=>{
+                setConfirmPassword(e.target.value)
+              }}
               className="pl-3 py-2 placeholder:font-semibold placeholder:text-gray-500 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-red-400 transition"
             />
           </div>

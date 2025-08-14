@@ -25,7 +25,7 @@ const App = () => {
           <Route path='fashion' element={<Fashion />} />
           <Route path='contact' element={<Contact />} />
           <Route path='sendmail' element={<SendMail />} />
-          <Route path='resetpassword' element={<ResetPassword />} />
+          <Route path='resetpassword/:token' element={<ResetPassword />} />
           <Route path='contact' element={<Contact />} />
           <Route path='wishlist' element={<Wishlist />} />
           <Route path='*' element={<NotFound />} />
