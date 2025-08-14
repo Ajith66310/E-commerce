@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FaInstagram } from "react-icons/fa";
 import { FaSquareThreads } from "react-icons/fa6";
 import { FaFacebookSquare } from "react-icons/fa";
-import { useState } from 'react';
 import axios from 'axios'
 import { toast } from 'react-toastify';
 
@@ -14,8 +13,6 @@ const Signup = () => {
   const [password, setPassword] = useState('')
   const [otp, setOtp] = useState('');
   const [signup, setSignup] = useState(false);
-
- 
 
   const registerOtpMail = async (e) => {
     e.preventDefault();
@@ -28,92 +25,133 @@ const Signup = () => {
       toast.success(response.data.message)
       setSignup(true)
     } catch (error) {
-       if (error.response && error.response.data && error.response.data.message) {
-      toast.error(error.response.data.message);
-    } else {
-      toast.error("An error occurred. Please try again.");
-    }
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("An error occurred. Please try again.");
+      }
     }
   }
- 
+
   const signupOtpHandle = async (e) => {
     e.preventDefault();
     try {
-     const response = await axios.post(`${import.meta.env.VITE_URL}/signupotpverify`,{
-      name,
-      email,
-      password,
-      otp
-    }) 
-    toast.success(response.data.message);
-    navigate("/login")
+      const response = await axios.post(`${import.meta.env.VITE_URL}/signupotpverify`, {
+        name,
+        email,
+        password,
+        otp
+      })
+      toast.success(response.data.message);
+      navigate("/login")
     } catch (error) {
-       if (error.response && error.response.data && error.response.data.message) {
-      toast.error(error.response.data.message);
-    } else {
-      toast.error("An error occurred. Please try again.");
-    }
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("An error occurred. Please try again.");
+      }
     }
   }
+
   return (
     <>
-      {
-        signup === false ?
-          <div className='pt-30 flex  h-[100vh] justify-center bg-[#FAF9F6]'>
-            <form action="" method='' onSubmit={registerOtpMail} className=' w-[80%] h-120'>
-              <div className='flex justify-center  items-center mt-10 mb-5 flex-col gap-1'>
-                <p className='font-[poppins] w-100 mb-5'>Welcome to <span className='font-bold text-red-600 '>CR7</span></p>
-                <label className='font-bold text-red-600 font-mono w-100'>Username</label>
-                <input required type="text" placeholder='Name' className='pl-2 placeholder:font-bold   border  focus:outline-red-600  mb-3 rounded w-100 h-10 b ' onChange={(e) => {
-                  setName(e.target.value)
-                }} />
-                <label className='font-bold text-red-600 font-mono w-100 '>Gmail</label>
-                <input type="email" required placeholder='Gmail' className='pl-2 placeholder:font-bold  border mb-3 rounded w-100 h-10  focus:outline-red-600' onChange={(e) => {
-                  setEmail(e.target.value)
-                }} />
-                <label className='font-bold font-mono text-red-600 w-100'>Password</label>
-                <input type="text" required placeholder='Password' className='pl-2 placeholder:font-bold  border rounded w-100 h-10  focus:outline-red-600' onChange={(e) => {
-                  setPassword(e.target.value)
-                }} />
-              </div>
-              <div className='flex  flex-col items-center justify-center'>
+      {signup === false ? (
+        <div className='pt-10 flex min-h-screen justify-center bg-[#F7F5F2] items-center'>
+          <form
+            onSubmit={registerOtpMail}
+            className='w-[90%] sm:w-[400px] bg-white shadow-lg rounded-2xl p-8 space-y-6'
+          >
+            <div className='text-center space-y-2'>
+              <p className='font-[Poppins] text-lg tracking-wide'>
+                Welcome to <span className='font-bold text-red-600'>CR7</span>
+              </p>
+            </div>
 
-                <div>
-                  <button type='submit' className='border rounded font-bold font-[poppins] w-100 h-10  bg-red-400 text-white'>Register</button>
-                </div>
+            <div className='flex flex-col gap-4'>
+              <div>
+                <label className='font-[Inter] font-semibold text-red-600'>Username</label>
+                <input
+                  required
+                  type="text"
+                  placeholder='Enter your name'
+                  className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
 
+              <div>
+                <label className='font-[Inter] font-semibold text-red-600'>Gmail</label>
+                <input
+                  type="email"
+                  required
+                  placeholder='Enter your email'
+                  className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
 
+              <div>
+                <label className='font-[Inter] font-semibold text-red-600'>Password</label>
+                <input
+                  type="password"
+                  required
+                  placeholder='Enter your password'
+                  className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
-              <div className='flex justify-center mb-5'>
-                <NavLink to='/login' className='text-sm text-blue-700'>
-                  Already have an account? Log in
-                </NavLink>
-              </div>
-              <div className='flex text-3xl items-center justify-center gap-5'>
-                <div><FaFacebookSquare className='text-blue-700' /></div>
-                <div><FaInstagram className='text-pink-600' /></div>
-                <div><FaSquareThreads /></div>
-              </div>
-            </form>
-          </div>
-          :
-          <div className='pt-10 flex  h-[89vh] justify-center items-center bg-[#FAF9F6]'>
-            <form action="" method='' onSubmit={signupOtpHandle} className=' w-[80%] h-120'>
-              <div className='flex justify-center  items-center mt-10 mb-5 flex-col gap-1'>
-                <label className='font-bold font-mono text-red-600 w-100'>Enter your 6-digits OTP(One-Time-Password)</label>
-                <input type="number" required placeholder='OTP' className='pl-2 placeholder:font-bold  border rounded w-100 h-10  focus:outline-red-600' onChange={(e) => {
-                  setOtp(e.target.value)
-                }} />
-              </div>
-              <div className='flex justify-center items-center'>
-                <button type='submit' className='border rounded font-bold font-[poppins] w-100 h-10  bg-red-400 text-white'>Submit</button>
-              </div>
-            </form>
-          </div>
+            </div>
 
-      }
+            <button
+              type='submit'
+              className='w-full h-11 rounded-lg font-[Poppins] font-semibold bg-red-400 text-white shadow-md hover:shadow-lg transition'
+            >
+              Register
+            </button>
+
+            <div className='text-center'>
+              <NavLink to='/login' className='text-sm text-blue-700 font-medium hover:underline'>
+                Already have an account? Log in
+              </NavLink>
+            </div>
+
+            <div className='flex justify-center text-2xl gap-5 mt-4'>
+              <FaFacebookSquare className='text-blue-700 hover:scale-110 transition-transform' />
+              <FaInstagram className='text-pink-600 hover:scale-110 transition-transform' />
+              <FaSquareThreads className='hover:scale-110 transition-transform' />
+            </div>
+          </form>
+        </div>
+      ) : (
+        <div className='flex min-h-screen justify-center items-center bg-[#FAF9F6]'>
+          <form
+            onSubmit={signupOtpHandle}
+            className='w-[90%] sm:w-[400px] bg-white shadow-lg rounded-2xl p-8 space-y-6'
+          >
+            <div className='flex flex-col gap-3'>
+              <label className='font-[Inter] font-semibold text-red-600 text-center'>
+                Enter your 6-digit OTP (One-Time Password)
+              </label>
+              <input
+                type="number"
+                required
+                placeholder='Enter OTP'
+                className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                onChange={(e) => setOtp(e.target.value)}
+              />
+            </div>
+
+            <button
+              type='submit'
+              className='w-full h-11 rounded-lg font-[Poppins] font-semibold bg-red-400 text-white shadow-md hover:shadow-lg transition'
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+      )}
     </>
   )
 }
 
-export default Signup
+export default Signup;

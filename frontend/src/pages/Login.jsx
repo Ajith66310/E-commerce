@@ -7,58 +7,91 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const Login = () => {
-
-  const[email,setEmail] = useState('')
-  const[password,setPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const navigate = useNavigate();
-  const loginHandle = async(e)=>{
+
+  const loginHandle = async (e) => {
     e.preventDefault()
     try {
-   const response = await axios.post(`${import.meta.env.VITE_URL}/login`,{
-    email,
-    password,
-   })   
-   toast.success(response.data.message)
-   localStorage.setItem("token",response.data.token); 
-   navigate('/',)
+      const response = await axios.post(`${import.meta.env.VITE_URL}/login`, {
+        email,
+        password,
+      })
+      toast.success(response.data.message)
+      localStorage.setItem("token", response.data.token);
+      navigate('/')
     } catch (error) {
-      if(error.response && error.response.data && error.response.data.message ){
+      if (error.response && error.response.data && error.response.data.message) {
         toast.error(error.response.data.message)
       }
     }
-   
-  
   }
 
   return (
     <>
-      <div className='pt-40 flex h-[100vh] justify-center bg-[#FAF9F6]'>
-        <form action="" method='' onSubmit={loginHandle} className=' w-[80%] h-120'>
-          <div className='flex justify-center items-center  mt-10 mb-5 flex-col gap-1'>
-            <p className='font-[poppins] w-100 mb-5'>Welcome,<span className='font-bold'>Ajith k v</span></p>
-            <label className='font-bold text-red-600 w-100  font-[Lato] '>Email</label>
-            <input type="text" required placeholder='Username/email'  className='pl-2 placeholder:font-bold  border mb-3 rounded w-100 h-10  focus:outline-red-600 ' onChange={(e)=>{
-              setEmail(e.target.value)
-            }} />
-            <label className='font-bold font-[Lato] text-red-600 w-100'>Password</label>
-            <input type="text" required placeholder='Password'  className='pl-2 placeholder:font-bold  border rounded w-100 h-10  focus:outline-red-600' onChange={(e)=>{
-              setPassword(e.target.value)
-            }}
-            />
-            <NavLink to="/sendmail" className='text-sm text-blue-700 w-100'>Forgot password?</NavLink>
+      <div className='flex min-h-screen justify-center items-center bg-[#F7F5F2]'>
+        <form
+          onSubmit={loginHandle}
+          className='w-[90%] sm:w-[400px] bg-white shadow-lg rounded-2xl p-8 space-y-6'
+        >
+          <div className='text-center space-y-2'>
+            <p className='font-[Poppins] text-lg tracking-wide'>
+              Welcome, <span className='font-bold'>Bonker</span>
+            </p>
           </div>
-          <div className='flex items-center justify-center'>
-            <button type='submit' className='border rounded font-bold font-[poppins] w-100 h-10  bg-red-400 text-white'>Login</button>
+
+          <div className='flex flex-col gap-4'>
+            <div>
+              <label className='font-[Inter] font-semibold text-red-600'>Email</label>
+              <input
+                type="text"
+                required
+                placeholder='Username or email'
+                className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className='font-[Inter] font-semibold text-red-600'>Password</label>
+              <input
+                type="password"
+                required
+                placeholder='Enter your password'
+                className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            <NavLink
+              to="/sendmail"
+              className='text-sm text-blue-700 font-medium hover:underline'
+            >
+              Forgot password?
+            </NavLink>
           </div>
-          <div className='text-center mb-5'>
-            <NavLink to='/signup' className=' text-sm text-blue-700'>
+
+          <button
+            type='submit'
+            className='w-full h-11 rounded-lg font-[Poppins] font-semibold bg-red-400 text-white shadow-md hover:shadow-lg transition'
+          >
+            Login
+          </button>
+
+          <div className='text-center'>
+            <NavLink
+              to='/signup'
+              className='text-sm text-blue-700 font-medium hover:underline'
+            >
               Don't have an account? Sign up
             </NavLink>
           </div>
-          <div className='flex text-3xl items-center justify-center gap-5'>
-           <div><FaFacebookSquare className='text-blue-700' /></div>
-            <div><FaInstagram  className='text-pink-600'/></div>
-            <div><FaSquareThreads /></div>
+
+          <div className='flex justify-center text-2xl gap-5 mt-4'>
+            <FaFacebookSquare className='text-blue-700 hover:scale-110 transition-transform' />
+            <FaInstagram className='text-pink-600 hover:scale-110 transition-transform' />
+            <FaSquareThreads className='hover:scale-110 transition-transform' />
           </div>
         </form>
       </div>
@@ -66,4 +99,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Login;

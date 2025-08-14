@@ -132,7 +132,7 @@ const resetOtpVerify = async(req,res)=>{
     return res.status(400).json({ message: "Invalid OTP. Please try again." });
   }
   if (isValid) {
-  const resetLink = `https://localhost:5173/resetpassword`;
+  const resetLink = `http://localhost:5173/resetpassword`;
 
    await sendMail(
   email,

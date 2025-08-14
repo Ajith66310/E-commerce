@@ -3,33 +3,43 @@ import React from 'react'
 const ResetPassword = () => {
   return (
     <>
-      <div className='pt-20 flex h-[89vh] justify-center bg-[#FAF9F6]'>
-        <form action="" method='' onSubmit={loginHandle} className=' w-[80%] h-120'>
-          <div className='flex justify-center items-center  mt-10 mb-5 flex-col gap-1'>
-            <p className='font-[poppins] w-100 mb-5'>Welcome,<span className='font-bold'>Ajith k v</span></p>
-            <label className='font-bold text-red-600 w-100  font-[Lato] '>Email</label>
-            <input type="text" required placeholder='Username/email'  className='pl-2 placeholder:font-bold  border mb-3 rounded w-100 h-10  focus:outline-red-600 ' onChange={(e)=>{
-              setEmail(e.target.value)
-            }} />
-            <label className='font-bold font-[Lato] text-red-600 w-100'>Password</label>
-            <input type="text" required placeholder='Password'  className='pl-2 placeholder:font-bold  border rounded w-100 h-10  focus:outline-red-600' onChange={(e)=>{
-              setPassword(e.target.value)
-            }}
+      <div className="flex h-screen justify-center items-center bg-[#FAF9F6] px-4">
+        <form className="w-[90%] max-w-md p-6 bg-white shadow-md rounded-xl border border-gray-200">
+
+          {/* Title */}
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-red-500 font-[poppins]">
+              Reset Your Password
+            </h2>
+            <p className="text-sm text-gray-600 mt-1">
+              Please enter your new password below
+            </p>
+          </div>
+
+          {/* Inputs */}
+          <div className="flex flex-col gap-4">
+            <input
+              type="password"
+              required
+              placeholder="New Password"
+              className="pl-3 py-2 placeholder:font-semibold placeholder:text-gray-500 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-red-400 transition"
             />
-            <NavLink to="/sendmail" className='text-sm text-blue-700 w-100'>Forgot password?</NavLink>
+            <input
+              type="password"
+              required
+              placeholder="Confirm Password"
+              className="pl-3 py-2 placeholder:font-semibold placeholder:text-gray-500 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-red-400 transition"
+            />
           </div>
-          <div className='flex items-center justify-center'>
-            <button type='submit' className='border rounded font-bold font-[poppins] w-100 h-10  bg-red-400 text-white'>Login</button>
-          </div>
-          <div className='text-center mb-5'>
-            <NavLink to='/signup' className=' text-sm text-blue-700'>
-              Don't have an account? Sign up
-            </NavLink>
-          </div>
-          <div className='flex text-3xl items-center justify-center gap-5'>
-           <div><FaFacebookSquare className='text-blue-700' /></div>
-            <div><FaInstagram  className='text-pink-600'/></div>
-            <div><FaSquareThreads /></div>
+
+          {/* Submit */}
+          <div className="flex justify-center mt-6">
+            <button
+              type="submit"
+              className="w-full border rounded-md font-bold font-[poppins] py-2 bg-red-400 text-white hover:bg-red-500 transition"
+            >
+              Confirm
+            </button>
           </div>
         </form>
       </div>
