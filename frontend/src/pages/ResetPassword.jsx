@@ -19,7 +19,11 @@ const ResetPassword = () => {
       })
       toast.success(response.data.message)
     } catch (error) {
-
+      if(error.response && error.response.data && error.response.data.message){
+        toast.error(error.response.data.message)
+      }else{
+        toast.error("An error occurred. Please try again.");
+      }
     }
   }
 

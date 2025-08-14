@@ -60,14 +60,13 @@ const signupOtpVerify = async(req,res)=>{
   }
   const pass = await bcrypt.hash(password,10) 
   
-  const otpmodel = new userModel({
+  const user = new userModel({
       name,
       email,
       password:pass,
-      otp,
     })
   
-    await otpmodel.save()
+    await user.save()
   
     res.status(200).json({message:"User Registered"})
 
@@ -75,6 +74,7 @@ const signupOtpVerify = async(req,res)=>{
 
 const login = async(req,res)=>{
   const {email,password} = req.body;
+
   const data = await userModel.findOne({email : email});
   
   if (!data){
@@ -115,6 +115,7 @@ await sendMail(
     return res.status(200).json({message:"Otp send successfully"})
 }
 
+
 const resetOtpVerify = async(req,res)=>{
 
   const {email,otp} = req.body;
@@ -135,34 +136,70 @@ const resetOtpVerify = async(req,res)=>{
       
     const token =  jwt.sign({email},process.env.SECRET_KEY,{ expiresIn: "15m" });
     
+    const resetLink = `http://localhost:5173/resetpassword/${token}`;
 
-  const resetLink = `http://localhost:5173/resetpassword/${token}`;
-
-   await sendMail(
-  email,
-  'Password Reset Link',
-  `Click this link to reset your password: ${resetLink}`
+     const htmlContent = `
+    <div style="font-family: Arial, sans-serif; background-color: #f8f8f8; padding: 20px;">
+      <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px;">
+        <h2 style="color: #333;">Password Reset Request</h2>
+        <p style="color: #555;">
+          You requested to reset your password. Click the button below to reset it.
+          This link will expire in <b>15 minutes</b>.
+        </p>
+        <a href="${resetLink}" style="
+          display: inline-block;
+          padding: 12px 20px;
+          margin-top: 15px;
+          background-color: #007bff;
+          color: white;
+          text-decoration: none;
+          border-radius: 5px;
+          font-weight: bold;
+        ">
+          Reset Password
+        </a>
+        <p style="color: #777; font-size: 14px; margin-top: 20px;">
+          If you didn’t request this, you can safely ignore this email.
+        </p>
+      </div>
+    </div>
+  `;
+  
+ await sendMail(
+    email,
+    'Password Reset Link',
+    htmlContent,
+    true // Passing 'true' so nodemailer knows it's HTML
   );
 
     return res.status(200).json({ message: "Reset link sent to the mail" });
   }
 }
 
-const resetPassword =(req,res)=>{
+
+const resetPassword = async(req,res)=>{
 
 const {token,password,confirmPassword} = req.body;
 
-console.log(token);
-console.log(password);
-console.log(confirmPassword);
-
-
 if(password !== confirmPassword){
-  res.status(400).json({message:"Enter Matching Password"})
+  return res.status(400).json({message:"Enter Matching Password"})
 }
 
 const decode = jwt.verify(token,process.env.SECRET_KEY)
 
+const userData = await userModel.findOne({email:decode.email})
+
+if(!userData){
+  return res.status(400).json({message:"Can't find the user with this email"})
+ }
+
+ const hashedPass = await bcrypt.hash(confirmPassword,10)
+
+ userData.password = hashedPass;
+
+ await userData.save()
+ console.log(userData);
+ 
 }
 
 export {resetOtpVerify,registerOtpMail,signupOtpVerify,resetOtpMail,login,resetPassword};

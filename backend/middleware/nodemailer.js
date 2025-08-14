@@ -14,7 +14,7 @@ const sendMail = async (email, subject, message) => {
       from: 'neverbuyfromherekettow@gmail.com',
       to: email,
       subject,
-      text: message
+      html: message
     };
 
     let info = await transporter.sendMail(mailOptions);
