@@ -5,6 +5,7 @@ import { FaSquareThreads } from "react-icons/fa6";
 import { FaFacebookSquare } from "react-icons/fa";
 import axios from 'axios'
 import { toast } from 'react-toastify';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const Signup = () => {
   const [password, setPassword] = useState('')
   const [otp, setOtp] = useState('');
   const [signup, setSignup] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const registerOtpMail = async (e) => {
     e.preventDefault();
@@ -90,16 +92,24 @@ const Signup = () => {
                 />
               </div>
 
-              <div>
+              <div className='relative'>
                 <label className='font-[Inter] font-semibold text-red-600'>Password</label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   placeholder='Enter your password'
                   className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                  onChange={(e) => setPassword(e.target.value)} />
+
+                {/* 👁 icon */}
+                <span
+                  className='absolute right-3 top-9 cursor-pointer text-gray-500'
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
               </div>
+
             </div>
 
             <button

@@ -18,6 +18,15 @@
   object-fit: cover; /* This makes the image cover the slide fully */
 }
 
+/* Change default pagination dot color */
+.swiper-pagination-bullet {
+  background-color: red !important;
+}
+
+/* Change active pagination dot color */
+.swiper-pagination-bullet-active {
+  background-color: darkred !important;
+}
 
 /* Navigation buttons */
 .swiper-button-next,

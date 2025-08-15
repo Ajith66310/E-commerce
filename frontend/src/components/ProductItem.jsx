@@ -10,7 +10,7 @@ const ProductItem = ({ title, img, price, percentage }) => {
   return (
     <>
       <div>
-        <img src={img} className='rounded-t-2xl   hover:scale-102  duration-200' alt="img" />
+        <img src={img} className='rounded-t pt-10 hover:scale-102  duration-200' alt="img" />
         <p className='text-1xl font-extrabold  ' >{title}</p>
         <div className='flex gap-3'>
           <p className=' line-through '>₹{Math.round(price)}</p>

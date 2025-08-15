@@ -5,11 +5,13 @@ import { FaFacebookSquare } from "react-icons/fa";
 import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const loginHandle = async (e) => {
     e.preventDefault()
@@ -53,15 +55,23 @@ const Login = () => {
               />
             </div>
 
-            <div>
+            <div className='relative'>
               <label className='font-[Inter] font-semibold text-red-600'>Password</label>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"} 
                 required
                 placeholder='Enter your password'
-                className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                className='pl-3 pr-10 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
                 onChange={(e) => setPassword(e.target.value)}
               />
+
+              {/* 👁 icon */}
+              <span
+                className='absolute right-3 top-10 cursor-pointer text-gray-500'
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
 
             <NavLink

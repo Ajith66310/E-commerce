@@ -11,7 +11,7 @@ import './Swiper.css';
 // import required modules
 import { Pagination, Navigation } from 'swiper/modules';
 
-// ✅ Import your images
+// Import your images
 import images from '../assets/images.js';
 
 export default function App() {

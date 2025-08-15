@@ -46,6 +46,7 @@ const Navbar = () => {
     navigate("/login");
   }
 
+   const token = localStorage.getItem("token");
   return (
     <>
       <div className={`${userIcon ? 'hidden' : ' bg-[transparent] absolute z-50  md:h-20 w-full grid md:grid-cols-3  '}`} >
@@ -74,11 +75,16 @@ const Navbar = () => {
         </div>
 
         <div id='nav-items' className='flex items-center max-md:hidden gap-3  justify-end text-2xl  pr-10'>
-          <NavLink to='/login'>
+          <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-red-900 text-3xl cursor-pointer text-red-800' />
+          {(
+            token ?
+          <IoIosLogOut className="cursor-pointer text-red-800 hover:text-red-900 " onClick={handleLogout}/> 
+          :
+            <NavLink to='/login'>
             <GoPerson className="cursor-pointer text-red-800 hover:text-red-900 " />
           </NavLink>
-          <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-red-900 text-3xl cursor-pointer text-red-800' />
-          <IoIosLogOut className="cursor-pointer text-red-800 hover:text-red-900 " onClick={handleLogout}/> 
+        )
+        }
         </div>
       </div>
 
