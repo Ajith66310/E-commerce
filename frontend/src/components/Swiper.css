@@ -1,8 +1,6 @@
 .swiper {
   width: 100%;
-  height: 100vh;
-  background-color: #FAF9F6;
-  top: 0;
+  background-color: #faf9f6;
 }
 
 .swiper-slide {
@@ -12,18 +10,17 @@
   padding: 0;
 }
 
+/* Swiper.css */
 .swiper-slide img {
   width: 100%;
-  height: 100vh;
-  object-fit: cover; /* This makes the image cover the slide fully */
+  height: 100%;
+  object-fit: cover;
 }
 
-/* Change default pagination dot color */
+/* Pagination styles */
 .swiper-pagination-bullet {
   background-color: red !important;
 }
-
-/* Change active pagination dot color */
 .swiper-pagination-bullet-active {
   background-color: darkred !important;
 }
@@ -33,18 +30,15 @@
 .swiper-button-prev {
   color: red;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 40px;
+  height: 40px;
 }
-
 .swiper-button-next::after,
 .swiper-button-prev::after {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
 }
+
 
 /* Optional parallax background (if used) */
 .parallax-bg {

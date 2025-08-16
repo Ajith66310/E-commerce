@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import { FaUser } from 'react-icons/fa';
-import { Navigate, NavLink, useNavigate } from 'react-router-dom'
-import { FaCartShopping } from "react-icons/fa6";
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap';
 import { CiShoppingCart } from "react-icons/ci";
 import { GoPerson } from "react-icons/go";
-import axios from 'axios';
+import { CiLogin } from "react-icons/ci";
 import { IoIosLogOut } from "react-icons/io";
 
 const Navbar = () => {
@@ -15,8 +13,8 @@ const Navbar = () => {
   const [userIcon, setUserIcon] = useState(false)
   const [cartIcon, setCartIcon] = useState(false)
   const navigate = useNavigate();
-  
-  
+
+
   useGSAP(() => {
     const tl = gsap.timeline();
     tl.fromTo("#brand-name,#nav-items", {
@@ -29,7 +27,7 @@ const Navbar = () => {
       stagger: 0.5,
       delay: 0.2,
     })
-    
+
     tl.fromTo("#nav-links", {
       opacity: 0,
       y: -20,
@@ -39,14 +37,14 @@ const Navbar = () => {
       y: 0,
     })
   }, [])
-  
 
-  const handleLogout = ()=>{
+
+  const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
   }
 
-   const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
   return (
     <>
       <div className={`${userIcon ? 'hidden' : ' bg-[transparent] absolute z-50  md:h-20 w-full grid md:grid-cols-3  '}`} >
@@ -78,28 +76,27 @@ const Navbar = () => {
           <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-red-900 text-3xl cursor-pointer text-red-800' />
           {(
             token ?
-          <IoIosLogOut className="cursor-pointer text-red-800 hover:text-red-900 " onClick={handleLogout}/> 
-          :
-            <NavLink to='/login'>
-            <GoPerson className="cursor-pointer text-red-800 hover:text-red-900 " />
-          </NavLink>
-        )
-        }
+              <IoIosLogOut className="cursor-pointer text-red-800 hover:text-red-900 " onClick={handleLogout} />
+              :
+              <NavLink to='/login'>
+                <GoPerson className="cursor-pointer text-red-800 hover:text-red-900 " />
+              </NavLink>
+          )
+          }
         </div>
       </div>
 
       {/* sidebar small-screen */}
-      <div className={` ${userIcon || cartIcon ? ' hidden' : 'md:hidden  items-center z-50 fixed w-full h-15 grid grid-cols-2 bg-transparent'}`}>
+      <div className={` ${userIcon || cartIcon ? ' hidden' : 'md:hidden  items-center z-50 absolute w-full h-15 grid grid-cols-2 bg-transparent'}`}>
         <div className='font-sans text-xl   pl-5 '>
           {/* <img  alt=""  className='h-15 ' /> */}
-          <p className=' text-1xl font-serif text-red-800 '>CR7</p>
+          <p className=' text-3xl font-serif text-red-800 '>CR7</p>
         </div>
         <div className='pr-3 flex justify-end space-x-2 items-center text-sm'>
-          <GoPerson onClick={() => setUserIcon(true)} className="cursor-pointer text text-red-800" />
-          <CiShoppingCart onClick={() => setCartIcon(true)} className='mt-1 cursor-pointer text-red-800' />
+          <GoPerson onClick={() => setUserIcon(true)} className="cursor-pointer hover:text-red-900 text text-red-800 text-2xl" />
+          <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-red-900 text-3xl cursor-pointer text-red-800' />
         </div>
       </div>
-      {/* user icon  */}
       <div
         className={`fixed top-0 right-0 h-full bg-black/90 z-50 overflow-hidden transition-all duration-300 ease-in-out
     ${userIcon ? 'w-[50%]' : 'w-0'}
@@ -108,6 +105,14 @@ const Navbar = () => {
         <div className='md:hidden flex flex-col text-white h-full'>
           <div onClick={() => setUserIcon(false)} className=' cursor-pointer'>
             <p className='text-white text-start p-3'>Back</p>
+            {
+              token ?
+                <IoIosLogOut className=" absolute top-3 right-5 cursor-pointer text-2xl hover:text-red-900 " onClick={handleLogout} />
+                :
+                <NavLink to='/login'>
+                  <CiLogin className=" absolute top-3 right-5 cursor-pointer text-2xl hover:text-green-900 " />
+                </NavLink>
+            }
           </div>
           <NavLink onClick={() => setUserIcon(false)} className='py-2 pl-6' to='/'>HOME</NavLink>
           <NavLink onClick={() => setUserIcon(false)} className='py-2 pl-6' to='/shop'>SHOP</NavLink>
