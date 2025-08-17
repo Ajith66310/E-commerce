@@ -1,13 +1,14 @@
 import sendMail from '../middleware/nodemailer.js';
-import otpModel from '../models/otpModel.js';
 import userModel from '../models/userModel.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
+import Redis from 'ioredis'
 
+const redis = new Redis();
 
 const registerOtpMail = async(req,res)=>{
   try {
-  const {name,email,password} = req.body;
+  const {email,password} = req.body;
 
   const regexEmail = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
@@ -22,22 +23,22 @@ const registerOtpMail = async(req,res)=>{
   }
 
   const data = await userModel.findOne({email : email})
+  
   if(data){
     return res.status(404).json({message:"user Exists"})
   }else{
 const otp = Math.floor(100000 + Math.random() * 900000);
+
 const hashedOtp = await bcrypt.hash(otp.toString(), 10);
 
-await otpModel.create({ email, otp: hashedOtp });
+// Save OTP in Redis with 5 mins expiry
+await redis.setex(`otp:${email}`,60, hashedOtp);
 
-await sendMail(
-  email,
-  'Your Registration OTP',
-  `Your OTP for registration is: ${otp}. It will expire in 5 minutes.`
-);
+await sendMail(email, 'Your Registration OTP', `Your OTP is: ${otp}. It will expire in 1 minutes.`);
 
-    return res.status(200).json({message:"Otp send successfully"})
-  }
+return res.status(200).json({ message: "Otp sent successfully" });
+
+}
   } catch (error) {
     console.log(error);    
   }
@@ -46,15 +47,15 @@ await sendMail(
 const signupOtpVerify = async(req,res)=>{
 
   const {name,email,password,otp} = req.body;
-
-  const data = await otpModel.findOne({email})
   
+  // Get OTP hash from Redis
+    const data = await redis.get(`otp:${email}`);
 
   if (!data) {
     return res.status(400).json({ message: "OTP not found. Please request again." });
   }
 
-  const isValid = await bcrypt.compare(otp, data.otp);
+  const isValid = await bcrypt.compare(otp, data);
   if (!isValid) {
     return res.status(400).json({ message: "Invalid OTP. Please try again." });
   }
@@ -68,8 +69,9 @@ const signupOtpVerify = async(req,res)=>{
   
     await user.save()
     
-    await otpModel.findOneAndDelete({email : email}) 
-
+    // Delete OTP from Redis after successful verification
+    await redis.del(`otp:${email}`);
+    
     res.status(200).json({message:"User Registered"})
 
   }
@@ -106,12 +108,12 @@ const resetOtpMail = async(req,res)=>{
 const otp = Math.floor(100000 + Math.random() * 900000);
 const hashedOtp = await bcrypt.hash(otp.toString(), 10);
 
-await otpModel.create({ email, otp: hashedOtp });
-
+await redis.setex(`otp:${email}`,60,hashedOtp)
+ 
 await sendMail(
   email,
   'Your Password Reset OTP',
-  `Your OTP for password reset is: ${otp}. It will expire in 5 minutes.`
+  `Your OTP for password reset is: ${otp}. It will expire in 1 minutes.`
 );
 
     return res.status(200).json({message:"Otp send successfully"})
@@ -122,14 +124,13 @@ const resetOtpVerify = async(req,res)=>{
 
   const {email,otp} = req.body;
 
-  const data = await otpModel.findOne({email})
-  
+  const data = await redis.setex(`otp:${email}`,60, hashedOtp);
   
   if (!data) {
     return res.status(400).json({ message: "OTP not found. Please request again." });
   }
 
-  const isValid = await bcrypt.compare(otp, data.otp);
+  const isValid = await bcrypt.compare(otp, data);
   
   if (!isValid) {
     return res.status(400).json({ message: "Invalid OTP. Please try again." });

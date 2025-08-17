@@ -183,7 +183,7 @@ const Signup = () => {
               ) : (
                 <p
                   className='text-sm text-blue-700 cursor-pointer hover:underline text-center mt-2'
-                  onClick={registerOtpMail}
+                  // onClick={}
                 >
                   Resend OTP
                 </p>
