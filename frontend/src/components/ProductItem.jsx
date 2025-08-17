@@ -11,7 +11,7 @@ const ProductItem = ({ title, img, price, percentage }) => {
       {/* Product Image */}
       <img
         src={img}
-        className="pt-10 hover:scale-105 duration-200"
+        className="pt-10 duration-200"
         alt={title}
       />
 

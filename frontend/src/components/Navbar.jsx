@@ -93,8 +93,8 @@ const Navbar = () => {
           <p className=' text-3xl font-serif text-red-800 '>CR7</p>
         </div>
         <div className='pr-3 flex justify-end space-x-2 items-center text-sm'>
-          <GoPerson onClick={() => setUserIcon(true)} className="cursor-pointer hover:text-red-900 text text-red-800 text-2xl" />
           <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-red-900 text-3xl cursor-pointer text-red-800' />
+          <GoPerson onClick={() => setUserIcon(true)} className="cursor-pointer hover:text-red-900 text text-red-800 text-2xl" />
         </div>
       </div>
       <div

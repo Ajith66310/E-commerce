@@ -67,7 +67,9 @@ const signupOtpVerify = async(req,res)=>{
     })
   
     await user.save()
-  
+    
+    await otpModel.findOneAndDelete({email : email}) 
+
     res.status(200).json({message:"User Registered"})
 
   }

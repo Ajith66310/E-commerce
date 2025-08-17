@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FaInstagram } from "react-icons/fa";
 import { FaSquareThreads } from "react-icons/fa6";
@@ -15,10 +15,13 @@ const Signup = () => {
   const [otp, setOtp] = useState('');
   const [signup, setSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(false)
 
   const registerOtpMail = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const response = await axios.post(`${import.meta.env.VITE_URL}/registerotpmail`, {
         name,
         email,
@@ -32,6 +35,9 @@ const Signup = () => {
       } else {
         toast.error("An error occurred. Please try again.");
       }
+    }
+    finally {
+      setLoading(false); // re-enable button after API call
     }
   }
 
@@ -54,6 +60,22 @@ const Signup = () => {
       }
     }
   }
+
+  useEffect(() => {
+    if (signup) {
+      setCount(60);
+      const interval = setInterval(() => {
+        setCount((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [signup]);
 
   return (
     <>
@@ -103,21 +125,24 @@ const Signup = () => {
 
                 {/* 👁 icon */}
                 <span
-                  className='absolute right-3 top-9 cursor-pointer text-gray-500'
+                  className='absolute right-3 top-9.5 cursor-pointer text-gray-500'
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
               </div>
-
             </div>
-
             <button
-              type='submit'
-              className='w-full h-11 rounded-lg font-[Poppins] font-semibold bg-red-400 text-white shadow-md hover:shadow-lg transition'
+              type="submit"
+              disabled={loading}
+              className={`w-full h-11 rounded-lg font-[Poppins] font-semibold text-white shadow-md transition 
+    ${loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-red-400 hover:shadow-lg"}`}
             >
-              Register
+              {loading ? "Please Wait.." : "Register"}
             </button>
+
 
             <div className='text-center'>
               <NavLink to='/login' className='text-sm text-blue-700 font-medium hover:underline'>
@@ -138,8 +163,8 @@ const Signup = () => {
             onSubmit={signupOtpHandle}
             className='w-[90%] sm:w-[400px] bg-white shadow-lg rounded-2xl p-8 space-y-6'
           >
-            <div className='flex flex-col gap-3'>
-              <label className='font-[Inter] font-semibold text-red-600 text-center'>
+            <div className='flex flex-col '>
+              <label className='font-[Inter] pb-3 font-semibold text-red-600 text-center'>
                 Enter your 6-digit OTP (One-Time Password)
               </label>
               <input
@@ -149,8 +174,21 @@ const Signup = () => {
                 className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
                 onChange={(e) => setOtp(e.target.value)}
               />
-            </div>
 
+              {/* Countdown timer + Resend OTP */}
+              {count > 0 ? (
+                <p className='text-sm text-gray-500 text-center mt-2'>
+                  Resend OTP in {count}s
+                </p>
+              ) : (
+                <p
+                  className='text-sm text-blue-700 cursor-pointer hover:underline text-center mt-2'
+                  onClick={registerOtpMail}
+                >
+                  Resend OTP
+                </p>
+              )}
+            </div>
             <button
               type='submit'
               className='w-full h-11 rounded-lg font-[Poppins] font-semibold bg-red-400 text-white shadow-md hover:shadow-lg transition'
