@@ -37,9 +37,9 @@ const Signup = () => {
       }
     }
     finally {
-    setTimeout(() => {
-      setLoading(false); 
-    },3000);
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
     }
   }
 
@@ -63,32 +63,30 @@ const Signup = () => {
     }
   }
 
-  const resendOtp = async()=>{
-   try {
-     const response = axios.post(`${import.meta.env.VITE_URL}/resendotp`,{
-       email
+  const resendOtp = async () => {
+    try {
+      setCount(60)
+      const response = axios.post(`${import.meta.env.VITE_URL}/resendotp`, {
+        email
       })
-    
-  toast.success(response.data.message)
-   } catch (error) {
-    
-   }
+      toast.success(response.data.message)
+    } catch (error) {
+
+    }
   }
 
   useEffect(() => {
-    if (signup) {
-      setCount(5)
-      const interval = setInterval(() => {
-        setCount((prev) => {
-          if (prev <= 1) {
-            clearInterval(interval);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      return () => clearInterval(interval);
-    }
+    setCount(60);
+    const interval = setInterval(() => {
+      setCount((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
   }, [signup]);
 
   return (

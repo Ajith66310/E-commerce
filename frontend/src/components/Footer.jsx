@@ -2,9 +2,9 @@ import React from 'react'
 // import { MdOutlineArrowDownward } from 'react-icons/md'
 // import { NavLink } from 'react-router-dom'
 
-import gsap from 'gsap'
-import { useGSAP } from '@gsap/react'
-import ScrollTrigger from 'gsap/src/ScrollTrigger'
+// import gsap from 'gsap'
+// import { useGSAP } from '@gsap/react'
+// import ScrollTrigger from 'gsap/src/ScrollTrigger'
 
 const Footer = () => {
   // gsap.registerPlugin(ScrollTrigger);

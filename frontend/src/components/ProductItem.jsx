@@ -30,13 +30,13 @@ const ProductItem = ({ title, img, price, percentage }) => {
       {/* Product Info */}
       <p className="text-lg font-extrabold mt-2">{title}</p>
       <div className="flex gap-3 items-center">
-        <p className="line-through text-gray-500">₹{Math.round(price)}</p>
-        <p className="font-bold">₹{offerPrice}</p>
+        <p className="line-through text-white">₹{Math.round(price)}</p>
+        <p className="font-bold text-white">₹{offerPrice}</p>
         <p className="text-red-600 font-medium">-{percentage}%</p>
       </div>
 
       {/* View Button */}
-      <button className="bg-black text-white w-full mt-2 py-1 rounded-md hover:bg-gray-900">
+      <button className="bg-red-800 text-white w-full mt-2 py-1 rounded-md hover:bg-gray-900">
         View
       </button>
     </div>

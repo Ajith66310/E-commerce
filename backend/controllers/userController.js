@@ -214,18 +214,22 @@ const resendOtp =async(req,res)=>{
 
   const {email} = req.body;
 
-  const otp = Math.floor(100000 + Math.random() * 900000);
-  const hashedOtp = await bcrypt.hash(otp.toString(), 10);
-
-  await redis.setex(`otp:${email}`,60,hashedOtp)
-   
+  const data = await redis.get(`otp:${email}`)
+  
+  if(!data){
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    const hashedOtp = await bcrypt.hash(otp.toString(), 10);
+    
+    await redis.setex(`otp:${email}`,60,hashedOtp)
+    
     await sendMail(
-    email,
-    'Your Password Reset OTP',
-  `Your OTP for password reset is: ${otp}. It will expire in 1 minutes.`
-);
-
+      email,
+      'Your Password Reset OTP',
+      `Your OTP for password reset is: ${otp}. It will expire in 1 minutes.`
+    );
+    
     return res.status(200).json({message:"OTP sent to email."}) 
+  }
 }
 
 export {resendOtp,resetOtpVerify,registerOtpMail,signupOtpVerify,resetOtpMail,login,resetPassword};
