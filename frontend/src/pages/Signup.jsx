@@ -37,7 +37,9 @@ const Signup = () => {
       }
     }
     finally {
-      setLoading(false); // re-enable button after API call
+    setTimeout(() => {
+      setLoading(false); 
+    },3000);
     }
   }
 
@@ -61,9 +63,21 @@ const Signup = () => {
     }
   }
 
+  const resendOtp = async()=>{
+   try {
+     const response = axios.post(`${import.meta.env.VITE_URL}/resendotp`,{
+       email
+      })
+    
+  toast.success(response.data.message)
+   } catch (error) {
+    
+   }
+  }
+
   useEffect(() => {
     if (signup) {
-      setCount(60);
+      setCount(5)
       const interval = setInterval(() => {
         setCount((prev) => {
           if (prev <= 1) {
@@ -183,7 +197,7 @@ const Signup = () => {
               ) : (
                 <p
                   className='text-sm text-blue-700 cursor-pointer hover:underline text-center mt-2'
-                  // onClick={}
+                  onClick={resendOtp}
                 >
                   Resend OTP
                 </p>

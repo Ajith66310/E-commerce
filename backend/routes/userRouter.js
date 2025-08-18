@@ -1,5 +1,5 @@
 import express from 'express'
-import { registerOtpMail,login,resetPassword,resetOtpVerify,resetOtpMail,signupOtpVerify, } from '../controllers/userController.js';
+import { registerOtpMail,login,resendOtp,resetPassword,resetOtpVerify,resetOtpMail,signupOtpVerify, } from '../controllers/userController.js';
 
 
 const userRouter = express.Router();
@@ -10,5 +10,6 @@ userRouter.post('/login',login)
 userRouter.post('/resetotpmail',resetOtpMail)
 userRouter.post('/resetotpverify',resetOtpVerify)
 userRouter.post('/resetpassword',resetPassword)
+userRouter.post('/resendotp',resendOtp)
 
 export default userRouter;

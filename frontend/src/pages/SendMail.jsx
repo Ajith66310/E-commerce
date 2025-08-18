@@ -8,6 +8,7 @@ const SendMail = () => {
   const [otp, setOtp] = useState('')
   const [email, setEmail] = useState('')
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
 
   const handleVerifyOtp = async (e) => {
     try {
@@ -26,6 +27,7 @@ const SendMail = () => {
 
   const handleResetMail = async (e) => {
     try {
+      setLoading(true);
       e.preventDefault();
       const response = await axios.post(`${import.meta.env.VITE_URL}/resetotpmail`, { email })
       toast.success(response.data.message)
@@ -36,6 +38,10 @@ const SendMail = () => {
       } else {
         toast.error("An error occurred. Please try again.");
       }
+    }finally{
+    setTimeout(() => {
+      setLoading(false)
+    }, 3000);
     }
   }
 
@@ -94,10 +100,14 @@ const SendMail = () => {
           </div>
 
           <button
-            type='submit'
-            className='w-full h-11 rounded-lg font-[Poppins] font-semibold bg-red-400 text-white shadow-md hover:shadow-lg transition'
+            type="submit"
+            disabled={loading}
+            className={`w-full h-11 rounded-lg font-[Poppins] font-semibold text-white shadow-md transition 
+    ${loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-red-400 hover:shadow-lg"}`}
           >
-            Send OTP
+            {loading ? "Please Wait.." : "Send OTP"}
           </button>
         </form>
       )}
