@@ -23,6 +23,7 @@ const registerOtpMail = async (req, res) => {
       password: hashedPass,
       status: "pending",
     });
+    
     await newUser.save();
 
     // Generate OTP

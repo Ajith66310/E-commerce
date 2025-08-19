@@ -33,7 +33,6 @@ const App = () => {
           <Route path='*' element={<NotFound />} />
         </Route>
       </Routes>
-
     </BrowserRouter>
   )
 }

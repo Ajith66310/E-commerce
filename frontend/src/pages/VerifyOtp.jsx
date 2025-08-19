@@ -7,7 +7,7 @@ import axios from "axios";
 
 const VerifyOtp = () => {
   const [otp, setOtp] = useState('');
-  // const [count, setCount] = useState(0);
+  const [count, setCount] = useState(60);
   const navigate = useNavigate();
 
 
@@ -31,7 +31,7 @@ const VerifyOtp = () => {
 
   const resendOtp = async () => {
     try {
-      // setCount(60);
+      setCount(60);
       const tempToken = sessionStorage.getItem("tempToken");
       const response = await axios.post(`${import.meta.env.VITE_URL}/resendotp`, {
         tempToken,
@@ -47,19 +47,12 @@ const VerifyOtp = () => {
     }
   };
 
-  // useEffect(() => {
-  //   setCount(60);
-  //   const interval = setInterval(() => {
-  //     setCount((prev) => {
-  //       if (prev <= 1) {
-  //         clearInterval(interval);
-  //         return 0;
-  //       }
-  //       return prev - 1;
-  //     });
-  //   }, 1000);
-  //   return () => clearInterval(interval);
-  // }, []);
+  useEffect(() => {
+    if (count <= 0) return;
+    const timer = setInterval(() => setCount(prev => prev - 1), 1000);
+    return () => clearInterval(timer);
+  }, [count]);
+
 
   return (
     <>
@@ -80,20 +73,18 @@ const VerifyOtp = () => {
               className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
               onChange={(e) => setOtp(e.target.value)}
             />
-
-            {/* Countdown timer + Resend OTP */}
-            {/* {count > 0 ? ( */}
+            {count > 0 ? (
               <p className='text-sm text-gray-500 text-center mt-2'>
-                Resend OTP in {}s
+                Resend OTP in {count}s
               </p>
-            {/* ) : ( */}
+             ) : ( 
               <p
                 className='text-sm text-blue-700 cursor-pointer hover:underline text-center mt-2'
                 onClick={resendOtp}
               >
                 Resend OTP
               </p>
-            {/* )} */}
+             )} 
           </div>
           <button
             type='submit'
