@@ -12,6 +12,7 @@ import SendMail from './pages/SendMail';
 import ResetPassword from './pages/ResetPassword';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import VerifyOtp from './pages/VerifyOtp';
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
           <Route path='resetpassword/:token' element={<ResetPassword />} />
           <Route path='contact' element={<Contact />} />
           <Route path='wishlist' element={<Wishlist />} />
+          <Route path='verifyotp' element={<VerifyOtp/>} />
           <Route path='*' element={<NotFound />} />
         </Route>
       </Routes>

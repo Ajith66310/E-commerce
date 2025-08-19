@@ -19,7 +19,7 @@ const Latestproducts = () => {
 
   useGSAP(() => {
      gsap.to("#container", {
-       backgroundColor: "black",
+       backgroundColor: "#000000",
        ease: "power1.inOut",
        scrollTrigger: {
          trigger: "#title",

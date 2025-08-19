@@ -28,7 +28,7 @@ const ProductItem = ({ title, img, price, percentage }) => {
       </button>
 
       {/* Product Info */}
-      <p className="text-lg font-extrabold mt-2">{title}</p>
+      <p className="text-lg font-extrabold mt-2 text-white">{title}</p>
       <div className="flex gap-3 items-center">
         <p className="line-through text-white">₹{Math.round(price)}</p>
         <p className="font-bold text-white">₹{offerPrice}</p>
