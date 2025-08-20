@@ -68,18 +68,15 @@ const ResetPasswordOtpVerify = () => {
             onChange={(e) => setOtp(e.target.value)}
             className='pl-3 placeholder:text-gray-500 border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
           />
-          {count > 0 ? (
-            <p className='text-sm text-gray-500 text-center mt-2'>
-              Resend OTP in {count}s
-            </p>
-          ) : (
+          
+         
             <p
               className='text-sm text-blue-700 cursor-pointer hover:underline text-center mt-2'
               onClick={resendOtp}
             >
               Resend OTP
             </p>
-          )}
+       
         </div>
 
         <button
