@@ -16,7 +16,6 @@ const ResetPassword = () => {
     e.preventDefault()
     try {
       const response = await axios.post(`${import.meta.env.VITE_URL}/resetpassword`, {
-        token,
         password,
         confirmPassword,
       })

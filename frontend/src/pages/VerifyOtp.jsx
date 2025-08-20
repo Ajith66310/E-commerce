@@ -13,39 +13,34 @@ const VerifyOtp = () => {
 
 
   const signupOtpHandle = async (e) => {
-    e.preventDefault();
-    try {
-      const tempToken = sessionStorage.getItem("tempToken");
-      const response = await axios.post(`${import.meta.env.VITE_URL}/signupotpverify`, {
-        otp,
-        tempToken,
-      });
-      toast.success(response.data.message);
-      navigate("/login");
-    } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred");
-    }
-  };
+  e.preventDefault();
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_URL}/signupotpverify`,
+      { otp },
+      { withCredentials: true } // 👈 important
+    );
+    toast.success(response.data.message);
+    navigate("/login");
+  } catch (error) {
+    toast.error(error.response?.data?.message || "An error occurred");
+  }
+};
 
+const resendOtp = async () => {
+  try {
+    setCount(60);
+    const response = await axios.post(
+      `${import.meta.env.VITE_URL}/resendotp`,
+      {},
+      { withCredentials: true } // 👈 important
+    );
+    toast.success(response.data.message);
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to resend OTP. Please try again.");
+  }
+};
 
-
-  const resendOtp = async () => {
-    try {
-      setCount(60);
-      const tempToken = sessionStorage.getItem("tempToken");
-      const response = await axios.post(`${import.meta.env.VITE_URL}/resendotp`, {
-        tempToken,
-      });
-
-      toast.success(response.data.message);
-    } catch (error) {
-      if (error.response?.data?.message) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Failed to resend OTP. Please try again.");
-      }
-    }
-  };
 
   useEffect(() => {
     if (count <= 0) return;
@@ -77,14 +72,14 @@ const VerifyOtp = () => {
               <p className='text-sm text-gray-500 text-center mt-2'>
                 Resend OTP in {count}s
               </p>
-             ) : ( 
+            ) : (
               <p
                 className='text-sm text-blue-700 cursor-pointer hover:underline text-center mt-2'
                 onClick={resendOtp}
               >
                 Resend OTP
               </p>
-             )} 
+            )}
           </div>
           <button
             type='submit'

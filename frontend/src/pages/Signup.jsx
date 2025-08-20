@@ -18,15 +18,16 @@ const Signup = () => {
   const registerOtpMail = async (e) => {
     e.preventDefault();
     try {
+
       setLoading(true);
-      const response = await axios.post(`${import.meta.env.VITE_URL}/registerotpmail`, {
-        name,
-        email,
-        password,
-      })
 
-      sessionStorage.setItem("tempToken", response.data.tempToken);
+      axios.defaults.withCredentials = true;
 
+      const response = await axios.post(
+        `${import.meta.env.VITE_URL}/registerotpmail`,
+        { name, email, password },
+        { withCredentials: true } // important for cookies
+      );
 
       toast.success(response.data.message)
       navigate('/verifyotp')

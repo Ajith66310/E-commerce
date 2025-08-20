@@ -13,6 +13,7 @@ import ResetPassword from './pages/ResetPassword';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import VerifyOtp from './pages/VerifyOtp';
+import ResetPasswordOtpVerify from './pages/ResetPasswordOtpVerify';
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
           <Route path='contact' element={<Contact />} />
           <Route path='wishlist' element={<Wishlist />} />
           <Route path='verifyotp' element={<VerifyOtp/>} />
+          <Route path='resetotpverify' element={<ResetPasswordOtpVerify/>} />
           <Route path='*' element={<NotFound />} />
         </Route>
       </Routes>
