@@ -10,7 +10,7 @@ userRouter.post('/login',login)
 userRouter.post('/resetotpmail',resetOtpMail)
 userRouter.post('/resetotpverify',resetOtpVerify)
 userRouter.post('/resetpassword',resetPassword)
-userRouter.post('/resendresetotp',resendResetOtp)
 userRouter.post('/resendotp',resendOtp)
+userRouter.post('/resendresetotp',resendResetOtp)
 
 export default userRouter;

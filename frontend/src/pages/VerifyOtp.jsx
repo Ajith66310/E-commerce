@@ -6,11 +6,29 @@ import axios from "axios";
 
 
 const VerifyOtp = () => {
+
   const [otp, setOtp] = useState('');
-  const [count, setCount] = useState(60);
   const navigate = useNavigate();
+  
+  const [count, setCount] = useState(()=>{
+    const timerStorage = localStorage.getItem("timer")
+  
+    if(timerStorage){
+  
+     const currentTime =  Date.now();
+  
+     const time = Math.floor((currentTime - timerStorage)/1000);
+      
+     const remainingTime = 60 - time;
+     
+     return remainingTime > 0 ? remainingTime : 0;
+    }
+      localStorage.setItem('timer',Date.now())
+    return 60;
+  }
+  );
 
-
+  
 
   const signupOtpHandle = async (e) => {
   e.preventDefault();
@@ -29,7 +47,10 @@ const VerifyOtp = () => {
 
 const resendOtp = async () => {
   try {
+
+    localStorage.setItem("timer",Date.now())
     setCount(60);
+    
     const response = await axios.post(
       `${import.meta.env.VITE_URL}/resendotp`,
       {},
@@ -49,9 +70,10 @@ const resendOtp = async () => {
   }, [count]);
 
 
-  return (
-    <>
 
+
+  return (
+    <>   
       <div className='flex min-h-screen justify-center items-center bg-[#FAF9F6]'>
         <form
           onSubmit={signupOtpHandle}

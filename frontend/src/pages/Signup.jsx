@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FaInstagram } from "react-icons/fa";
-import { FaSquareThreads } from "react-icons/fa6";
+import { FcGoogle } from "react-icons/fc";
 import { FaFacebookSquare } from "react-icons/fa";
 import axios from 'axios'
 import { toast } from 'react-toastify';
@@ -30,7 +29,12 @@ const Signup = () => {
       );
 
       toast.success(response.data.message)
-      navigate('/verifyotp')
+
+      if (localStorage.getItem("timer")) {
+        localStorage.removeItem("timer")
+      }
+        navigate('/verifyotp')
+      
     } catch (error) {
       if (error.response && error.response.data && error.response.data.message) {
         toast.error(error.response.data.message);
@@ -68,7 +72,7 @@ const Signup = () => {
                 required
                 type="text"
                 placeholder='Enter your name'
-                className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                className='pl-3 placeholder:font-medium border rounded-b-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
@@ -79,7 +83,7 @@ const Signup = () => {
                 type="email"
                 required
                 placeholder='Enter your email'
-                className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                className='pl-3 placeholder:font-medium border rounded-b-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
@@ -90,7 +94,7 @@ const Signup = () => {
                 type={showPassword ? "text" : "password"}
                 required
                 placeholder='Enter your password'
-                className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                className='pl-3 placeholder:font-medium border rounded-b-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
                 onChange={(e) => setPassword(e.target.value)} />
 
               {/* 👁 icon */}
@@ -122,8 +126,7 @@ const Signup = () => {
 
           <div className='flex justify-center text-2xl gap-5 mt-4'>
             <FaFacebookSquare className='text-blue-700 hover:scale-110 transition-transform' />
-            <FaInstagram className='text-pink-600 hover:scale-110 transition-transform' />
-            <FaSquareThreads className='hover:scale-110 transition-transform' />
+            <FcGoogle />
           </div>
         </form>
       </div>

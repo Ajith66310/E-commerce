@@ -12,7 +12,6 @@ const Title = ({ text1, text2 }) => {
   useGSAP(() => {
     gsap.from("#txt1 ", {
       opacity: 0,
-      duration: 5,
       scrollTrigger:{
         trigger:"#headings-1",
         start:"top 95%",

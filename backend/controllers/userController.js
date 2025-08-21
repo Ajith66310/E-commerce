@@ -32,7 +32,7 @@ const registerOtpMail = async (req, res) => {
     await sendMail(email, "Your Registration OTP", `Your OTP is: ${otp} (valid 1 min)`);
 
     // Generate tempToken
-    const tempToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "5m" });
+    const tempToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "15m" });
 
     // ✅ Store token in httpOnly cookie
     res.cookie("tempToken", tempToken, {
@@ -149,7 +149,7 @@ const resetOtpMail = async (req, res) => {
     );
 
     // Issue temp token with only email
-    const tempResetToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "10m" });
+    const tempResetToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "15m" });
 
      res.cookie("tempResetToken", tempResetToken, {
       httpOnly: true,

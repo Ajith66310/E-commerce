@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { FaInstagram } from "react-icons/fa";
-import { FaSquareThreads } from "react-icons/fa6";
+import { FcGoogle } from "react-icons/fc";
 import { FaFacebookSquare } from "react-icons/fa";
 import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -50,7 +49,7 @@ const Login = () => {
                 type="text"
                 required
                 placeholder='Username or email'
-                className='pl-3 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                className='pl-3 placeholder:font-medium border rounded-b-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
@@ -61,7 +60,7 @@ const Login = () => {
                 type={showPassword ? "text" : "password"} 
                 required
                 placeholder='Enter your password'
-                className='pl-3 pr-10 placeholder:font-medium border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                className='pl-3 pr-10 placeholder:font-medium border rounded-b-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
                 onChange={(e) => setPassword(e.target.value)}
               />
 
@@ -100,8 +99,7 @@ const Login = () => {
 
           <div className='flex justify-center text-2xl gap-5 mt-4'>
             <FaFacebookSquare className='text-blue-700 hover:scale-110 transition-transform' />
-            <FaInstagram className='text-pink-600 hover:scale-110 transition-transform' />
-            <FaSquareThreads className='hover:scale-110 transition-transform' />
+            <FcGoogle />
           </div>
         </form>
       </div>

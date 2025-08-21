@@ -12,11 +12,16 @@ const SendMail = () => {
     try {
       setLoading(true);
       e.preventDefault();
-      const response = await axios.post(`${import.meta.env.VITE_URL}/resetotpmail`, { email })
-      toast.success(response.data.message)
-      sessionStorage.setItem("tempResetToken", response.data.tempResetToken);
-      console.log("Saved tempResetToken:", response.data.tempResetToken);
 
+      axios.defaults.withCredentials = true;
+
+      const response = await axios.post(`${import.meta.env.VITE_URL}/resetotpmail`, { email }, { withCredentials: true })
+
+      toast.success(response.data.message)
+
+      if (localStorage.getItem("timer")) {
+        localStorage.removeItem("timer")
+      }
       navigate("/resetotpverify")
     } catch (error) {
       if (error.response?.data?.message) {

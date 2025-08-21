@@ -1,6 +1,6 @@
 
 import axios from 'axios'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify'
 
@@ -9,13 +9,30 @@ const ResetPasswordOtpVerify = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
+  const [count, setCount] = useState(() => {
+    const timerStorage = localStorage.getItem("timer")
+
+    if (timerStorage) {
+
+      const currentTime = Date.now();
+
+      const time = Math.floor((currentTime - timerStorage) / 1000);
+
+      const remainingTime = 60 - time;
+
+      return remainingTime > 0 ? remainingTime : 0;
+    }
+    localStorage.setItem('timer', Date.now())
+    return 60;
+  }
+  );
 
 
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-      axios.defaults.withCredentials = true;
+
       const response = await axios.post(`${import.meta.env.VITE_URL}/resetotpverify`, { otp }, { withCredentials: true })
       toast.success(response.data.message)
       navigate('/login')
@@ -32,20 +49,30 @@ const ResetPasswordOtpVerify = () => {
     }
   }
 
-  const resendOtp = async () => {
-    try {
+const resendOtp = async () => {
+  try {
 
-      const response = await axios.post(`${import.meta.env.VITE_URL}/resendresetotp`, { withCredentials: true });
+    localStorage.setItem("timer",Date.now())
+    setCount(60);
+    
+    const response = await axios.post(
+      `${import.meta.env.VITE_URL}/resendresetotp`,
+      {},
+      { withCredentials: true } // 👈 important
+    );
+    toast.success(response.data.message);
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to resend OTP. Please try again.");
+  }
+};
 
-      toast.success(response.data.message);
-    } catch (error) {
-      console.error("Resend OTP error:", error);
-      toast.error(error.response?.data?.message || "Failed to resend OTP.");
-    }
-  };
+  useEffect(() => {
+    if (count <= 0) return;
+    const timer = setInterval(() => setCount(prev => prev - 1), 1000);
+    return () => clearInterval(timer);
+  }, [count]);
 
 
- 
   return (
     <div className='flex min-h-screen justify-center items-center bg-[#F7F5F2]'>
       <form
@@ -68,15 +95,21 @@ const ResetPasswordOtpVerify = () => {
             onChange={(e) => setOtp(e.target.value)}
             className='pl-3 placeholder:text-gray-500 border rounded-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
           />
-          
-         
+
+
+          {count > 0 ? (
+            <p className='text-sm text-gray-500 text-center mt-2'>
+              Resend OTP in {count}s
+            </p>
+          ) : (
             <p
               className='text-sm text-blue-700 cursor-pointer hover:underline text-center mt-2'
               onClick={resendOtp}
             >
               Resend OTP
             </p>
-       
+          )}
+
         </div>
 
         <button
