@@ -12,10 +12,11 @@ const registerOtpMail = async (req, res) => {
     const { name, email, password } = req.body;
 
     const existing = await userModel.findOne({ email });
-    if (existing.googleId || existing ) {
+    
+    if (existing) {
       return res.status(400).json({ message: "Email already registered" });
     }
-    else{
+    
 
       const hashedPass = await bcrypt.hash(password, 10);
       
@@ -37,7 +38,7 @@ const registerOtpMail = async (req, res) => {
       // Generate tempToken
       const tempToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "15m" });
       
-      // ✅ Store token in httpOnly cookie
+      // Store token in httpOnly cookie
       res.cookie("tempToken", tempToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production", // true only in HTTPS
@@ -46,7 +47,7 @@ const registerOtpMail = async (req, res) => {
       });
       
       return res.status(200).json({ message: "OTP sent to email" });
-    }
+    
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
@@ -118,6 +119,10 @@ const login = async(req,res)=>{
    return  res.status(400).json({message:"Invalid email or password."})
   }
   
+  if(data.googleId){
+    return  res.status(400).json({message:"Please login using google"})
+  }
+
   bcrypt.compare(password,data.password,(err,result)=>{
   
     if(err || !result){
@@ -125,7 +130,7 @@ const login = async(req,res)=>{
    }
   
    if(result){
-     const token =  jwt.sign(data.name,process.env.SECRET_KEY);
+     const token =  jwt.sign(data.email,process.env.SECRET_KEY);
      return res.status(200).json({message:'Login successful.',token})
    }
   })
@@ -275,15 +280,23 @@ if(userData){
   }
 }
 
-import { OAuth2Client } from "google-auth-library";
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 
- const googleLogin = async (req, res) => {
-  try {
+ const googleLogin = async(req, res) => {
+
+   const {email,googleId} = req.body;
+
+   const data = await userModel.findOne({ email :email})
+
+    if (!data) {
+      return res.status(404).json({ message: "User not found, Please sign up first" });
+    }
    
-  } catch (err) {
-    
+   const googleIdVerify = await bcrypt.compare(googleId,data.googleId)
+
+   if( data.email === email && googleIdVerify){
+    const token = jwt.sign(data.email,process.env.SECRET_KEY,);
+    return res.status(200).json({message:"Login successfully",token})
   }
 };
 
@@ -316,7 +329,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
    
     if (data) {
    
-      const token = jwt.sign(data.name,process.env.SECRET_KEY,);
+      const token = jwt.sign(data.email,process.env.SECRET_KEY,);
    
       return res.json({ message: "User registered successfully." , token });    
   }

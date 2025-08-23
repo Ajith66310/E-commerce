@@ -30,23 +30,28 @@ const Login = () => {
     }
   }
 
-  const handleSuccess = (credentialResponse) => {
-    console.log("Google credential:", credentialResponse);
+  const handleSuccess = async(credentialResponse) => {
     const decoded = jwtDecode(credentialResponse.credential);
     try {
-    // send token to backend if needed
-    axios.post(`${import.meta.env.VITE_URL}/google-login`, {
-      
+   const response = await axios.post(`${import.meta.env.VITE_URL}/google-login`, {
       email:decoded.email,
-      
+      googleId:decoded.sub
     })  
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
-        toast.error(error.response.data.message)
-      }
-    }
-    
-  };
+    toast.success(response.data.message)
+    localStorage.setItem("token",response.data.token)
+    navigate('/')
+    } 
+
+    catch (error) {
+  if (error.response?.data?.message) {
+    toast.error(error.response.data.message);
+  } else {
+    toast.error("Something went wrong, please try again");
+    console.error(error);
+  }
+  }
+  
+};
 
   const handleError = () => {
     console.log("Login Failed");
@@ -73,7 +78,7 @@ const Login = () => {
                 type="text"
                 required
                 placeholder='Username or email'
-                className='pl-3 placeholder:font-medium border rounded-b-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                className='pl-3 rounded-tr-lg placeholder:font-medium border rounded-bl-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
@@ -84,7 +89,7 @@ const Login = () => {
                 type={showPassword ? "text" : "password"}
                 required
                 placeholder='Enter your password'
-                className='pl-3 pr-10 placeholder:font-medium border rounded-b-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                className='rounded-tr-lg pl-3 pr-10 placeholder:font-medium border rounded-bl-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
                 onChange={(e) => setPassword(e.target.value)}
               />
 

@@ -94,7 +94,7 @@ const Signup = () => {
                 required
                 type="text"
                 placeholder='Enter your name'
-                className='pl-3 placeholder:font-medium border rounded-b-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                className='pl-3 placeholder:font-medium border rounded-bl-lg rounded-tr-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
@@ -105,7 +105,7 @@ const Signup = () => {
                 type="email"
                 required
                 placeholder='Enter your email'
-                className='pl-3 placeholder:font-medium border rounded-b-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                className='pl-3 rounded-tr-lg placeholder:font-medium border rounded-bl-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
@@ -116,7 +116,7 @@ const Signup = () => {
                 type={showPassword ? "text" : "password"}
                 required
                 placeholder='Enter your password'
-                className='pl-3 placeholder:font-medium border rounded-b-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
+                className='pl-3 placeholder:font-medium rounded-tr-lg border rounded-bl-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
                 onChange={(e) => setPassword(e.target.value)} />
 
               {/* 👁 icon */}
