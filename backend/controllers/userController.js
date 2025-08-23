@@ -12,37 +12,41 @@ const registerOtpMail = async (req, res) => {
     const { name, email, password } = req.body;
 
     const existing = await userModel.findOne({ email });
-    if (existing) return res.status(400).json({ message: "Email already registered" });
+    if (existing.googleId || existing ) {
+      return res.status(400).json({ message: "Email already registered" });
+    }
+    else{
 
-    const hashedPass = await bcrypt.hash(password, 10);
-
-    const newUser = new userModel({
-      name,
-      email,
-      password: hashedPass,
-      status: "pending",
-    });
-    await newUser.save();
-
-    // OTP
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    const hashedOtp = await bcrypt.hash(otp.toString(), 10);
-    await redis.setex(`otp:${email}`, 60, hashedOtp);
-
-    await sendMail(email, "Your Registration OTP", `Your OTP is: ${otp} (valid 1 min)`);
-
-    // Generate tempToken
-    const tempToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "15m" });
-
-    // ✅ Store token in httpOnly cookie
-    res.cookie("tempToken", tempToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true only in HTTPS
-      sameSite: "Strict", // prevents CSRF
-      maxAge: 5 * 60 * 1000, // 5 min
-    });
-
-    return res.status(200).json({ message: "OTP sent to email" });
+      const hashedPass = await bcrypt.hash(password, 10);
+      
+      const newUser = new userModel({
+        name,
+        email,
+        password: hashedPass,
+        status: "pending",
+      });
+      await newUser.save();
+      
+      // OTP
+      const otp = Math.floor(100000 + Math.random() * 900000);
+      const hashedOtp = await bcrypt.hash(otp.toString(), 10);
+      await redis.setex(`otp:${email}`, 60, hashedOtp);
+      
+      await sendMail(email, "Your Registration OTP", `Your OTP is: ${otp} (valid 1 min)`);
+      
+      // Generate tempToken
+      const tempToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "15m" });
+      
+      // ✅ Store token in httpOnly cookie
+      res.cookie("tempToken", tempToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // true only in HTTPS
+        sameSite: "Strict", // prevents CSRF
+        maxAge: 5 * 60 * 1000, // 5 min
+      });
+      
+      return res.status(200).json({ message: "OTP sent to email" });
+    }
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
@@ -271,8 +275,59 @@ if(userData){
   }
 }
 
+import { OAuth2Client } from "google-auth-library";
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+
+ const googleLogin = async (req, res) => {
+  try {
+   
+  } catch (err) {
+    
+  }
+};
+
+ const googleSignup = async (req, res) => {
+  try {
+    const { name, email, googleId } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const existingUser = await userModel.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const hashedGoogleId = await bcrypt.hash(googleId,10);
+    
+    const newUser = new userModel({
+      name,
+      email,
+      googleId: hashedGoogleId,
+      status:"verified"
+    });
+    
+    await newUser.save();
+
+   const data = await userModel.findOne({email:email})
+   
+    if (data) {
+   
+      const token = jwt.sign(data.name,process.env.SECRET_KEY,);
+   
+      return res.json({ message: "User registered successfully." , token });    
+  }
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Google signup failed." });
+  }
+};
 
 
 
 
-export {resendResetOtp,resendOtp,resetOtpVerify,registerOtpMail,signupOtpVerify,resetOtpMail,login,resetPassword};
+export {resendResetOtp,resendOtp,resetOtpVerify,googleSignup,registerOtpMail,signupOtpVerify,resetOtpMail,login,resetPassword,googleLogin};

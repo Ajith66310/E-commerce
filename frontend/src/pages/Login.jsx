@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { FcGoogle } from "react-icons/fc";
-import { FaFacebookSquare } from "react-icons/fa";
 import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { GoogleLogin } from '@react-oauth/google';
+import {jwtDecode} from 'jwt-decode';
+
 
 const Login = () => {
   const [email, setEmail] = useState('')
@@ -28,6 +29,29 @@ const Login = () => {
       }
     }
   }
+
+  const handleSuccess = (credentialResponse) => {
+    console.log("Google credential:", credentialResponse);
+    const decoded = jwtDecode(credentialResponse.credential);
+    try {
+    // send token to backend if needed
+    axios.post(`${import.meta.env.VITE_URL}/google-login`, {
+      
+      email:decoded.email,
+      
+    })  
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message)
+      }
+    }
+    
+  };
+
+  const handleError = () => {
+    console.log("Login Failed");
+  };
+
 
   return (
     <>
@@ -57,7 +81,7 @@ const Login = () => {
             <div className='relative'>
               <label className='font-[Inter] font-semibold text-red-600'>Password</label>
               <input
-                type={showPassword ? "text" : "password"} 
+                type={showPassword ? "text" : "password"}
                 required
                 placeholder='Enter your password'
                 className='pl-3 pr-10 placeholder:font-medium border rounded-b-lg w-full h-11 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm'
@@ -97,9 +121,15 @@ const Login = () => {
             </NavLink>
           </div>
 
-          <div className='flex justify-center text-2xl gap-5 mt-4'>
-            <FaFacebookSquare className='text-blue-700 hover:scale-110 transition-transform' />
-            <FcGoogle />
+          <div className='flex justify-center flex-col text-2xl gap-5 mt-4'>
+            <div>
+              <GoogleLogin
+                onSuccess={handleSuccess}
+                onError={handleError}
+              />
+            </div>
+            <div>
+            </div>
           </div>
         </form>
       </div>

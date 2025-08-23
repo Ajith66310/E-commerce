@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FcGoogle } from "react-icons/fc";
-import { FaFacebookSquare } from "react-icons/fa";
 import axios from 'axios'
 import { toast } from 'react-toastify';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { GoogleLogin } from '@react-oauth/google';
+import {jwtDecode} from 'jwt-decode';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -29,11 +29,11 @@ const Signup = () => {
       );
 
       toast.success(response.data.message)
-
+      
       if (localStorage.getItem("timer")) {
         localStorage.removeItem("timer")
       }
-        navigate('/verifyotp')
+      navigate('/verifyotp')
       
     } catch (error) {
       if (error.response && error.response.data && error.response.data.message) {
@@ -48,8 +48,30 @@ const Signup = () => {
       }, 3000);
     }
   }
+  
+  const  handleSuccess = async(credentialResponse)=>{
+    
+    const decoded = jwtDecode(credentialResponse.credential);
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_URL}/google-signup`,{
+        name:decoded.name,
+        email:decoded.email,
+        googleId:decoded.sub
+      })
+      toast.success(response.data.message)  
+      localStorage.setItem("token",response.data.token)    
+      navigate('/')      
+    } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message)
+      }  
+    }
+  }
 
 
+  const handleError = () => {
+    console.log("Login Failed");
+  };
 
   return (
     <>
@@ -124,9 +146,13 @@ const Signup = () => {
             </NavLink>
           </div>
 
-          <div className='flex justify-center text-2xl gap-5 mt-4'>
-            <FaFacebookSquare className='text-blue-700 hover:scale-110 transition-transform' />
-            <FcGoogle />
+          <div className='flex justify-center flex-col text-2xl gap-5 mt-4'>
+            <div>
+              <GoogleLogin
+                onSuccess={handleSuccess}
+                onError={handleError}
+              />
+            </div>
           </div>
         </form>
       </div>
