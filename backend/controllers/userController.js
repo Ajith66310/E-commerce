@@ -3,6 +3,8 @@ import userModel from '../models/userModel.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
 import Redis from 'ioredis'
+import { RegisterSuccessEmail } from "../templates/RegisterSuccessEmail.js";
+import { resend, FROM_EMAIL } from "../middleware/resendMailer.js";
 
 const redis = new Redis();
 
@@ -12,42 +14,42 @@ const registerOtpMail = async (req, res) => {
     const { name, email, password } = req.body;
 
     const existing = await userModel.findOne({ email });
-    
+
     if (existing) {
       return res.status(400).json({ message: "Email already registered" });
     }
-    
 
-      const hashedPass = await bcrypt.hash(password, 10);
-      
-      const newUser = new userModel({
-        name,
-        email,
-        password: hashedPass,
-        status: "pending",
-      });
-      await newUser.save();
-      
-      // OTP
-      const otp = Math.floor(100000 + Math.random() * 900000);
-      const hashedOtp = await bcrypt.hash(otp.toString(), 10);
-      await redis.setex(`otp:${email}`, 60, hashedOtp);
-      
-      await sendMail(email, "Your Registration OTP", `Your OTP is: ${otp} (valid 1 min)`);
-      
-      // Generate tempToken
-      const tempToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "15m" });
-      
-      // Store token in httpOnly cookie
-      res.cookie("tempToken", tempToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // true only in HTTPS
-        sameSite: "Strict", // prevents CSRF
-        maxAge: 5 * 60 * 1000, // 5 min
-      });
-      
-      return res.status(200).json({ message: "OTP sent to email" });
-    
+
+    const hashedPass = await bcrypt.hash(password, 10);
+
+    const newUser = new userModel({
+      name,
+      email,
+      password: hashedPass,
+      status: "pending",
+    });
+    await newUser.save();
+
+    // OTP
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    const hashedOtp = await bcrypt.hash(otp.toString(), 10);
+    await redis.setex(`otp:${email}`, 60, hashedOtp);
+
+    await sendMail(email, "Your Registration OTP", `Your OTP is: ${otp} (valid 1 min)`);
+
+    // Generate tempToken
+    const tempToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "15m" });
+
+    // Store token in httpOnly cookie
+    res.cookie("tempToken", tempToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true only in HTTPS
+      sameSite: "Strict", // prevents CSRF
+      maxAge: 5 * 60 * 1000, // 5 min
+    });
+
+    return res.status(200).json({ message: "OTP sent to email" });
+
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
@@ -58,7 +60,7 @@ const signupOtpVerify = async (req, res) => {
   try {
 
     const { otp } = req.body;
-    const tempToken = req.cookies.tempToken; // ✅ read from cookie
+    const tempToken = req.cookies.tempToken; //read from cookie
 
     if (!tempToken) {
       return res.status(400).json({ message: "Token missing. Please try again." });
@@ -73,13 +75,29 @@ const signupOtpVerify = async (req, res) => {
 
     await redis.del(`otp:${decoded.email}`);
 
-    await userModel.findOneAndUpdate(
+    const user = await userModel.findOneAndUpdate(
       { email: decoded.email },
-      { $set: { status: "verified" } }
+      { $set: { status: "verified" } },
+      { new: true }
     );
 
-    // ✅ Clear cookie after success
+    // Clear cookie after success
     res.clearCookie("tempToken");
+
+    try {
+
+      const emailHtml = RegisterSuccessEmail(user.name);
+      await resend.emails.send({
+        from: FROM_EMAIL,
+        to: "ajithnubie@gmail.com", //  when the time of testing only we can send email to this
+        subject: "🎉 Registration Successful",
+        html: emailHtml,
+      });
+  
+  } catch (mailErr) {
+      // Don’t block user registration if mail fails
+      console.error("Resend mail failed:", mailErr);
+    }
 
     return res.status(200).json({ message: "User registered successfully" });
   } catch (err) {
@@ -91,7 +109,7 @@ const signupOtpVerify = async (req, res) => {
 
 const resendOtp = async (req, res) => {
   try {
-    const tempToken = req.cookies.tempToken; // ✅ get token from cookie
+    const tempToken = req.cookies.tempToken; //get token from cookie
 
     if (!tempToken) return res.status(400).json({ message: "Missing token" });
 
@@ -110,29 +128,29 @@ const resendOtp = async (req, res) => {
 };
 
 
-const login = async(req,res)=>{
-  const {email,password} = req.body;
+const login = async (req, res) => {
+  const { email, password } = req.body;
 
-  const data = await userModel.findOne({email : email});
-  
-  if (!data){
-   return  res.status(400).json({message:"Invalid email or password."})
-  }
-  
-  if(data.googleId){
-    return  res.status(400).json({message:"Please login using google"})
+  const data = await userModel.findOne({ email: email });
+
+  if (!data) {
+    return res.status(400).json({ message: "Invalid email or password." })
   }
 
-  bcrypt.compare(password,data.password,(err,result)=>{
-  
-    if(err || !result){
-   return res.status(400).json({message:"Enter a valid password"})
-   }
-  
-   if(result){
-     const token =  jwt.sign(data.email,process.env.SECRET_KEY);
-     return res.status(200).json({message:'Login successful.',token})
-   }
+  if (data.googleId) {
+    return res.status(400).json({ message: "Please login using google" })
+  }
+
+  bcrypt.compare(password, data.password, (err, result) => {
+
+    if (err || !result) {
+      return res.status(400).json({ message: "Enter a valid password" })
+    }
+
+    if (result) {
+      const token = jwt.sign(data.email, process.env.SECRET_KEY);
+      return res.status(200).json({ message: 'Login successful.', token })
+    }
   })
 }
 
@@ -160,7 +178,7 @@ const resetOtpMail = async (req, res) => {
     // Issue temp token with only email
     const tempResetToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "15m" });
 
-     res.cookie("tempResetToken", tempResetToken, {
+    res.cookie("tempResetToken", tempResetToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // true only in HTTPS
       sameSite: "Strict", // prevents CSRF
@@ -169,15 +187,15 @@ const resetOtpMail = async (req, res) => {
 
     return res.status(200).json({
       message: "OTP sent to email.",
-      tempResetToken : tempResetToken
+      tempResetToken: tempResetToken
     });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Server error" });
   }
 };
-  
-  
+
+
 const resetOtpVerify = async (req, res) => {
   try {
     const { otp } = req.body;
@@ -187,7 +205,7 @@ const resetOtpVerify = async (req, res) => {
     if (!tempResetToken) {
       return res.status(400).json({ message: "Token missing" });
     }
-    
+
     const decode = jwt.verify(tempResetToken, process.env.SECRET_KEY);
     const email = decode.email;
     const data = await redis.get(`otp:${decode.email}`);
@@ -255,52 +273,52 @@ const resendResetOtp = async (req, res) => {
   }
 };
 
-const resetPassword = async(req,res)=>{
-  
-  const {token,password,confirmPassword} = req.body;
+const resetPassword = async (req, res) => {
 
-  if(password !== confirmPassword){
-    return res.status(400).json({message:"Enter Matching Password"})
+  const { token, password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: "Enter Matching Password" })
   }
-  
-  const decode = jwt.verify(token,process.env.SECRET_KEY)
-  
-  const userData = await userModel.findOne({email:decode.email})
-  
-  if(!userData){
-  return res.status(400).json({message:"Can't find the user with this email"})
+
+  const decode = jwt.verify(token, process.env.SECRET_KEY)
+
+  const userData = await userModel.findOne({ email: decode.email })
+
+  if (!userData) {
+    return res.status(400).json({ message: "Can't find the user with this email" })
+  }
+
+
+  if (userData) {
+    const hashedPass = await bcrypt.hash(confirmPassword, 10)
+    userData.password = hashedPass;
+    await userData.save()
+    return res.status(200).json({ message: "Your password reset successfully" })
+  }
 }
 
 
-if(userData){
-   const hashedPass = await bcrypt.hash(confirmPassword,10)
-   userData.password = hashedPass;
-   await userData.save()
-   return res.status(200).json({message:"Your password reset successfully"})
+
+const googleLogin = async (req, res) => {
+
+  const { email, googleId } = req.body;
+
+  const data = await userModel.findOne({ email: email })
+
+  if (!data) {
+    return res.status(404).json({ message: "User not found, Please sign up first" });
   }
-}
 
+  const googleIdVerify = await bcrypt.compare(googleId, data.googleId)
 
-
- const googleLogin = async(req, res) => {
-
-   const {email,googleId} = req.body;
-
-   const data = await userModel.findOne({ email :email})
-
-    if (!data) {
-      return res.status(404).json({ message: "User not found, Please sign up first" });
-    }
-   
-   const googleIdVerify = await bcrypt.compare(googleId,data.googleId)
-
-   if( data.email === email && googleIdVerify){
-    const token = jwt.sign(data.email,process.env.SECRET_KEY,);
-    return res.status(200).json({message:"Login successfully",token})
+  if (data.email === email && googleIdVerify) {
+    const token = jwt.sign(data.email, process.env.SECRET_KEY,);
+    return res.status(200).json({ message: "Login successfully", token })
   }
 };
 
- const googleSignup = async (req, res) => {
+const googleSignup = async (req, res) => {
   try {
     const { name, email, googleId } = req.body;
 
@@ -314,25 +332,37 @@ if(userData){
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const hashedGoogleId = await bcrypt.hash(googleId,10);
-    
+    const hashedGoogleId = await bcrypt.hash(googleId, 10);
+
     const newUser = new userModel({
       name,
       email,
       googleId: hashedGoogleId,
-      status:"verified"
+      status: "verified"
     });
-    
+
     await newUser.save();
 
-   const data = await userModel.findOne({email:email})
-   
+    const data = await userModel.findOne({ email: email })
+
     if (data) {
-   
-      const token = jwt.sign(data.email,process.env.SECRET_KEY,);
-   
-      return res.json({ message: "User registered successfully." , token });    
-  }
+      const token = jwt.sign(data.email, process.env.SECRET_KEY,);
+      
+    try {
+      const emailHtml = RegisterSuccessEmail(data.name);
+      await resend.emails.send({
+        from: FROM_EMAIL,
+        to: "ajithnubie@gmail.com", //  when the time of testing only we can send email to this
+        subject: "🎉 Registration Successful",
+        html: emailHtml,
+      });
+  
+  } catch (mailErr) {
+      // Don’t block user registration if mail fails
+      console.error("Resend mail failed:", mailErr);
+    }
+      return res.json({ message: "User registered successfully.", token });
+    }
 
   } catch (error) {
     console.error(error);
@@ -343,4 +373,4 @@ if(userData){
 
 
 
-export {resendResetOtp,resendOtp,resetOtpVerify,googleSignup,registerOtpMail,signupOtpVerify,resetOtpMail,login,resetPassword,googleLogin};
+export { resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };
