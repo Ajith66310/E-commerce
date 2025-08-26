@@ -73,16 +73,19 @@ const Navbar = () => {
         </div>
 
         <div id='nav-items' className='flex items-center max-md:hidden gap-3  justify-end text-2xl  pr-10'>
-          <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-red-900 text-3xl cursor-pointer text-red-800' />
           {(
             token ?
-              <IoIosLogOut className="cursor-pointer text-red-800 hover:text-red-900 " onClick={handleLogout} />
-              :
-              <NavLink to='/login'>
-                <GoPerson className="cursor-pointer text-red-800 hover:text-red-900 " />
+            <IoIosLogOut className="cursor-pointer text-red-800 hover:text-red-900 " onClick={handleLogout} />
+            :
+            <NavLink to='/login'>
+              <div className='bg-red-800 w-20 rounded-sm hover:rounded-lg flex items-center justify-center '>
+              <button className=' text-white font-[poppins] cursor-pointer text-lg'>Login</button>
+              </ div>
               </NavLink>
           )
-          }
+        }
+        <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-red-900 text-3xl cursor-pointer text-red-800' />
+          <GoPerson className="cursor-pointer text-red-800 hover:text-red-900 " />
         </div>
       </div>
 

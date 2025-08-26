@@ -9,62 +9,60 @@ import { resend, FROM_EMAIL } from "../middleware/resendMailer.js";
 const redis = new Redis();
 
 const registerOtpMail = async (req, res) => {
-
   try {
     const { name, email, password } = req.body;
 
     const existing = await userModel.findOne({ email });
 
     if (existing) {
-      return res.status(400).json({ message: "Email already registered" });
+      if (!existing.password) { 
+        const hashedPass = await bcrypt.hash(password, 10);
+        existing.password = hashedPass;
+        await existing.save();
+      } else {
+        return res.status(400).json({ message: "Email already Registered" });
+      }
+    } else {
+      const newUser = new userModel({
+        name,
+        email,
+        password: await bcrypt.hash(password, 10),
+        googleId: "", 
+        status: "pending",
+      });
+      await newUser.save();
     }
 
-
-    const hashedPass = await bcrypt.hash(password, 10);
-
-    const newUser = new userModel({
-      name,
-      email,
-      password: hashedPass,
-      status: "pending",
-    });
-    await newUser.save();
-
-    // OTP
+    // OTP logic...
     const otp = Math.floor(100000 + Math.random() * 900000);
     const hashedOtp = await bcrypt.hash(otp.toString(), 10);
     await redis.setex(`otp:${email}`, 60, hashedOtp);
 
     await sendMail(email, "Your Registration OTP", `Your OTP is: ${otp} (valid 1 min)`);
 
-    // Generate tempToken
     const tempToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "15m" });
-
-    // Store token in httpOnly cookie
     res.cookie("tempToken", tempToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true only in HTTPS
-      sameSite: "Strict", // prevents CSRF
-      maxAge: 5 * 60 * 1000, // 5 min
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 5 * 60 * 1000,
     });
 
     return res.status(200).json({ message: "OTP sent to email" });
-
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
 };
 
 
+
+
 const signupOtpVerify = async (req, res) => {
   try {
-
     const { otp } = req.body;
-    const tempToken = req.cookies.tempToken; //read from cookie
+    const tempToken = req.cookies.tempToken;
 
-    if (!tempToken) {
-      return res.status(400).json({ message: "Token missing. Please try again." });
-    }
+    if (!tempToken) return res.status(400).json({ message: "Token missing. Please try again." });
 
     const decoded = jwt.verify(tempToken, process.env.SECRET_KEY);
     const redisOtp = await redis.get(`otp:${decoded.email}`);
@@ -81,21 +79,18 @@ const signupOtpVerify = async (req, res) => {
       { new: true }
     );
 
-    // Clear cookie after success
     res.clearCookie("tempToken");
 
+    // Send success mail
     try {
-
       const emailHtml = RegisterSuccessEmail(user.name);
       await resend.emails.send({
         from: FROM_EMAIL,
-        to: "ajithnubie@gmail.com", //  when the time of testing only we can send email to this
+        to: "ajithnubie@gmail.com",
         subject: "🎉 Registration Successful",
         html: emailHtml,
       });
-  
-  } catch (mailErr) {
-      // Don’t block user registration if mail fails
+    } catch (mailErr) {
       console.error("Resend mail failed:", mailErr);
     }
 
@@ -133,13 +128,10 @@ const login = async (req, res) => {
 
   const data = await userModel.findOne({ email: email });
 
-  if (!data) {
-    return res.status(400).json({ message: "Invalid email or password." })
+   if (!data) {
+    return res.status(404).json({ message: "User not found, Please Register first" });
   }
 
-  if (data.googleId) {
-    return res.status(400).json({ message: "Please login using google" })
-  }
 
   bcrypt.compare(password, data.password, (err, result) => {
 
@@ -300,14 +292,14 @@ const resetPassword = async (req, res) => {
 
 
 
-const googleLogin = async (req, res) => {
+const googleLogin = async(req, res) => {
 
   const { email, googleId } = req.body;
 
   const data = await userModel.findOne({ email: email })
 
   if (!data) {
-    return res.status(404).json({ message: "User not found, Please sign up first" });
+    return res.status(404).json({ message: "User not found, Please register" });
   }
 
   const googleIdVerify = await bcrypt.compare(googleId, data.googleId)
@@ -318,59 +310,54 @@ const googleLogin = async (req, res) => {
   }
 };
 
+
+
 const googleSignup = async (req, res) => {
   try {
     const { name, email, googleId } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ message: "Email is required" });
-    }
-
     const existingUser = await userModel.findOne({ email });
 
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
-    }
-
-    const hashedGoogleId = await bcrypt.hash(googleId, 10);
-
-    const newUser = new userModel({
-      name,
-      email,
-      googleId: hashedGoogleId,
-      status: "verified"
-    });
-
-    await newUser.save();
-
-    const data = await userModel.findOne({ email: email })
-
-    if (data) {
-      const token = jwt.sign(data.email, process.env.SECRET_KEY,);
-      
-    try {
-      const emailHtml = RegisterSuccessEmail(data.name);
-      await resend.emails.send({
-        from: FROM_EMAIL,
-        to: "ajithnubie@gmail.com", //  when the time of testing only we can send email to this
-        subject: "🎉 Registration Successful",
-        html: emailHtml,
+      if (existingUser.googleId) {
+        const hashedGoogleId = await bcrypt.hash(googleId, 10);
+        existingUser.googleId = hashedGoogleId;
+        await existingUser.save();
+      } else {
+        return res.status(400).json({ message: "Email already registered" });
+      }
+    } else {
+      const hashedGoogleId = await bcrypt.hash(googleId, 10);
+      const newUser = new userModel({
+        name,
+        email,
+        googleId: hashedGoogleId,
+        password: "",
+        status: "verified",
       });
-  
-  } catch (mailErr) {
-      // Don’t block user registration if mail fails
-      console.error("Resend mail failed:", mailErr);
+      await newUser.save();
     }
+
+    const data = await userModel.findOne({ email });
+    if (data) {
+      const token = jwt.sign({ email: data.email }, process.env.SECRET_KEY);
+      try {
+        const emailHtml = RegisterSuccessEmail(data.name);
+        await resend.emails.send({
+          from: FROM_EMAIL,
+          to: "ajithnubie@gmail.com",
+          subject: "🎉 Registration Successful",
+          html: emailHtml,
+        });
+      } catch (mailErr) {
+        console.error("Resend mail failed:", mailErr);
+      }
       return res.json({ message: "User registered successfully.", token });
     }
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Google signup failed." });
   }
 };
-
-
 
 
 export { resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };
