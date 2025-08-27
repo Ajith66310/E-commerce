@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
-const ProductItem = ({ title, img, price, percentage }) => {
+const ProductItem = ({ title, img, price, percentage,textColor }) => {
   const [liked, setLiked] = useState(false);
 
-  const offerPrice = Math.round(price - (price * percentage / 100));
+  const textClass = textColor === "black"? "text-black" : "text-white"
+
+  const offerPrice = Math.round(price - (price * percentage / 100)); 
+
 
   return (
     <div className="relative">
@@ -28,10 +31,10 @@ const ProductItem = ({ title, img, price, percentage }) => {
       </button>
 
       {/* Product Info */}
-      <p className="text-lg font-extrabold mt-2 text-white">{title}</p>
+      <p className={`text-lg font-extrabold mt-2 ${textClass}`}>{title}</p>
       <div className="flex gap-3 items-center">
-        <p className="line-through text-white">₹{Math.round(price)}</p>
-        <p className="font-bold text-white">₹{offerPrice}</p>
+        <p className={`line-through ${textClass}`}>₹{Math.round(price)}</p>
+        <p className={`font-bold ${textClass}`}>₹{offerPrice}</p>
         <p className="text-red-600 font-medium">-{percentage}%</p>
       </div>
 

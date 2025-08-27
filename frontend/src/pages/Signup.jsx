@@ -4,7 +4,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { GoogleLogin } from '@react-oauth/google';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -29,12 +29,12 @@ const Signup = () => {
       );
 
       toast.success(response.data.message)
-      
+
       if (localStorage.getItem("timer")) {
         localStorage.removeItem("timer")
       }
       navigate('/verifyotp')
-      
+
     } catch (error) {
       if (error.response && error.response.data && error.response.data.message) {
         toast.error(error.response.data.message);
@@ -48,23 +48,23 @@ const Signup = () => {
       }, 3000);
     }
   }
-  
-  const  handleSuccess = async(credentialResponse)=>{
-    
+
+  const handleSuccess = async (credentialResponse) => {
+
     const decoded = jwtDecode(credentialResponse.credential);
     try {
-      const response = await axios.post(`${import.meta.env.VITE_URL}/google-signup`,{
-        name:decoded.name,
-        email:decoded.email,
-        googleId:decoded.sub
+      const response = await axios.post(`${import.meta.env.VITE_URL}/google-signup`, {
+        name: decoded.name,
+        email: decoded.email,
+        googleId: decoded.sub
       })
-      toast.success(response.data.message)  
-      localStorage.setItem("token",response.data.token)    
-      navigate('/')      
+      toast.success(response.data.message)
+      localStorage.setItem("token", response.data.token)
+      navigate('/')
     } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
+      if (error.response && error.response.data && error.response.data.message) {
         toast.error(error.response.data.message)
-      }  
+      }
     }
   }
 
@@ -151,6 +151,7 @@ const Signup = () => {
               <GoogleLogin
                 onSuccess={handleSuccess}
                 onError={handleError}
+                text="signup_with"
               />
             </div>
           </div>

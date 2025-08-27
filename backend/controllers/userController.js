@@ -200,7 +200,7 @@ const resetOtpVerify = async (req, res) => {
 
     const decode = jwt.verify(tempResetToken, process.env.SECRET_KEY);
     const email = decode.email;
-    const data = await redis.get(`otp:${decode.email}`);
+    const data = await redis.get(`otp:${email}`);
 
     if (!data) {
       return res.status(400).json({ message: "OTP not found. Please request again." });
@@ -212,7 +212,7 @@ const resetOtpVerify = async (req, res) => {
       return res.status(400).json({ message: "Invalid OTP. Please try again." });
     }
 
-    await redis.del(`otp:${decode.email}`);
+    await redis.del(`otp:${email}`);
 
     const token = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "15m" });
     const resetLink = `http://localhost:5173/resetpassword/${token}`;
@@ -305,7 +305,7 @@ const googleLogin = async(req, res) => {
   const googleIdVerify = await bcrypt.compare(googleId, data.googleId)
 
   if (data.email === email && googleIdVerify) {
-    const token = jwt.sign(data.email, process.env.SECRET_KEY,);
+    const token = jwt.sign({email:data.email}, process.env.SECRET_KEY,);
     return res.status(200).json({ message: "Login successfully", token })
   }
 };
@@ -318,7 +318,7 @@ const googleSignup = async (req, res) => {
     const existingUser = await userModel.findOne({ email });
 
     if (existingUser) {
-      if (existingUser.googleId) {
+      if (!existingUser.googleId) {
         const hashedGoogleId = await bcrypt.hash(googleId, 10);
         existingUser.googleId = hashedGoogleId;
         await existingUser.save();
