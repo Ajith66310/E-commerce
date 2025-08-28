@@ -6,7 +6,7 @@ import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Header from './components/Header';
 import Fashion from './pages/Fashion';
-import Wishlist from './pages/Wishlist';
+import Favourite from './pages/Favourite';
 import Signup from './pages/Signup';
 import SendMail from './pages/SendMail';
 import ResetPassword from './pages/ResetPassword';
@@ -29,7 +29,7 @@ const App = () => {
           <Route path='sendmail' element={<SendMail />} />
           <Route path='resetpassword/:token' element={<ResetPassword />} />
           <Route path='contact' element={<Contact />} />
-          <Route path='wishlist' element={<Wishlist />} />
+          <Route path='favourite' element={<Favourite />} />
           <Route path='verifyotp' element={<VerifyOtp/>} />
           <Route path='resetotpverify' element={<ResetPasswordOtpVerify/>} />
           <Route path='*' element={<NotFound />} />

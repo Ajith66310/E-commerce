@@ -62,7 +62,7 @@ const Navbar = () => {
             <p className=' font-serif hover:text-red-900 text-red-800 ' >FASHION</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>
-          <NavLink to='/wishlist' className='flex flex-col items-center '>
+          <NavLink to='/favourite' className='flex flex-col items-center '>
             <p className='font-serif hover:text-red-900 text-red-800 ' >FAVOURITE</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>

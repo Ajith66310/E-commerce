@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
-const ProductItem = ({ title, img, price, percentage,textColor }) => {
+const ProductItem = ({ title, img, price, percentage,textColor,btnText }) => {
   const [liked, setLiked] = useState(false);
 
   const textClass = textColor === "black"? "text-black" : "text-white"
 
   const offerPrice = Math.round(price - (price * percentage / 100)); 
 
+  const btn = btnText === "View" ? "View" : "Add to cart";
 
   return (
     <div className="relative">
@@ -40,7 +41,7 @@ const ProductItem = ({ title, img, price, percentage,textColor }) => {
 
       {/* View Button */}
       <button className="bg-red-800 text-white w-full mt-2 py-1 rounded-md hover:bg-gray-900">
-        View
+        {btn}
       </button>
     </div>
   );

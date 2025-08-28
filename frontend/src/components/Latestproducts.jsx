@@ -40,7 +40,7 @@ const Latestproducts = () => {
       <div id="image-box" className=' grid grid-cols-2 gap-5 w-100 m-auto  md:grid-cols-3 md:w-180  lg:grid-cols-4 lg:w-[95%]'>
         {
           Latestproduct.map((item, index) => (
-            <ProductItem key={index} title={item.title} img={item.img} price={item.price} percentage={item.percentage} textColor="white"  />            
+            <ProductItem key={index} title={item.title} img={item.img} price={item.price} percentage={item.percentage} textColor="white"  btnText="View" />            
           ))
         }
       </div>

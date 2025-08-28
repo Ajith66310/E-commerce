@@ -1,9 +1,9 @@
 import { NavLink } from "react-router-dom";
 
-export default function Breadcrumb({ Home, Fashion, About, Contact }) {
+export default function Breadcrumb({ Home, Fashion, Favourite, Contact }) {
   return (
     <nav aria-label="breadcrumb">
-      <ol className="inline-flex items-center space-x-4 py-2 text-sm font-medium">
+      <ol className="inline-flex items-center py-2 text-sm font-medium">
         <li className="inline-flex items-center">
           <NavLink
             to="/"
@@ -16,49 +16,49 @@ export default function Breadcrumb({ Home, Fashion, About, Contact }) {
             {Home}
           </NavLink>
         </li>
-        {Fashion ? <span className="text-secondary-400">/</span> : ""}
-        <li className="inline-flex items-center space-x-4">
+        <li className="inline-flex items-center ">
+        {Fashion ? <span className="text-secondary-400 px-3">/</span> : ""}
           <NavLink
             to="/fashion"
             className={({ isActive }) =>
               isActive
-            ? "text-secondary-700 font-semibold"
-            : "text-secondary-500 hover:text-secondary-600"
-          }
+                ? "text-secondary-700 font-semibold"
+                : "text-secondary-500 hover:text-secondary-600"
+            }
           >
-            {Fashion}
+            {Fashion ? Fashion : ""}
           </NavLink>
         </li>
-            {About ? <span className="text-secondary-400">/</span> : ""}
+        {Favourite ? <span className="text-secondary-400 px-3">/</span> : ""}
         <li
-          className="inline-flex items-center space-x-4"
+          className="inline-flex items-center "
           aria-current="page"
-          >
+        >
           <NavLink
-            to="/about"
+            to="/favourite"
             className={({ isActive }) =>
               isActive
-            ? "text-secondary-700 font-semibold"
-            : "text-secondary-500 hover:text-secondary-600"
-          }
+                ? "text-secondary-700 font-semibold"
+                : "text-secondary-500 hover:text-secondary-600"
+            }
           >
-            {About}
+            {Favourite ? Favourite : ""}
           </NavLink>
         </li>
-            {Contact ? <span className="text-secondary-400">/</span> : ""}
+        {Contact ? <span className="text-secondary-400 px-3">/</span> : ""}
         <li
-          className="inline-flex items-center space-x-4"
+          className="inline-flex items-center"
           aria-current="page"
-          >
+        >
           <NavLink
             to="/contact"
             className={({ isActive }) =>
               isActive
-            ? "text-secondary-700 font-semibold"
-            : "text-secondary-500 hover:text-secondary-600"
-          }
+                ? "text-secondary-700 font-semibold"
+                : "text-secondary-500 hover:text-secondary-600"
+            }
           >
-            {Contact}
+            {Contact ? Contact : ""}
           </NavLink>
         </li>
       </ol>
