@@ -14,6 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import VerifyOtp from './pages/VerifyOtp';
 import ResetPasswordOtpVerify from './pages/ResetPasswordOtpVerify';
+import Product from './pages/Product';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path='login' element={<Login />} />
           <Route path='signup' element={<Signup />} />
           <Route path='fashion' element={<Fashion />} />
+          <Route path='product/:id' element={<Product/>} />
           <Route path='contact' element={<Contact />} />
           <Route path='sendmail' element={<SendMail />} />
           <Route path='resetpassword/:token' element={<ResetPassword />} />

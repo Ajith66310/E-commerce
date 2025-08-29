@@ -1,16 +1,19 @@
 import React, { useState } from 'react'
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { NavLink } from 'react-router-dom';
 
-const ProductItem = ({ title, img, price, percentage,textColor,btnText }) => {
+const ProductItem = ({id,title,img, price, percentage,textColor,btnText }) => {
   const [liked, setLiked] = useState(false);
 
   const textClass = textColor === "black"? "text-black" : "text-white"
 
   const offerPrice = Math.round(price - (price * percentage / 100)); 
 
-  const btn = btnText === "View" ? "View" : "Add to cart";
+  const btn = btnText === "View" ? "View" : "Add to cart";  
 
   return (
+    <NavLink to={`/product/${id}`}>
+  
     <div className="relative">
       {/* Product Image */}
       <img
@@ -44,6 +47,7 @@ const ProductItem = ({ title, img, price, percentage,textColor,btnText }) => {
         {btn}
       </button>
     </div>
+    </NavLink>
   );
 };
 

@@ -21,7 +21,7 @@ img1,
 
 export const products = [
     {
-      _id: 'P01',
+      id: 'P01',
       title:'GREEN PLEATED HOODIE ',
       img: p1,
       description:'Adith is King',
@@ -31,7 +31,7 @@ export const products = [
       subcategory:'dress',
     },
     {
-      _id: 'P02',
+      id: 'P02',
       title:'BLACK PLEATED JACKET',
       img: p2,
       description:'Adith is King',
@@ -41,7 +41,7 @@ export const products = [
       subcategory:'dress',
     },
     {
-      _id: 'P03',
+      id: 'P03',
       title:'ORANGE PLEATED SHIRT',
       img: p3,
       description:'Adith is King',
@@ -51,7 +51,7 @@ export const products = [
       subcategory:'dress',
     },
     {
-      _id: 'P04',
+      id: 'P04',
       title:'RED PLEATED TOP',
       img: p4,
       description:'Adith is King',
@@ -61,7 +61,7 @@ export const products = [
       subcategory:'dress',
     },
     {
-      _id: 'P02',
+      id: 'P02',
       title:'BLACK PLEATED JACKET',
       img: p2,
       description:'Adith is King',
@@ -71,7 +71,7 @@ export const products = [
       subcategory:'dress',
     },
     {
-      _id: 'P03',
+      id: 'P03',
       title:'ORANGE PLEATED SHIRT',
       img: p3,
       description:'Adith is King',

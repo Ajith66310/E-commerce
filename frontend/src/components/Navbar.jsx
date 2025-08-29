@@ -49,8 +49,8 @@ const Navbar = () => {
     <>
       <div className={`${userIcon ? 'hidden' : ' bg-[transparent] absolute z-50  md:h-20 w-full grid md:grid-cols-3  '}`} >
 
-        <div id='brand-name' className=' flex items-center  pl-10 '>
-          <p className=' text-3xl font-serif text-red-800  max-md:hidden font-extrabold'>BONKERS CORNER</p>
+        <div id='brand-name' className=' flex items-center  lg:pl-10 md:pl-0'>
+          <p className=' lg:text-3xl font-serif text-red-800  max-md:hidden font-extrabold md:text-[20px] '>BONKERS CORNER</p>
         </div>
 
         <div id='nav-links' className=' max-md:hidden flex max:md-20  justify-center  gap-3 items-center' >
@@ -93,7 +93,7 @@ const Navbar = () => {
       <div className={` ${userIcon || cartIcon ? ' hidden' : 'md:hidden  items-center z-50 absolute w-full h-15 grid grid-cols-2 bg-transparent'}`}>
         <div className='font-sans text-xl   pl-5 '>
           {/* <img  alt=""  className='h-15 ' /> */}
-          <p className=' text-3xl font-serif text-red-800 '>CR7</p>
+          <p className=' text-2xl font-serif text-red-800 '>BONKERS CORNER</p>
         </div>
         <div className='pr-3 flex justify-end space-x-2 items-center text-sm'>
           <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-red-900 text-3xl cursor-pointer text-red-800' />
@@ -118,8 +118,8 @@ const Navbar = () => {
             }
           </div>
           <NavLink onClick={() => setUserIcon(false)} className='py-2 pl-6' to='/'>HOME</NavLink>
-          <NavLink onClick={() => setUserIcon(false)} className='py-2 pl-6' to='/shop'>SHOP</NavLink>
-          <NavLink onClick={() => setUserIcon(false)} className='py-2 pl-6' to='/about'>ABOUT</NavLink>
+          <NavLink onClick={() => setUserIcon(false)} className='py-2 pl-6' to='/fashion'>FASHION</NavLink>
+          <NavLink onClick={() => setUserIcon(false)} className='py-2 pl-6' to='/favourite'>FAVOURITE</NavLink>
           <NavLink onClick={() => setUserIcon(false)} className='py-2 pl-6' to='/contact'>CONTACT</NavLink>
         </div>
       </div>

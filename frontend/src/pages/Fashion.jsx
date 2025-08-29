@@ -25,11 +25,11 @@ const Fashion = () => {
         <p className='text-black text-3xl pl-10 pt-10 font-[poppins]'>All<span className='text-red-800 pl-2 font-[poppins]'>Products</span></p>
         </div>
 
-        <div className=' flex justify-end items-end font-[poppins]'>
-          <select name=""  id=""  className='w-30 h-10 border mr-10' defaultValue="Relavant">
-            <option value="Low-High" className='border-none'>Low-High</option>
-            <option value="High-Low">High-Low</option>
-            <option value="Relavant">Relavant</option>
+        <div className=' flex justify-end items-end font-[poppins] text-sm '>
+          <select name=""  id=""  className='w-40 h-10 border mr-10  focus:outline-red-900' defaultValue="Relavant">
+            <option value="relavant">Sort by: Relavant</option>
+            <option value="low-high">Sort by: Low to High</option>
+            <option value="high-low">Sort by: High to Low</option>
           </select>
         </div>
       </div>
@@ -37,9 +37,10 @@ const Fashion = () => {
       <div className=' grid grid-cols-2 gap-5 w-100 m-auto  md:grid-cols-3 md:w-180  lg:grid-cols-4 lg:w-[95%]'>
         {
           product.map((item, index) => (
-            <ProductItem key={index} title={item.title} img={item.img} price={item.price} percentage={item.percentage} textColor="black" btnText="Add to cart"/>
+            <ProductItem key={index} title={item.title} id={item.id} img={item.img} price={item.price} percentage={item.percentage} textColor="black" btnText="Add to cart"/>
           ))
         }
+  
       </div>
 
     </div>

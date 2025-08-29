@@ -1,24 +1,11 @@
-import { useGSAP } from '@gsap/react'
-import gsap from 'gsap'
-import ScrollTrigger from 'gsap/src/ScrollTrigger'
+
 import React, { useContext } from 'react'
 
 
 
 const Title = ({ text1, text2 }) => {
 
-  gsap.registerPlugin(ScrollTrigger);
-
-  useGSAP(() => {
-    gsap.from("#txt1 ", {
-      opacity: 0,
-      scrollTrigger:{
-        trigger:"#headings-1",
-        start:"top 95%",
-        scrub:true,
-      }
-    })
-  }, [])
+ 
 
 
   return (
