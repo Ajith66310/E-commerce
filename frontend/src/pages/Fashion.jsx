@@ -16,8 +16,8 @@ const Fashion = () => {
   return (
     <div className='flex flex-col  mt-[80px]  w-full absolute'>
 
- 
-          <Marquee/>   
+
+      <Marquee />
       <div className='pl-10 w-full h-0'>
         <Breadcrumb Home="Home" Fashion="Fashion" />
       </div>
@@ -38,6 +38,18 @@ const Fashion = () => {
         </div>
       </div>
 
+      {/* select category */}
+
+      <div>
+        <p>
+          Filter
+        </p>
+        <div><input type="checkbox" />Men</div>
+        <div><input type="checkbox" />Women</div>
+        <div><input type="checkbox" />Top</div>
+        <div><input type="checkbox" />Shirt</div>
+        <div><input type="checkbox" />Pants</div>
+      </div>
       <div className=' grid grid-cols-2 gap-5 w-100 m-auto  md:grid-cols-3 md:w-180  lg:grid-cols-4 lg:w-[95%]'>
         {
           product.map((item, index) => (
@@ -46,7 +58,7 @@ const Fashion = () => {
         }
 
       </div>
-      
+
 
     </div>
   )

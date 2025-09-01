@@ -86,7 +86,7 @@ const Marquee = () => {
   }, []);
 
   return (
-    <div className="relative w-full mt-5">
+    <div className="relative w-full mt-5 selection:bg-red-600 selection:text-white">
       {/* Marquee container with hidden edges */}
       <div
         ref={wrapperRef}
