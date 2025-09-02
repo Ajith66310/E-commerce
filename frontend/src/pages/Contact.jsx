@@ -9,7 +9,7 @@ const Contact = () => {
 
   return (
     <div className='flex flex-col  mt-[80px]  w-full absolute'>
-       <div className='pl-10 w-full  bg-red-50'>
+       <div className='pl-10 w-full '>
           <Breadcrumb Home="Home" Contact="Contact" />
         </div>
          <Marquee/>   
