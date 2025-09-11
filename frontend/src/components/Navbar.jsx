@@ -85,7 +85,9 @@ const Navbar = () => {
           )
         }
         <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-red-900 text-3xl cursor-pointer text-red-800' />
+          <NavLink to="/userprofile">
           <GoPerson className="cursor-pointer text-red-800 hover:text-red-900 " />
+          </NavLink>
         </div>
       </div>
 
@@ -125,14 +127,94 @@ const Navbar = () => {
       </div>
 
       {/* sidebar Cart  */}
-      <div className={` fixed bg-black/90 z-50 text-white overflow-hidden h-full top-0 right-0 transition-all ease-in-out duration-300  ${cartIcon ? 'w-[50vw] md:w-[35vw] ' : 'w-0 '}`}>
-        <div className=' flex flex-col text-white h-full'>
-          <div onClick={() => setCartIcon(false)} className=' gap-4 p-3 cursor-pointer'>
-            <p className='text-white text-start '>Back</p>
+{/* sidebar Cart */}
+<div
+  className={`fixed bg-white z-50 text-black overflow-y-auto h-full top-0 right-0 transition-all ease-in-out duration-300 
+    ${cartIcon ? 'w-[80vw] md:w-[35vw]' : 'w-0'}
+  `}
+>
+  <div className="flex flex-col h-full">
+    {/* Header */}
+    <div className="flex justify-between items-center p-4 border-b">
+      <p className="font-semibold text-lg">Your Bag</p>
+      <button
+        onClick={() => setCartIcon(false)}
+        className="text-red-600 text-xl"
+      >
+        ✕
+      </button>
+    </div>
+
+    {/* Cart Items */}
+    <div className="flex-1 p-4 space-y-4">
+      {/* Example Product */}
+      <div className="flex gap-4 items-center border-b pb-4">
+        {/* Product image */}
+        <img
+          src="https://via.placeholder.com/100x120"
+          alt="product"
+          className="w-24 h-28 object-cover rounded"
+        />
+
+        <div className="flex-1">
+          <p className="font-medium">Oversized T-shirt</p>
+          <p className="text-sm text-gray-500">Black</p>
+
+          {/* Size selector */}
+          <div className="mt-2 flex gap-2">
+            {['S', 'M', 'L', 'XL'].map((size) => (
+              <button
+                key={size}
+                className="px-2 py-1 border rounded text-sm hover:bg-gray-100"
+              >
+                {size}
+              </button>
+            ))}
           </div>
 
+          {/* Quantity selector */}
+          <div className="mt-2 flex items-center gap-2">
+            <button className="px-2 py-1 border rounded">-</button>
+            <span className="px-3">1</span>
+            <button className="px-2 py-1 border rounded">+</button>
+          </div>
         </div>
+
+        {/* Price */}
+        <p className="font-semibold">₹999</p>
       </div>
+
+      {/* More products here */}
+    </div>
+
+    {/* Cart Totals */}
+    <div className="p-4 border-t">
+      <div className="flex justify-between">
+        <span className="font-medium">Cart Subtotal</span>
+        <span>₹1,999</span>
+      </div>
+      <div className="flex justify-between text-green-600">
+        <span>You Saved</span>
+        <span>₹300</span>
+      </div>
+      <div className="flex justify-between font-bold text-lg mt-2">
+        <span>Total</span>
+        <span>₹1,699</span>
+      </div>
+
+      {/* Buttons */}
+      <button className="w-full bg-green-700 text-white py-3 rounded hover:bg-green-800 transition mt-4">
+        Proceed to Checkout
+      </button>
+      <button
+        onClick={() => setCartIcon(false)}
+        className="w-full border border-green-700 text-green-700 py-3 rounded hover:bg-green-50 transition mt-2"
+      >
+        Continue Shopping
+      </button>
+    </div>
+  </div>
+</div>
 
 
     </>

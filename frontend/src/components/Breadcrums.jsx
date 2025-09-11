@@ -17,7 +17,7 @@ export default function Breadcrumb({ Home, Fashion, Favourite, Contact }) {
           </NavLink>
         </li>
         <li className="inline-flex items-center ">
-        {Fashion ? <span className="text-secondary-400 px-3">/</span> : ""}
+          {Fashion ? <span className="text-secondary-400 px-3">/</span> : ""}
           <NavLink
             to="/fashion"
             className={({ isActive }) =>

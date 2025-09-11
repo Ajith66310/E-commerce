@@ -1,4 +1,5 @@
 
+import Bestseller from '../components/Bestseller.jsx'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import Latestproducts from '../components/Latestproducts'
@@ -15,6 +16,7 @@ const Home = () => {
 
       <SwiperSlider />
       <Latestproducts />
+      <Bestseller/>
       <Footer />
     </>
   )

@@ -50,7 +50,6 @@ const Signup = () => {
   }
 
   const handleSuccess = async (credentialResponse) => {
-
     const decoded = jwtDecode(credentialResponse.credential);
     try {
       const response = await axios.post(`${import.meta.env.VITE_URL}/google-signup`, {

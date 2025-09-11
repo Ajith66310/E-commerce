@@ -323,7 +323,7 @@ const googleSignup = async (req, res) => {
         existingUser.googleId = hashedGoogleId;
         await existingUser.save();
       } else {
-        return res.status(400).json({ message: "Email already registered" });
+        return res.status(200).json({ message: "Email already registered" });
       }
     } else {
       const hashedGoogleId = await bcrypt.hash(googleId, 10);

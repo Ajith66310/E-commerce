@@ -6,13 +6,12 @@ import Marquee from '../components/Marquee.jsx';
 const Contact = () => {
   return (
     <div className="flex flex-col mt-[80px] w-full absolute">
-      {/* Breadcrumb */}
-      <div className="pl-10 w-full">
-        <Breadcrumb Home="Home" Contact="Contact" />
-      </div>
 
       {/* Marquee */}
       <Marquee />
+      <div className="pl-10 pt-5 pb-5 w-full">
+        <Breadcrumb Home="Home" Contact="Contact" />
+      </div>
 
       {/* Contact Section */}
       <motion.section
@@ -67,18 +66,6 @@ const Contact = () => {
             Send Message
           </button>
         </motion.form>
-
-        {/* Contact Info */}
-        <motion.div
-          className="mt-12 text-center space-y-4"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          <p className="text-gray-700">📧 support@example.com</p>
-          <p className="text-gray-700">📞 +1 234 567 890</p>
-          <p className="text-gray-700">🏢 1234 Main Street, City, Country</p>
-        </motion.div>
       </motion.section>
     </div>
   );

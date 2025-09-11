@@ -7,10 +7,10 @@ const Favourite = () => {
   return (
 
     <div className='flex flex-col  mt-[80px]  w-full absolute'>
-      <div className='pl-10 w-full'>
+      <Marquee />
+      <div className="pl-10 pt-5 pb-5 w-full">
         <Breadcrumb Home="Home" Favourite="Favourite" />
       </div>
-       <Marquee/>   
     </div>
 
   )

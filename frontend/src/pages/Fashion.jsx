@@ -16,13 +16,14 @@ const Fashion = () => {
     <div className='flex flex-col mt-[80px] w-full absolute'>
 
       <Marquee />
-      <div className='pl-10 w-full h-0'>
+      <div className="pl-10 pt-5 pb-5 w-full">
         <Breadcrumb Home="Home" Fashion="Fashion" />
       </div>
 
+
       <div className='w-full grid grid-cols-2'>
         <div>
-          <p className='text-black text-3xl pl-10 pt-10 font-[poppins]'>
+          <p className='text-black text-3xl pl-10  font-[poppins]'>
             All<span className='text-red-800 pl-2 font-[poppins]'>Products</span>
           </p>
         </div>
@@ -39,7 +40,7 @@ const Fashion = () => {
         </div>
       </div>
 
-         {/* Filter Section */}
+      {/* Filter Section */}
       <div className="pl-10 mt-5">
         <button
           onClick={() => setShowFilter(!showFilter)}
@@ -49,9 +50,8 @@ const Fashion = () => {
         </button>
 
         <div
-          className={`overflow-hidden transition-all duration-500 ease-in-out ${
-            showFilter ? "max-h-96 opacity-100 mt-3" : "max-h-0 opacity-0"
-          }`}
+          className={`overflow-hidden transition-all duration-500 ease-in-out ${showFilter ? "max-h-96 opacity-100 mt-3" : "max-h-0 opacity-0"
+            }`}
         >
           <div className="space-y-2 text-black font-[poppins]">
             <label className="block"><input type="checkbox" className="mr-2" /> Men</label>
@@ -63,7 +63,7 @@ const Fashion = () => {
         </div>
       </div>
 
-      
+
       {/* Product Grid */}
       <div className='grid grid-cols-2 gap-5 m-auto md:grid-cols-3 md:w-180 lg:grid-cols-4 lg:w-[95%]'>
         {product.map((item, index) => (

@@ -13,6 +13,7 @@ import ResetPassword from './pages/ResetPassword';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import VerifyOtp from './pages/VerifyOtp';
+import UserProfile from './UserProfile';
 import ResetPasswordOtpVerify from './pages/ResetPasswordOtpVerify';
 import Product from './pages/Product';
 
@@ -36,6 +37,7 @@ const App = () => {
           <Route path='resetotpverify' element={<ResetPasswordOtpVerify/>} />
           <Route path='*' element={<NotFound />} />
         </Route>
+          <Route path='userprofile' element={<UserProfile/>} />
       </Routes>
     </BrowserRouter>
   )

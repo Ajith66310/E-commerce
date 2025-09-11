@@ -2,7 +2,7 @@ import express from 'express'
 import 'dotenv/config.js'
 import { connectDB } from './config/mongodb.js';
 import userRouter from './routes/userRouter.js';
-import productRouter from './routes/productRouter.js';
+// import productRouter from './routes/productRouter.js';
 import cors from 'cors'
 import cookieParser from "cookie-parser";
 
@@ -19,7 +19,7 @@ app.use(cors({
 }));
 
 app.use('/',userRouter);
-app.use('/',productRouter);
+// app.use('/',productRouter);
 
 await connectDB();
 
