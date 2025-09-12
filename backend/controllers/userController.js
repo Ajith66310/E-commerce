@@ -1,7 +1,7 @@
 import sendMail from '../middleware/nodemailer.js';
 import userModel from '../models/userModel.js'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken';
+import jwt, { decode } from 'jsonwebtoken';
 import Redis from 'ioredis'
 import { RegisterSuccessEmail } from "../templates/RegisterSuccessEmail.js";
 import { resend, FROM_EMAIL } from "../middleware/resendMailer.js";
@@ -9,6 +9,7 @@ import { resend, FROM_EMAIL } from "../middleware/resendMailer.js";
 const redis = new Redis();
 
 const registerOtpMail = async (req, res) => {
+
   try {
     const { name, email, password } = req.body;
 
@@ -58,7 +59,9 @@ const registerOtpMail = async (req, res) => {
 
 
 const signupOtpVerify = async (req, res) => {
+  
   try {
+
     const { otp } = req.body;
     const tempToken = req.cookies.tempToken;
 
@@ -359,6 +362,18 @@ const googleSignup = async (req, res) => {
   }
 };
 
+const fetchUser = async(req,res)=>{
+try {
+  const {email} = req.body;
+  const decoded = jwt.decode(email)
+  const userData = await userModel.findOne({email:decoded.email});
+  console.log(userData);
+  return res.status(200).json({userData})
+} catch (error) {
+console.log(error);
+}
+
+}
 
 
-export { resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };
+export {fetchUser, resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };

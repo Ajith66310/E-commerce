@@ -7,6 +7,7 @@ import { GoPerson } from "react-icons/go";
 import { CiLogin } from "react-icons/ci";
 import { IoIosLogOut } from "react-icons/io";
 
+
 const Navbar = () => {
 
 
@@ -45,6 +46,7 @@ const Navbar = () => {
   }
 
   const token = localStorage.getItem("token");
+   
   return (
     <>
       <div className={`${userIcon ? 'hidden' : ' bg-[transparent] absolute z-50  md:h-20 w-full grid md:grid-cols-3  '}`} >
@@ -62,14 +64,14 @@ const Navbar = () => {
             <p className=' font-serif hover:text-red-900 text-red-800 ' >FASHION</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>
-          <NavLink to='/favourite' className='flex flex-col items-center '>
+          {/* <NavLink to='/favourite' className='flex flex-col items-center '>
             <p className='font-serif hover:text-red-900 text-red-800 ' >FAVOURITE</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>
           <NavLink to='/contact' className='flex flex-col items-center '>
             <p className='font-serif hover:text-red-900 text-red-800 ' >CONTACT</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
-          </NavLink>
+          </NavLink> */}
         </div>
 
         <div id='nav-items' className='flex items-center max-md:hidden gap-3  justify-end text-2xl  pr-10'>
@@ -85,10 +87,13 @@ const Navbar = () => {
           )
         }
         <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-red-900 text-3xl cursor-pointer text-red-800' />
+{          token &&
+
           <NavLink to="/userprofile">
           <GoPerson className="cursor-pointer text-red-800 hover:text-red-900 " />
           </NavLink>
-        </div>
+          }
+      </div>
       </div>
 
       {/* sidebar small-screen */}
@@ -99,6 +104,7 @@ const Navbar = () => {
         </div>
         <div className='pr-3 flex justify-end space-x-2 items-center text-sm'>
           <CiShoppingCart onClick={() => setCartIcon(true)} className='hover:text-red-900 text-3xl cursor-pointer text-red-800' />
+            
           <GoPerson onClick={() => setUserIcon(true)} className="cursor-pointer hover:text-red-900 text text-red-800 text-2xl" />
         </div>
       </div>
@@ -150,8 +156,9 @@ const Navbar = () => {
       {/* Example Product */}
       <div className="flex gap-4 items-center border-b pb-4">
         {/* Product image */}
+
         <img
-          src="https://via.placeholder.com/100x120"
+          
           alt="product"
           className="w-24 h-28 object-cover rounded"
         />

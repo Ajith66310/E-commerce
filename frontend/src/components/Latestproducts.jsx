@@ -24,8 +24,7 @@ const Latestproducts = () => {
         start: "top 250",      
         endTrigger: "#image-box",     
         end: "bottom 50",
-        scrub: true,
-        markers: true,                
+        scrub: true,              
       }
     })
   }, [])

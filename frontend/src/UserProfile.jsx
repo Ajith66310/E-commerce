@@ -1,53 +1,115 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const UserProfile = () => {
   const navigate = useNavigate();
 
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+  });
+
+  // 👇 added state for image
+  const [image, setImage] = useState(null);
+
+  // 👇 added handler for image upload
+  const handleImageUpload = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    handleUser();
+  }, [token]);
+
+  const handleUser = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_URL}/fetch-user`,
+        {
+          email: token,
+        }
+      );
+      console.log(response.data.userData);
+
+      setUser(response.data.userData);
+    } catch (error) {
+      toast.error(error?.message || "Error fetching user");
+    }
+  };
+
   return (
-    <>
-      {/* Back Button (outside the form container) */}
-      <div className="max-w-2xl mx-auto mt-10">
+    <div className="max-w-3xl mx-auto mt-10">
+      {/* Back button */}
+      <button
+        type="button"
+        onClick={() => navigate("/")}
+        className="mb-6 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded shadow hover:bg-gray-300 transition"
+      >
+        Back
+      </button>
+
+      {/* Profile Section */}
+      <div className="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center">
+        {/* Round image upload */}
+        <label className="relative cursor-pointer">
+          <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-300 flex items-center justify-center">
+            {image ? (
+              <img
+                src={image}
+                alt="User"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-gray-500 text-sm">Upload Image</span>
+            )}
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+          />
+        </label>
+
+        {/* Name & Email */}
+        <h2 className="text-3xl font-bold mt-4">{user?.name}</h2>
+        <p className="text-gray-600">{user?.email}</p>
+
+        {/* Reset Password Button */}
         <button
           type="button"
-          onClick={() => navigate("/")} // change "/" to your home route
-          className="mb-4 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded shadow hover:bg-gray-300 transition"
+          onClick={() => navigate("/reset-password")}
+          className="mt-4 bg-red-500 text-white font-semibold py-2 px-4 rounded shadow hover:bg-red-600 transition"
         >
-        Back
+          Reset Password
         </button>
       </div>
 
-      <div className="max-w-2xl mx-auto bg-white shadow-md rounded-2xl p-6">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          User Profile & Shipping
-        </h2>
+      {/* Shipping Form */}
+      <div className="bg-white shadow-md rounded-2xl p-6 mt-8">
+        <h3 className="text-2xl font-bold mb-6 text-center">
+          Shipping Address
+        </h3>
 
-        {/* Image Upload */}
-        <div className="flex justify-center mb-6">
-          <label className="flex flex-col items-center justify-center w-32 h-32 border-2 border-dashed border-gray-300 cursor-pointer">
-            <span className="text-gray-500 text-sm">Upload Image</span>
-            <input type="file" accept="image/*" className="hidden" />
-          </label>
-        </div>
-
-        {/* Form */}
-        <form className="space-y-5 border-t border-b border-gray-300 pt-6 pb-6">
-          {/* First + Last Name */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form className="space-y-5">
+          {/* Name */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
             <input
               type="text"
               name="firstName"
+              disabled
               placeholder="First name"
-              className="block w-full border border-gray-300 shadow-sm focus:ring-red-500 focus:border-red-500 rounded-md pl-5 py-3"
+              defaultValue={user?.name}
+              className="block w-full border border-gray-300 rounded-md pl-5 py-3"
               required
             />
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Last name"
-              className="block w-full border border-gray-300 shadow-sm focus:ring-red-500 focus:border-red-500 rounded-md pl-5 py-3"
-              required
-            />
+
           </div>
 
           {/* Email */}
@@ -55,7 +117,9 @@ const UserProfile = () => {
             type="email"
             name="email"
             placeholder="Email address"
-            className="block w-full border border-gray-300 shadow-sm focus:ring-red-500 focus:border-red-500 rounded-md pl-5 py-3"
+            disabled
+            defaultValue={user?.email}
+            className="block w-full border border-gray-300 rounded-md pl-5 py-3"
             required
           />
 
@@ -64,7 +128,7 @@ const UserProfile = () => {
             type="text"
             name="street"
             placeholder="Street"
-            className="block w-full border border-gray-300 shadow-sm focus:ring-red-500 focus:border-red-500 rounded-md pl-5 py-3"
+            className="block w-full border border-gray-300 rounded-md pl-5 py-3"
             required
           />
 
@@ -74,63 +138,55 @@ const UserProfile = () => {
               type="text"
               name="city"
               placeholder="City"
-              className="block w-full border border-gray-300 shadow-sm focus:ring-red-500 focus:border-red-500 rounded-md pl-5 py-3"
+              className="block w-full border border-gray-300 rounded-md pl-5 py-3"
               required
             />
             <input
               type="text"
               name="state"
               placeholder="State"
-              className="block w-full border border-gray-300 shadow-sm focus:ring-red-500 focus:border-red-500 rounded-md pl-5 py-3"
+              className="block w-full border border-gray-300 rounded-md pl-5 py-3"
               required
             />
           </div>
 
-          {/* Zipcode + Country */}
+          {/* Zip + Country */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input
               type="text"
               name="zipcode"
               placeholder="Zipcode"
-              className="block w-full border border-gray-300 shadow-sm focus:ring-red-500 focus:border-red-500 rounded-md pl-5 py-3"
+              className="block w-full border border-gray-300 rounded-md pl-5 py-3"
               required
             />
             <input
               type="text"
               name="country"
               placeholder="Country"
-              className="block w-full border border-gray-300 shadow-sm focus:ring-red-500 focus:border-red-500 rounded-md pl-5 py-3"
+              className="block w-full border border-gray-300 rounded-md pl-5 py-3"
               required
             />
           </div>
 
-          {/* Phone + Add Button */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone"
-              className="col-span-2 block w-full border border-gray-300 shadow-sm focus:ring-red-500 focus:border-red-500 rounded-md pl-5 py-3"
-              required
-            />
-            <button
-              type="button"
-              className="bg-gray-200 text-gray-800 font-semibold py-3 px-4 border border-gray-300 rounded-md shadow hover:bg-gray-300 transition"
-            >
-              Add
-            </button>
-          </div>
+          {/* Phone */}
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Phone"
+            className="block w-full border border-gray-300 rounded-md pl-5 py-3"
+            required
+          />
 
-          {/* Submit Button */}
+          {/* Save Button */}
           <button
             type="submit"
             className="w-full bg-red-600 text-white font-semibold py-3 px-4 rounded-md shadow hover:bg-red-700 transition"
           >
-            Save Profile
+            Save Shipping Info
           </button>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 

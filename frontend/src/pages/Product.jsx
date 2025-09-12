@@ -1,46 +1,45 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+// src/pages/ProductDetails.jsx
+import React from "react";
+import { NavLink, useParams } from "react-router-dom";
+import { products } from "../assets/images";
 
-const Product = () => {
+const Products = () => {
   const { id } = useParams();
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const product = products.find((item) => item.id === id);
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_URL}/fetchproduct/${id}`
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch product");
-        }
-
-        const data = await response.json();
-        setProduct(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [id]);
+  if (!product) {
+    return (
+      <div className="p-6 text-center">
+        <p>Product not found</p>
+        <Link to="/fashion" className="text-blue-500">Back to products</Link>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h1>Product Page</h1>
-      {loading ? (
-        <p>Loading...</p>
-      ) : product ? (
-        <pre>{JSON.stringify(product, null, 2)}</pre>
-      ) : (
-        <p>Product not found</p>
-      )}
+    <div className="max-w-3xl mx-auto p-20">
+      <NavLink to="/fashion" className="inline-block mb-4 bg-gray-200 px-4 py-2 rounded hover:bg-gray-300" >
+        Back
+      </NavLink>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-white shadow rounded p-6">
+        <img
+          src={product.img}
+          alt={product.title}
+          className="w-full h-80 object-cover rounded"
+        />
+        <div>
+          <h1 className="text-2xl font-bold">{product.title}</h1>
+          <p className="text-gray-500 mt-2">{product.description}</p>
+          <p className="text-xl font-semibold mt-4">₹{product.price}</p>
+          <p className="text-sm mt-2">Discount: {product.percentage}%</p>
+
+          <button className="mt-6 w-full bg-red-600 text-white py-3 rounded hover:bg-red-700 transition">
+            Add to Cart
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Product;
+export default Products;
