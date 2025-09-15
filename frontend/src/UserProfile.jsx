@@ -6,20 +6,21 @@ import { toast } from "react-toastify";
 const UserProfile = () => {
   const navigate = useNavigate();
 
+  const [image, setImage] = useState(null);
+
+  const [value, setValue] = useState({
+    street: "",
+    city: "",
+    state: "",
+    zipcode: "",
+    country: "",
+    phone: "",
+  });
+
   const [user, setUser] = useState({
     name: "",
     email: "",
   });
-
-  // 👇 added state for image
-  const [image, setImage] = useState(null);
-
-  // 👇 added handler for image upload
-  const handleImageUpload = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(URL.createObjectURL(e.target.files[0]));
-    }
-  };
 
   const token = localStorage.getItem("token");
 
@@ -35,12 +36,26 @@ const UserProfile = () => {
           email: token,
         }
       );
-      console.log(response.data.userData);
-
       setUser(response.data.userData);
     } catch (error) {
       toast.error(error?.message || "Error fetching user");
     }
+  };
+
+  const handleUserAddress = async (e) => {
+    e.preventDefault(); // stop page reload
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_URL}/user-address`,
+        {
+          email: user.email, // send logged in user email
+          address: value,
+        }
+      );
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Error saving address");
+    }resizeBy
   };
 
   return (
@@ -72,8 +87,12 @@ const UserProfile = () => {
           <input
             type="file"
             accept="image/*"
-            onChange={handleImageUpload}
             className="hidden"
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                setImage(URL.createObjectURL(e.target.files[0]));
+              }
+            }}
           />
         </label>
 
@@ -93,26 +112,21 @@ const UserProfile = () => {
 
       {/* Shipping Form */}
       <div className="bg-white shadow-md rounded-2xl p-6 mt-8">
-        <h3 className="text-2xl font-bold mb-6 text-center">
-          Shipping Address
-        </h3>
+        <h3 className="text-2xl font-bold mb-6 text-center">Shipping Address</h3>
 
-        <form className="space-y-5">
+        <form className="space-y-5" onSubmit={handleUserAddress} method="post">
           {/* Name */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-            <input
-              type="text"
-              name="firstName"
-              disabled
-              placeholder="First name"
-              defaultValue={user?.name}
-              className="block w-full border border-gray-300 rounded-md pl-5 py-3"
-              required
-            />
+          <input
+            type="text"
+            name="firstName"
+            placeholder="First name"
+            disabled
+            defaultValue={user?.name}
+            className="block w-full border border-gray-300 rounded-md pl-5 py-3"
+            required
+          />
 
-          </div>
-
-          {/* Email */}
+          {/* email */}
           <input
             type="email"
             name="email"
@@ -130,6 +144,7 @@ const UserProfile = () => {
             placeholder="Street"
             className="block w-full border border-gray-300 rounded-md pl-5 py-3"
             required
+            onChange={(e) => setValue({ ...value, street: e.target.value })}
           />
 
           {/* City + State */}
@@ -140,11 +155,14 @@ const UserProfile = () => {
               placeholder="City"
               className="block w-full border border-gray-300 rounded-md pl-5 py-3"
               required
+              onChange={(e) => setValue({ ...value, city: e.target.value })}
             />
+
             <input
               type="text"
               name="state"
               placeholder="State"
+              onChange={(e) => setValue({ ...value, state: e.target.value })}
               className="block w-full border border-gray-300 rounded-md pl-5 py-3"
               required
             />
@@ -156,6 +174,7 @@ const UserProfile = () => {
               type="text"
               name="zipcode"
               placeholder="Zipcode"
+              onChange={(e) => setValue({ ...value, zipcode: e.target.value })}
               className="block w-full border border-gray-300 rounded-md pl-5 py-3"
               required
             />
@@ -163,6 +182,7 @@ const UserProfile = () => {
               type="text"
               name="country"
               placeholder="Country"
+              onChange={(e) => setValue({ ...value, country: e.target.value })}
               className="block w-full border border-gray-300 rounded-md pl-5 py-3"
               required
             />
@@ -175,6 +195,7 @@ const UserProfile = () => {
             placeholder="Phone"
             className="block w-full border border-gray-300 rounded-md pl-5 py-3"
             required
+            onChange={(e) => setValue({ ...value, phone: e.target.value })}
           />
 
           {/* Save Button */}

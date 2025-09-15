@@ -143,9 +143,10 @@ const login = async (req, res) => {
     }
 
     if (result) {
-      const token = jwt.sign(data.email, process.env.SECRET_KEY);
-      return res.status(200).json({ message: 'Login successful.', token })
-    }
+  const token = jwt.sign({ email: data.email }, process.env.SECRET_KEY, { expiresIn: '15m' });
+  return res.status(200).json({ message: 'Login successful.', token })
+}
+
   })
 }
 
@@ -372,8 +373,24 @@ try {
 } catch (error) {
 console.log(error);
 }
+}
 
+const userAddress = async(req,res)=>{
+  try {
+    const {email,address} = req.body
+    
+   const user = await userModel.findOneAndUpdate(
+      { email: email },           
+      { $set: { address: address } }, 
+      { new: true }               
+    );  
+    console.log(user);
+    
+    
+  } catch (error) {
+    
+  }
 }
 
 
-export {fetchUser, resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };
+export {userAddress,fetchUser, resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };

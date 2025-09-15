@@ -7,6 +7,14 @@ const userSchema = new mongoose.Schema({
   role : {type:String , default : "user" },
   status : {type:String , default : "pending" },
   googleId:{type:String},
+  address:{
+      street: {type: String},
+      city: {type: String},
+      state: {type: String},
+      zipcode: {type: String},
+      country: {type: String},
+      phone:{type: String}
+    },
   timestamp :{type:Date, default:Date.now()}
 })
 
