@@ -1,22 +1,24 @@
 import sendMail from '../middleware/nodemailer.js';
 import userModel from '../models/userModel.js'
 import bcrypt from 'bcrypt'
-import jwt, { decode } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import Redis from 'ioredis'
 import { RegisterSuccessEmail } from "../templates/RegisterSuccessEmail.js";
 import { resend, FROM_EMAIL } from "../middleware/resendMailer.js";
+import cloudinary from '../config/cloudinary.js';
+import streamifier from 'streamifier';
+
 
 const redis = new Redis();
 
 const registerOtpMail = async (req, res) => {
-
   try {
     const { name, email, password } = req.body;
 
     const existing = await userModel.findOne({ email });
 
     if (existing) {
-      if (!existing.password) { 
+      if (!existing.password) {
         const hashedPass = await bcrypt.hash(password, 10);
         existing.password = hashedPass;
         await existing.save();
@@ -28,7 +30,7 @@ const registerOtpMail = async (req, res) => {
         name,
         email,
         password: await bcrypt.hash(password, 10),
-        googleId: "", 
+        googleId: "",
         status: "pending",
       });
       await newUser.save();
@@ -59,7 +61,7 @@ const registerOtpMail = async (req, res) => {
 
 
 const signupOtpVerify = async (req, res) => {
-  
+
   try {
 
     const { otp } = req.body;
@@ -131,7 +133,7 @@ const login = async (req, res) => {
 
   const data = await userModel.findOne({ email: email });
 
-   if (!data) {
+  if (!data) {
     return res.status(404).json({ message: "User not found, Please Register first" });
   }
 
@@ -143,9 +145,9 @@ const login = async (req, res) => {
     }
 
     if (result) {
-  const token = jwt.sign({ email: data.email }, process.env.SECRET_KEY, { expiresIn: '15m' });
-  return res.status(200).json({ message: 'Login successful.', token })
-}
+      const token = jwt.sign({ email: data.email }, process.env.SECRET_KEY, { expiresIn: '15m' });
+      return res.status(200).json({ message: 'Login successful.', token })
+    }
 
   })
 }
@@ -296,7 +298,7 @@ const resetPassword = async (req, res) => {
 
 
 
-const googleLogin = async(req, res) => {
+const googleLogin = async (req, res) => {
 
   const { email, googleId } = req.body;
 
@@ -309,7 +311,7 @@ const googleLogin = async(req, res) => {
   const googleIdVerify = await bcrypt.compare(googleId, data.googleId)
 
   if (data.email === email && googleIdVerify) {
-    const token = jwt.sign({email:data.email}, process.env.SECRET_KEY,);
+    const token = jwt.sign({ email: data.email }, process.env.SECRET_KEY,);
     return res.status(200).json({ message: "Login successfully", token })
   }
 };
@@ -363,34 +365,52 @@ const googleSignup = async (req, res) => {
   }
 };
 
-const fetchUser = async(req,res)=>{
-try {
-  const {email} = req.body;
-  const decoded = jwt.decode(email)
-  const userData = await userModel.findOne({email:decoded.email});
-  console.log(userData);
-  return res.status(200).json({userData})
-} catch (error) {
-console.log(error);
-}
-}
-
-const userAddress = async(req,res)=>{
+const fetchUser = async (req, res) => {
   try {
-    const {email,address} = req.body
-    
-   const user = await userModel.findOneAndUpdate(
-      { email: email },           
-      { $set: { address: address } }, 
-      { new: true }               
-    );  
-    console.log(user);
-    
-    
+    const { email } = req.body;
+    const decoded = jwt.decode(email)
+    const userData = await userModel.findOne({ email: decoded.email });
+    console.log(userData);
+    return res.status(200).json({ userData })
   } catch (error) {
-    
+    console.log(error);
   }
 }
 
 
-export {userAddress,fetchUser, resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };
+
+const userAddress = async (req, res) => {
+  try {
+    const { email, address } = req.body;
+    const parsedAddress = JSON.parse(address);
+
+    let imageUrl;
+    if (req.file) {
+      // upload from memory directly
+      imageUrl = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: 'user_profiles' },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result.secure_url);
+          }
+        );
+        streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+      });
+    }
+
+    const update = {
+      address: parsedAddress,
+      ...(imageUrl && { image: imageUrl }),
+    };
+
+    await userModel.findOneAndUpdate({ email }, { $set: update }, { new: true });
+
+    res.status(200).json({ message: 'Address saved' });
+  } catch (error) {
+    console.error(error);
+    res.status(404).json({ message: 'An Error occur while saving' });
+  }
+};
+
+export { userAddress, fetchUser, resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };

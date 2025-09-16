@@ -64,14 +64,14 @@ const Navbar = () => {
             <p className=' font-serif hover:text-red-900 text-red-800 ' >FASHION</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>
-          {/* <NavLink to='/favourite' className='flex flex-col items-center '>
+          <NavLink to='/favourite' className='flex flex-col items-center '>
             <p className='font-serif hover:text-red-900 text-red-800 ' >FAVOURITE</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
           </NavLink>
           <NavLink to='/contact' className='flex flex-col items-center '>
             <p className='font-serif hover:text-red-900 text-red-800 ' >CONTACT</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-800 hidden' />
-          </NavLink> */}
+          </NavLink>
         </div>
 
         <div id='nav-items' className='flex items-center max-md:hidden gap-3  justify-end text-2xl  pr-10'>

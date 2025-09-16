@@ -7,6 +7,7 @@ const UserProfile = () => {
   const navigate = useNavigate();
 
   const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null); 
 
   const [value, setValue] = useState({
     street: "",
@@ -16,6 +17,7 @@ const UserProfile = () => {
     country: "",
     phone: "",
   });
+
 
   const [user, setUser] = useState({
     name: "",
@@ -37,25 +39,37 @@ const UserProfile = () => {
         }
       );
       setUser(response.data.userData);
+      setPreview(response.data.userData.image)
     } catch (error) {
       toast.error(error?.message || "Error fetching user");
     }
   };
 
   const handleUserAddress = async (e) => {
-    e.preventDefault(); // stop page reload
+    e.preventDefault();
     try {
+
+      const formData = new FormData();
+      formData.append("email", user.email);
+      formData.append("address", JSON.stringify(value));
+      if (image) {
+        formData.append("image", image);   // real File now
+      }
+
       const response = await axios.post(
         `${import.meta.env.VITE_URL}/user-address`,
+        formData,
         {
-          email: user.email, // send logged in user email
-          address: value,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
       toast.success(response.data.message);
+      navigate('/')
     } catch (error) {
       toast.error(error?.response?.data?.message || "Error saving address");
-    }resizeBy
+    }
   };
 
   return (
@@ -73,27 +87,28 @@ const UserProfile = () => {
       <div className="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center">
         {/* Round image upload */}
         <label className="relative cursor-pointer">
-          <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-300 flex items-center justify-center">
-            {image ? (
-              <img
-                src={image}
-                alt="User"
-                className="w-full h-full object-cover"
-              />
+
+          <div className="w-32 h-32 rounded-full overflow-hidden border-2">
+            {preview ? (
+              <img src={preview} alt="User" className="w-full h-full object-cover" />
             ) : (
               <span className="text-gray-500 text-sm">Upload Image</span>
             )}
           </div>
+
           <input
             type="file"
             accept="image/*"
             className="hidden"
             onChange={(e) => {
               if (e.target.files && e.target.files[0]) {
-                setImage(URL.createObjectURL(e.target.files[0]));
+                const file = e.target.files[0];
+                setImage(file);
+                setPreview(URL.createObjectURL(file));
               }
             }}
           />
+
         </label>
 
         {/* Name & Email */}
@@ -114,7 +129,7 @@ const UserProfile = () => {
       <div className="bg-white shadow-md rounded-2xl p-6 mt-8">
         <h3 className="text-2xl font-bold mb-6 text-center">Shipping Address</h3>
 
-        <form className="space-y-5" onSubmit={handleUserAddress} method="post">
+        <form className="space-y-5" encType="multipart/form-data" onSubmit={handleUserAddress} method="post">
           {/* Name */}
           <input
             type="text"
