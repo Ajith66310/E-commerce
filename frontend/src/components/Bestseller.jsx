@@ -2,13 +2,9 @@ import { useState, useEffect, } from 'react'
 import Title from './Title'
 import { products } from '../assets/images.js'
 import ProductItem from './ProductItem.jsx'
-import { useGSAP } from '@gsap/react'
-import ScrollTrigger from 'gsap/src/ScrollTrigger'
-import gsap from 'gsap'
 
 const Bestseller = () => {
   
-  gsap.registerPlugin(ScrollTrigger);
   
   const [Latestproduct, setLatestproduct] = useState([])
   
@@ -17,20 +13,6 @@ const Bestseller = () => {
     setLatestproduct(products.slice(0, 6))
   }, [products]);
 
-  // useGSAP(() => {
-  //    gsap.to("#container", {
-  //      backgroundColor: "#fff",
-  //      ease: "power1.inOut",
-  //      scrollTrigger: {
-  //        trigger: ".title",
-  //        start: "top 20",
-  //        end:"bottom 150",
-  //        markers:true,
-
-  //        scrub: true,
-  //      }
-  //    })
-  //  }, [])
 
   return (
     <>

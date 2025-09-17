@@ -370,7 +370,6 @@ const fetchUser = async (req, res) => {
     const { email } = req.body;
     const decoded = jwt.decode(email)
     const userData = await userModel.findOne({ email: decoded.email });
-    console.log(userData);
     return res.status(200).json({ userData })
   } catch (error) {
     console.log(error);

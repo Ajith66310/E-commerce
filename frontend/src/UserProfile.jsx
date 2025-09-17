@@ -2,12 +2,18 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import {
+  FaUserCircle,
+  FaMapMarkerAlt,
+  FaEnvelope,
+  FaPhone,
+} from "react-icons/fa";
 
 const UserProfile = () => {
   const navigate = useNavigate();
 
   const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(null); 
+  const [preview, setPreview] = useState(null);
 
   const [value, setValue] = useState({
     street: "",
@@ -17,7 +23,6 @@ const UserProfile = () => {
     country: "",
     phone: "",
   });
-
 
   const [user, setUser] = useState({
     name: "",
@@ -39,7 +44,8 @@ const UserProfile = () => {
         }
       );
       setUser(response.data.userData);
-      setPreview(response.data.userData.image)
+      setValue(response.data.userData.address);
+      setPreview(response.data.userData.image);
     } catch (error) {
       toast.error(error?.message || "Error fetching user");
     }
@@ -48,12 +54,11 @@ const UserProfile = () => {
   const handleUserAddress = async (e) => {
     e.preventDefault();
     try {
-
       const formData = new FormData();
       formData.append("email", user.email);
       formData.append("address", JSON.stringify(value));
       if (image) {
-        formData.append("image", image);   // real File now
+        formData.append("image", image); // real File now
       }
 
       const response = await axios.post(
@@ -66,161 +71,203 @@ const UserProfile = () => {
         }
       );
       toast.success(response.data.message);
-      navigate('/')
+      navigate("/");
     } catch (error) {
       toast.error(error?.response?.data?.message || "Error saving address");
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-10">
-      {/* Back button */}
-      <button
-        type="button"
-        onClick={() => navigate("/")}
-        className="mb-6 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded shadow hover:bg-gray-300 transition"
-      >
-        Back
-      </button>
-
-      {/* Profile Section */}
-      <div className="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center">
-        {/* Round image upload */}
-        <label className="relative cursor-pointer">
-
-          <div className="w-32 h-32 rounded-full overflow-hidden border-2">
-            {preview ? (
-              <img src={preview} alt="User" className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-gray-500 text-sm">Upload Image</span>
-            )}
-          </div>
-
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => {
-              if (e.target.files && e.target.files[0]) {
-                const file = e.target.files[0];
-                setImage(file);
-                setPreview(URL.createObjectURL(file));
-              }
-            }}
-          />
-
-        </label>
-
-        {/* Name & Email */}
-        <h2 className="text-3xl font-bold mt-4">{user?.name}</h2>
-        <p className="text-gray-600">{user?.email}</p>
-
-        {/* Reset Password Button */}
+    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
         <button
           type="button"
-          onClick={() => navigate("/reset-password")}
-          className="mt-4 bg-red-500 text-white font-semibold py-2 px-4 rounded shadow hover:bg-red-600 transition"
+          onClick={() => navigate("/")}
+          className="mb-8 flex items-center gap-2 text-gray-600 hover:text-gray-800 transition duration-300"
         >
-          Reset Password
-        </button>
-      </div>
-
-      {/* Shipping Form */}
-      <div className="bg-white shadow-md rounded-2xl p-6 mt-8">
-        <h3 className="text-2xl font-bold mb-6 text-center">Shipping Address</h3>
-
-        <form className="space-y-5" encType="multipart/form-data" onSubmit={handleUserAddress} method="post">
-          {/* Name */}
-          <input
-            type="text"
-            name="firstName"
-            placeholder="First name"
-            disabled
-            defaultValue={user?.name}
-            className="block w-full border border-gray-300 rounded-md pl-5 py-3"
-            required
-          />
-
-          {/* email */}
-          <input
-            type="email"
-            name="email"
-            placeholder="Email address"
-            disabled
-            defaultValue={user?.email}
-            className="block w-full border border-gray-300 rounded-md pl-5 py-3"
-            required
-          />
-
-          {/* Street */}
-          <input
-            type="text"
-            name="street"
-            placeholder="Street"
-            className="block w-full border border-gray-300 rounded-md pl-5 py-3"
-            required
-            onChange={(e) => setValue({ ...value, street: e.target.value })}
-          />
-
-          {/* City + State */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input
-              type="text"
-              name="city"
-              placeholder="City"
-              className="block w-full border border-gray-300 rounded-md pl-5 py-3"
-              required
-              onChange={(e) => setValue({ ...value, city: e.target.value })}
-            />
-
-            <input
-              type="text"
-              name="state"
-              placeholder="State"
-              onChange={(e) => setValue({ ...value, state: e.target.value })}
-              className="block w-full border border-gray-300 rounded-md pl-5 py-3"
-              required
-            />
-          </div>
-
-          {/* Zip + Country */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input
-              type="text"
-              name="zipcode"
-              placeholder="Zipcode"
-              onChange={(e) => setValue({ ...value, zipcode: e.target.value })}
-              className="block w-full border border-gray-300 rounded-md pl-5 py-3"
-              required
-            />
-            <input
-              type="text"
-              name="country"
-              placeholder="Country"
-              onChange={(e) => setValue({ ...value, country: e.target.value })}
-              className="block w-full border border-gray-300 rounded-md pl-5 py-3"
-              required
-            />
-          </div>
-
-          {/* Phone */}
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone"
-            className="block w-full border border-gray-300 rounded-md pl-5 py-3"
-            required
-            onChange={(e) => setValue({ ...value, phone: e.target.value })}
-          />
-
-          {/* Save Button */}
-          <button
-            type="submit"
-            className="w-full bg-red-600 text-white font-semibold py-3 px-4 rounded-md shadow hover:bg-red-700 transition"
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
           >
-            Save Shipping Info
-          </button>
-        </form>
+            <path
+              fillRule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
+          Back 
+        </button>
+
+        <div className="bg-white rounded-3xl shadow-lg overflow-hidden md:flex">
+          {/* Left Panel - User Info */}
+          <div className="md:w-1/3 bg-gray-800 text-white p-8 flex flex-col items-center justify-center">
+            {/* Round image upload */}
+            <label className="relative cursor-pointer group mb-4">
+              <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-gray-600 group-hover:border-red-500 transition-colors duration-300">
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt="User"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-700">
+                    <FaUserCircle className="text-gray-400 text-6xl" />
+                  </div>
+                )}
+              </div>
+              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full">
+                <span className="text-white text-sm">Change Image</span>
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    setImage(file);
+                    setPreview(URL.createObjectURL(file));
+                  }
+                }}
+              />
+            </label>
+
+            {/* Name & Email */}
+            <h2 className="text-3xl font-bold tracking-tight text-center">
+              {user?.name}
+            </h2>
+            <p className="text-gray-400 mt-2 flex items-center gap-2">
+              <FaEnvelope />
+              {user?.email}
+            </p>
+
+            {/* Reset Password Button */}
+            <button
+              type="button"
+              onClick={() => navigate("/sendmail")}
+              className="mt-6 w-full bg-red-800 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:bg-red-700 transition transform hover:scale-105"
+            >
+              Reset Password
+            </button>
+          </div>
+
+          {/* Right Panel - Shipping Form */}
+          <div className="md:w-2/3 p-8 md:p-12">
+            <h3 className="text-3xl font-bold mb-8 text-center text-gray-800">
+              Shipping Address
+            </h3>
+
+            <form className="space-y-6" onSubmit={handleUserAddress}>
+              {/* Personal Info */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="relative">
+                  <FaUserCircle className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    name="firstName"
+                    placeholder="Full Name"
+                    disabled
+                    defaultValue={user?.name}
+                    className="w-full border-b-2 border-gray-300 focus:border-red-500 transition-colors pl-10 py-3 bg-transparent outline-none"
+                    required
+                  />
+                </div>
+                <div className="relative">
+                  <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email address"
+                    disabled
+                    defaultValue={user?.email}
+                    className="w-full border-b-2 border-gray-300 focus:border-red-500 transition-colors pl-10 py-3 bg-transparent outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Address Fields */}
+              <div className="relative">
+                <FaMapMarkerAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  name="street"
+                  defaultValue={value?.street}
+                  placeholder="Street"
+                  className="w-full border-b-2 border-gray-300 focus:border-red-500 transition-colors pl-10 py-3 bg-transparent outline-none"
+                  required
+                  onChange={(e) => setValue({ ...value, street: e.target.value })}
+                  />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <input
+                  type="text"
+                  name="city"
+                  placeholder="City"
+                  defaultValue={value?.city}
+                  className="w-full border-b-2 border-gray-300 focus:border-red-500 transition-colors pl-4 py-3 bg-transparent outline-none"
+                  required
+                  onChange={(e) => setValue({ ...value, city: e.target.value })}
+                  />
+                <input
+                  type="text"
+                  name="state"
+                  placeholder="State"
+                  defaultValue={value?.state}
+                  onChange={(e) => setValue({ ...value, state: e.target.value })}
+                  className="w-full border-b-2 border-gray-300 focus:border-red-500 transition-colors pl-4 py-3 bg-transparent outline-none"
+                  required
+                  />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <input
+                  type="text"
+                  name="zipcode"
+                  defaultValue={value?.zipcode}
+                  placeholder="Zipcode"
+                  onChange={(e) => setValue({ ...value, zipcode: e.target.value })}
+                  className="w-full border-b-2 border-gray-300 focus:border-red-500 transition-colors pl-4 py-3 bg-transparent outline-none"
+                  required
+                  />
+                <input
+                  type="text"
+                  name="country"
+                  defaultValue={value?.country}
+                  placeholder="Country"
+                  onChange={(e) => setValue({ ...value, country: e.target.value })}
+                  className="w-full border-b-2 border-gray-300 focus:border-red-500 transition-colors pl-4 py-3 bg-transparent outline-none"
+                  required
+                  />
+              </div>
+
+              <div className="relative">
+                <FaPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="Phone"
+                  defaultValue={value?.phone}
+                  className="w-full border-b-2 border-gray-300 focus:border-red-500 transition-colors pl-10 py-3 bg-transparent outline-none"
+                  required
+                  onChange={(e) => setValue({ ...value, phone: e.target.value })}
+                />
+              </div>
+
+              {/* Save Button */}
+              <button
+                type="submit"
+                className="w-full mt-8 bg-red-800 text-white font-semibold py-4 px-4 rounded-full shadow-lg hover:bg-red-700 transition transform hover:scale-105"
+              >
+                Save Shipping Info
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );
