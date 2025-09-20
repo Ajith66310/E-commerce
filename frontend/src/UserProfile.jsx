@@ -58,7 +58,7 @@ const UserProfile = () => {
       formData.append("email", user.email);
       formData.append("address", JSON.stringify(value));
       if (image) {
-        formData.append("image", image); // real File now
+        formData.append("image", image);
       }
 
       const response = await axios.post(

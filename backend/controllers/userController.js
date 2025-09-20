@@ -385,10 +385,9 @@ const userAddress = async (req, res) => {
 
     let imageUrl;
     if (req.file) {
-      // upload from memory directly
       imageUrl = await new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: 'user_profiles' },
+          { folder: 'user_profiles',allowed_formats:["jpg","png","webp"]},
           (error, result) => {
             if (error) return reject(error);
             resolve(result.secure_url);
@@ -411,5 +410,6 @@ const userAddress = async (req, res) => {
     res.status(404).json({ message: 'An Error occur while saving' });
   }
 };
+
 
 export { userAddress, fetchUser, resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };
