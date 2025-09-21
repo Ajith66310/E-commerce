@@ -380,6 +380,7 @@ const fetchUser = async (req, res) => {
 
 const userAddress = async (req, res) => {
   try {
+    
     const { email, address } = req.body;
     const parsedAddress = JSON.parse(address);
 

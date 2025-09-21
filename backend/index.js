@@ -6,6 +6,7 @@ import userRouter from './routes/userRouter.js';
 import cors from 'cors'
 import cookieParser from "cookie-parser";
 import adminRouter from './routes/adminRouter.js';
+import productRouter from './routes/productRouter.js';
 
 
 const app = express();
@@ -24,7 +25,7 @@ app.use(
 
 app.use('/',userRouter);
 app.use('/admin',adminRouter);
-// app.use('/',productRouter);
+app.use('/api',productRouter);
 
 await connectDB();
 
