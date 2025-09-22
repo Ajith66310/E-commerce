@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const AddProduct = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,14 @@ const AddProduct = () => {
     img4: null,
   });
 
+  // previews
+  const [previews, setPreviews] = useState({
+    img1: null,
+    img2: null,
+    img3: null,
+    img4: null,
+  });
+
   // Handle text inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,34 +38,35 @@ const AddProduct = () => {
     }));
   };
 
-  // Handle file inputs
+  // Handle file inputs with preview
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    setImages((prev) => ({
-      ...prev,
-      [name]: files[0], // take the first file
-    }));
+    const file = files[0];
+    if (file) {
+      setImages((prev) => ({
+        ...prev,
+        [name]: file,
+      }));
+      setPreviews((prev) => ({
+        ...prev,
+        [name]: URL.createObjectURL(file),
+      }));
+    }
   };
 
   // Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Build form data for axios
     const data = new FormData();
-    data.append("id", formData.id);
-    data.append("title", formData.title);
-    data.append("description", formData.description);
-    data.append("price", formData.price);
-    data.append("percentage", formData.percentage);
-    data.append("category", formData.category);
-    data.append("subcategory", formData.subcategory);
+    Object.entries(formData).forEach(([key, value]) => {
+      data.append(key, value);
+    });
 
     // append each image file
-    if (images.img1) data.append("img", images.img1);
-    if (images.img2) data.append("img", images.img2);
-    if (images.img3) data.append("img", images.img3);
-    if (images.img4) data.append("img", images.img4);
+    Object.values(images).forEach((img) => {
+      if (img) data.append("img", img);
+    });
 
     try {
       const res = await axios.post(
@@ -69,19 +79,31 @@ const AddProduct = () => {
         }
       );
       console.log("Success:", res.data);
-      alert("Product added successfully!");
+      toast.success("Product added successfully!");
+      // reset
+      setFormData({
+        id: "",
+        title: "",
+        description: "",
+        price: "",
+        percentage: "",
+        category: "",
+        subcategory: "",
+      });
+      setImages({ img1: null, img2: null, img3: null, img4: null });
+      setPreviews({ img1: null, img2: null, img3: null, img4: null });
     } catch (error) {
       console.error("Error:", error);
-      alert("Error uploading product");
+      toast.error("Error uploading product");
     }
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-      <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-2xl">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+    <div className="  flex items-center justify-center p-4">
+      <div className="  rounded-2xl w-full max-w-3xl">
+        {/* <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
           Add New Product
-        </h1>
+        </h1> */}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* id + title */}
@@ -95,7 +117,7 @@ const AddProduct = () => {
                 name="id"
                 value={formData.id}
                 onChange={handleChange}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 required
               />
             </div>
@@ -108,7 +130,7 @@ const AddProduct = () => {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 required
               />
             </div>
@@ -124,7 +146,7 @@ const AddProduct = () => {
               rows="4"
               value={formData.description}
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               required
             ></textarea>
           </div>
@@ -134,35 +156,26 @@ const AddProduct = () => {
             <label className="block text-sm font-medium text-gray-700">
               Product Images (4 files)
             </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-1">
-              <input
-                type="file"
-                name="img1"
-                onChange={handleFileChange}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm"
-                required
-              />
-              <input
-                type="file"
-                name="img2"
-                onChange={handleFileChange}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm"
-                required
-              />
-              <input
-                type="file"
-                name="img3"
-                onChange={handleFileChange}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm"
-                required
-              />
-              <input
-                type="file"
-                name="img4"
-                onChange={handleFileChange}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm"
-                required
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+              {["img1", "img2", "img3", "img4"].map((imgKey) => (
+                <div key={imgKey} className="flex flex-col items-center">
+                  <input
+                    type="file"
+                    name={imgKey}
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="px-4 py-2 border border-gray-300 rounded-lg w-full"
+                    required
+                  />
+                  {previews[imgKey] && (
+                    <img
+                      src={previews[imgKey]}
+                      alt="preview"
+                      className="mt-2 w-32 h-32 object-cover rounded-md border"
+                    />
+                  )}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -177,7 +190,7 @@ const AddProduct = () => {
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 required
               />
             </div>
@@ -191,7 +204,7 @@ const AddProduct = () => {
                 placeholder="e.g., 20%"
                 value={formData.percentage}
                 onChange={handleChange}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 required
               />
             </div>
@@ -204,7 +217,7 @@ const AddProduct = () => {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 required
               />
             </div>
@@ -220,7 +233,7 @@ const AddProduct = () => {
               name="subcategory"
               value={formData.subcategory}
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               required
             />
           </div>
@@ -229,7 +242,7 @@ const AddProduct = () => {
           <div>
             <button
               type="submit"
-              className="w-full flex justify-center py-3 px-6 rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200"
+              className="w-full flex justify-center py-3 px-6 rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200"
             >
               Add Product
             </button>

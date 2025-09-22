@@ -24,7 +24,7 @@ const addProduct = async (req, res) => {
     const uploadBufferToCloudinary = (fileBuffer, folder = "products") => {
       return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          { folder }, // optional folder in Cloudinary
+          { folder, allowed_formats:["jpg","png","webp"] }, // optional folder in Cloudinary
           (error, result) => {
             if (error) reject(error);
             else resolve(result);
