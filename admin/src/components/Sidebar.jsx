@@ -1,7 +1,8 @@
 // src/components/Sidebar.jsx
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaHome, FaPlus, FaSignOutAlt } from "react-icons/fa";
+import { FaUsers,FaHome, FaPlus, FaSignOutAlt } from "react-icons/fa";
+import { FaCartShopping } from "react-icons/fa6";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -9,8 +10,8 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    // optionally remove other auth data too
-    navigate("/login"); // redirect to login page
+    
+    navigate("/login"); 
   };
 
   return (
@@ -45,7 +46,33 @@ const Sidebar = () => {
           <FaPlus className="mr-3" />
           Add Product
         </NavLink>
+
+        <NavLink
+          to="/products"
+          className={({ isActive }) =>
+            `flex items-center p-3 rounded-lg hover:bg-gray-800 ${
+              isActive ? "bg-gray-800" : ""
+            }`
+          }
+        >
+         <FaCartShopping className=" mr-3"/>
+           Products
+        </NavLink>
+
+        <NavLink
+          to="/users"
+          className={({ isActive }) =>
+            `flex items-center p-3 rounded-lg hover:bg-gray-800 ${
+              isActive ? "bg-gray-800" : ""
+            }`
+          }
+        >
+         <FaUsers className="mr-3" />
+           Users
+        </NavLink>
       </nav>
+
+
 
       {/* Logout at bottom */}
       {token && (

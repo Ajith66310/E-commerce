@@ -51,12 +51,11 @@ const addProduct = async (req, res) => {
       percentage,
       category,
       subcategory,
-      images: imageUrls, // 4 URLs
+      images: imageUrls, 
     };
 
     // save to DB
     const savedProduct = await productModel.create(productData);
-    console.log(savedProduct);
 
     res.json({ success: true, product: savedProduct });
   } catch (err) {
@@ -65,4 +64,26 @@ const addProduct = async (req, res) => {
   }
 };
 
-export { addProduct, fetchProduct };
+const getProducts = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const products = await productModel.find().skip(skip).limit(limit);
+    const count = await productModel.countDocuments();
+
+    res.json({
+      products,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+
+
+
+export { getProducts, addProduct, fetchProduct };

@@ -21,4 +21,23 @@ const adminLogin = async (req, res) => {
 
 }
 
-export { adminLogin }
+const adminFetchUser = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const users = await userModel.find().skip(skip).limit(limit);
+    const count = await userModel.countDocuments();
+
+    res.json({
+      users,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export { adminFetchUser, adminLogin }

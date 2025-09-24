@@ -4,8 +4,10 @@ import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import AdminLayout from './components/AdminLayout.jsx'; // import layout
-import Dashboard from './components/Dashboard.jsx'; // your dashboard page
+import AdminLayout from './layout/AdminLayout.jsx';
+import Dashboard from './Dashboard.jsx';
+import Users from './Users.jsx';
+import Products from './Products.jsx';
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
         <Route path="/" element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="add-product" element={<AddProduct />} />
+          <Route path="users" element={<Users />} />
+          <Route path="products" element={<Products />} />
         </Route>
       </Routes>
     </BrowserRouter>

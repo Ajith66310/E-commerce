@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 const ProductItem = ({id,title,img, price, percentage,textColor,btnText }) => {
   const [liked, setLiked] = useState(false);
 
-  const textClass = textColor === "black"? "text-black" : "text-white"
+  const textClass = textColor === "black" ? "text-black" : "text-white"
 
   const offerPrice = Math.round(price - (price * percentage / 100)); 
 

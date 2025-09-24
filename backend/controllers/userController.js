@@ -264,7 +264,7 @@ const resendResetOtp = async (req, res) => {
       `Your OTP for password reset is: ${otp} (valid 1 min)`
     );
 
-    return res.status(200).json({ message: "Password reset OTP resent successfully" });
+    return res.status(200).json({ message: "OTP resend successfully" });
   } catch (err) {
     console.error("Resend error:", err);
     return res.status(400).json({ message: "Invalid or expired token" });
@@ -411,6 +411,7 @@ const userAddress = async (req, res) => {
     res.status(404).json({ message: 'An Error occur while saving' });
   }
 };
+
 
 
 export { userAddress, fetchUser, resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };
