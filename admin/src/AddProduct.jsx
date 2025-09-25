@@ -4,16 +4,17 @@ import { toast } from "react-toastify";
 
 const AddProduct = () => {
   const [formData, setFormData] = useState({
-    id: "",
     title: "",
     description: "",
     price: "",
     percentage: "",
     category: "",
-    subcategory: "",
+    sizeS: "",
+    sizeM: "",
+    sizeL: "",
+    units: "",
   });
 
-  // store files separately
   const [images, setImages] = useState({
     img1: null,
     img2: null,
@@ -21,7 +22,6 @@ const AddProduct = () => {
     img4: null,
   });
 
-  // previews
   const [previews, setPreviews] = useState({
     img1: null,
     img2: null,
@@ -29,7 +29,6 @@ const AddProduct = () => {
     img4: null,
   });
 
-  // Handle text inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -38,15 +37,17 @@ const AddProduct = () => {
     }));
   };
 
-  // Handle file inputs with preview
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     const file = files[0];
+    
     if (file) {
+      
       setImages((prev) => ({
         ...prev,
         [name]: file,
       }));
+
       setPreviews((prev) => ({
         ...prev,
         [name]: URL.createObjectURL(file),
@@ -54,41 +55,48 @@ const AddProduct = () => {
     }
   };
 
-  // Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      data.append(key, value);
-    });
+    data.append("title", formData.title);
+    data.append("description", formData.description);
+    data.append("price", formData.price);
+    data.append("percentage", formData.percentage);
+    data.append("category", formData.category);
+    data.append(
+      "sizes",
+      JSON.stringify({
+        S: Number(formData.sizeS) || 0,
+        M: Number(formData.sizeM) || 0,
+        L: Number(formData.sizeL) || 0,
+      })
+    );
+    data.append("units", formData.units);
 
-    // append each image file
     Object.values(images).forEach((img) => {
       if (img) data.append("img", img);
     });
 
     try {
-      const res = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/add-product`,
         data,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      console.log("Success:", res.data);
       toast.success("Product added successfully!");
-      // reset
       setFormData({
-        id: "",
         title: "",
         description: "",
         price: "",
         percentage: "",
         category: "",
-        subcategory: "",
+        sizeS: "",
+        sizeM: "",
+        sizeL: "",
+        units: "",
       });
       setImages({ img1: null, img2: null, img3: null, img4: null });
       setPreviews({ img1: null, img2: null, img3: null, img4: null });
@@ -99,41 +107,22 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="  flex items-center justify-center p-4">
-      <div className="  rounded-2xl w-full max-w-3xl">
-        {/* <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
-          Add New Product
-        </h1> */}
-
+    <div className="flex items-center justify-center p-4">
+      <div className="rounded-2xl w-full max-w-3xl">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* id + title */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Product ID
-              </label>
-              <input
-                type="text"
-                name="id"
-                value={formData.id}
-                onChange={handleChange}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Title
-              </label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                required
-              />
-            </div>
+          {/* title */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Title
+            </label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              className="mt-1 block w-full px-4 py-2 border rounded-lg"
+              required
+            />
           </div>
 
           {/* description */}
@@ -146,7 +135,7 @@ const AddProduct = () => {
               rows="4"
               value={formData.description}
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-4 py-2 border rounded-lg"
               required
             ></textarea>
           </div>
@@ -164,7 +153,7 @@ const AddProduct = () => {
                     name={imgKey}
                     accept="image/*"
                     onChange={handleFileChange}
-                    className="px-4 py-2 border border-gray-300 rounded-lg w-full"
+                    className="px-4 py-2 border rounded-lg w-full"
                     required
                   />
                   {previews[imgKey] && (
@@ -190,7 +179,7 @@ const AddProduct = () => {
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full px-4 py-2 border rounded-lg"
                 required
               />
             </div>
@@ -204,7 +193,7 @@ const AddProduct = () => {
                 placeholder="e.g., 20%"
                 value={formData.percentage}
                 onChange={handleChange}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full px-4 py-2 border rounded-lg"
                 required
               />
             </div>
@@ -217,32 +206,68 @@ const AddProduct = () => {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full px-4 py-2 border rounded-lg"
                 required
               />
             </div>
           </div>
 
-          {/* subcategory */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Subcategory
-            </label>
-            <input
-              type="text"
-              name="subcategory"
-              value={formData.subcategory}
-              onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              required
-            />
+          {/* sizes & units */}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Size S Units
+              </label>
+              <input
+                type="number"
+                name="sizeS"
+                value={formData.sizeS}
+                onChange={handleChange}
+                className="mt-1 block w-full px-4 py-2 border rounded-lg"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Size M Units
+              </label>
+              <input
+                type="number"
+                name="sizeM"
+                value={formData.sizeM}
+                onChange={handleChange}
+                className="mt-1 block w-full px-4 py-2 border rounded-lg"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Size L Units
+              </label>
+              <input
+                type="number"
+                name="sizeL"
+                value={formData.sizeL}
+                onChange={handleChange}
+                className="mt-1 block w-full px-4 py-2 border rounded-lg"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Total Units (non-sized)
+              </label>
+              <input
+                type="number"
+                name="units"
+                value={formData.units}
+                onChange={handleChange}
+                className="mt-1 block w-full px-4 py-2 border rounded-lg"
+              />
+            </div>
           </div>
 
-          {/* button */}
           <div>
             <button
               type="submit"
-              className="w-full flex justify-center py-3 px-6 rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200"
+              className="w-full flex justify-center py-3 px-6 rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
             >
               Add Product
             </button>

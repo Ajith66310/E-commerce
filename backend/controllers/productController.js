@@ -15,16 +15,26 @@ const fetchProduct = async (req, res) => {
   }
 };
 
-/* add a product */
 const addProduct = async (req, res) => {
   try {
-    const { id, title, description, price, percentage, category, subcategory } = req.body;
+    const {
+      title,
+      description,
+      price,
+      percentage, // or rename to discount
+      category,
+      sizes,
+      units,
+    } = req.body;
 
-    /* helper function inside this file */
+    // parse sizes if sent as JSON string
+    const parsedSizes = sizes ? JSON.parse(sizes) : { S: 0, M: 0, L: 0 };
+
+    // helper function to upload buffer to Cloudinary
     const uploadBufferToCloudinary = (fileBuffer, folder = "products") => {
       return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          { folder, allowed_formats:["jpg","png","webp"] }, // optional folder in Cloudinary
+          { folder, allowed_formats: ["jpg", "png", "webp"] },
           (error, result) => {
             if (error) reject(error);
             else resolve(result);
@@ -33,25 +43,24 @@ const addProduct = async (req, res) => {
         streamifier.createReadStream(fileBuffer).pipe(stream);
       });
     };
-    // upload all files to Cloudinary in parallel:
+
+    // upload images from req.files
     const uploadPromises = req.files.map((file) =>
-      uploadBufferToCloudinary(file.buffer, "products")
+      uploadBufferToCloudinary(file.buffer)
     );
     const uploadResults = await Promise.all(uploadPromises);
-
-    // get the secure URLs:
     const imageUrls = uploadResults.map((r) => r.secure_url);
 
-    // build your product object:
+    // build product object
     const productData = {
-      id,
       title,
       description,
       price,
-      percentage,
+      percentage, // or rename to discount
       category,
-      subcategory,
-      images: imageUrls, 
+      sizes: parsedSizes,
+      units: Number(units) || 0,
+      images: imageUrls,
     };
 
     // save to DB
@@ -63,6 +72,8 @@ const addProduct = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
+
 
 const getProducts = async (req, res) => {
   try {
