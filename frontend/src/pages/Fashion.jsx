@@ -1,22 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import ProductItem from '../components/ProductItem.jsx';
-import { products } from '../assets/images';
 import Marquee from '../components/Marquee.jsx';
 import Breadcrumb from '../components/Breadcrums.jsx';
 import { IoFilter } from 'react-icons/io5';
 import { RxCross2 } from 'react-icons/rx';
+import axios from 'axios';
 
 const Fashion = () => {
-  const [product, setProduct] = useState([]);
+  const [products, setProducts] = useState([]);  // all products from DB
   const [showSidebar, setShowSidebar] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setProduct(products.slice(0, 6));
-  }, [products]);
+    const fetchProducts = async () => {
+      try {
+        // call your backend
+        const res = await axios.get(`${import.meta.env.VITE_URL}/api/adminfetchproducts`);
+        // adminGetProducts returns {products, totalPages, currentPage}
+        setProducts(res.data.products || []);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   return (
     <div className='flex flex-col pt-[80px] w-full relative'>
-
       <Marquee />
       <div className="pl-10 pt-5 pb-5 w-full">
         <Breadcrumb Home="Home" Fashion="Fashion" />
@@ -24,7 +36,7 @@ const Fashion = () => {
 
       <div className='w-full grid grid-cols-2'>
         <div>
-          <p className='text-black text-3xl pl-10  font-[poppins]'>
+          <p className='text-black text-3xl pl-10 font-[poppins]'>
             All<span className='text-red-800 pl-2 font-[poppins]'>Products</span>
           </p>
         </div>
@@ -40,18 +52,23 @@ const Fashion = () => {
         </div>
       </div>
 
+      {/* Loading */}
+      {loading && (
+        <div className="p-6 text-center">Loading products…</div>
+      )}
+
       {/* Product Grid */}
       <div className='grid grid-cols-2 gap-5 m-auto md:grid-cols-3 md:w-180 lg:grid-cols-4 lg:w-[95%]'>
-        {product.map((item, index) => (
+        {products.map((item) => (
           <ProductItem
-            key={index}
+            key={item._id}
             title={item.title}
-            id={item.id}
-            img={item.img}
+            id={item._id}
+            img={item.images && item.images[0]}  // show first image
             price={item.price}
             percentage={item.percentage}
             textColor="black"
-            btnText="Add to cart"
+            btnText="View"
           />
         ))}
       </div>
@@ -68,10 +85,7 @@ const Fashion = () => {
           </button>
         </div>
         <div className="p-6">
-
-
           {/* Sort By */}
-          
           <div className="mb-8">
             <h3 className="font-semibold text-lg mb-4 text-gray-700">Sort By</h3>
             <div className="relative">
@@ -79,9 +93,9 @@ const Fashion = () => {
                 className="w-full px-5 py-3 border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-300 bg-white shadow-sm"
                 defaultValue="relevant"
               >
-                <option value="relevant" className="py-2">Relevant</option>
-                <option value="low-high" className="py-2">Price: Low to High</option>
-                <option value="high-low" className="py-2">Price: High to Low</option>
+                <option value="relevant">Relevant</option>
+                <option value="low-high">Price: Low to High</option>
+                <option value="high-low">Price: High to Low</option>
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-400">
                 <svg
@@ -100,7 +114,6 @@ const Fashion = () => {
             </div>
           </div>
 
-
           {/* Filter Options */}
           <div>
             <h3 className="font-semibold text-lg mb-4 text-gray-700">Category</h3>
@@ -109,22 +122,7 @@ const Fashion = () => {
                 <input type="checkbox" className="h-4 w-4 text-red-600 accent-red-500 border-gray-300 rounded focus:ring-red-500 mr-2" />
                 Men
               </label>
-              <label className="flex items-center cursor-pointer">
-                <input type="checkbox" className="h-4 w-4 text-red-600 border-gray-300 accent-red-500 rounded focus:ring-red-500 mr-2" />
-                Women
-              </label>
-              <label className="flex items-center cursor-pointer">
-                <input type="checkbox" className="h-4 w-4 text-red-600 border-gray-300 rounded accent-red-500 focus:ring-red-500 mr-2" />
-                Top
-              </label>
-              <label className="flex items-center cursor-pointer">
-                <input type="checkbox" className="h-4 w-4 text-red-600 border-gray-300 rounded accent-red-500 focus:ring-red-500 mr-2" />
-                Shirt
-              </label>
-              <label className="flex items-center cursor-pointer">
-                <input type="checkbox" className="h-4 w-4 text-red-600 border-gray-300 rounded accent-red-500 focus:ring-red-500 mr-2" />
-                Pants
-              </label>
+              {/* etc… */}
             </div>
           </div>
         </div>

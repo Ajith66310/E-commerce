@@ -7,13 +7,22 @@ import streamifier from "streamifier";
 /* fetch all products */
 const fetchProduct = async (req, res) => {
   try {
-    const products = await productModel.find();
-    res.json({ success: true, products });
+    const { id } = req.params;
+
+    // find product by id
+    const product = await productModel.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    res.json({ success: true, product });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
 
 const addProduct = async (req, res) => {
   try {
@@ -34,7 +43,7 @@ const addProduct = async (req, res) => {
     const uploadBufferToCloudinary = (fileBuffer, folder = "products") => {
       return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          { folder, allowed_formats: ["jpg", "png", "webp"] },
+          { folder, allowed_formats: ["jpg", "png", "webp","avif"] },
           (error, result) => {
             if (error) reject(error);
             else resolve(result);
@@ -75,7 +84,7 @@ const addProduct = async (req, res) => {
 
 
 
-const getProducts = async (req, res) => {
+const adminGetProducts = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -97,4 +106,4 @@ const getProducts = async (req, res) => {
 
 
 
-export { getProducts, addProduct, fetchProduct };
+export { adminGetProducts, addProduct, fetchProduct };

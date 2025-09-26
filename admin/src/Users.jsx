@@ -13,7 +13,7 @@ const Users = () => {
       const res = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/admin/adminfetchuser?page=${page}&limit=${limit}`
       );
-      setUsers(res.data.users);
+      setUsers(res.data.users.reverse());
       setTotalPages(res.data.totalPages);
       setCurrentPage(res.data.currentPage);
     } catch (err) {
