@@ -18,7 +18,7 @@ const Sidebar = () => {
     <div className="h-screen w-64 fixed top-0 left-0 bg-gray-900 text-white flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-center h-20 border-b border-gray-700">
-        <h1 className="text-2xl font-bold">Bonkers Corner</h1>
+        <h1 className="text-xl font-serif font-extrabold">BONKERS CORNER</h1>
       </div>
 
       {/* Nav links */}

@@ -50,40 +50,49 @@ const Products = () => {
   };
 
   return (
-    <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Products</h1>
+    <div className="p-4 sm:p-6">
+      <h1 className="text-xl sm:text-2xl font-bold mb-4">Products</h1>
       <div className="space-y-4">
         {products.map((p) => (
           <div
             key={p._id}
-            className="flex items-center border-b py-4 px-2 gap-4"
+            className="flex flex-col sm:flex-row sm:items-center border-b py-4 px-2 gap-4"
           >
             {/* Product Image */}
             {p.images?.length > 0 && (
               <img
                 src={p.images[0]}
                 alt={p.title}
-                className="w-24 h-24 object-cover rounded"
+                className="w-full sm:w-24 sm:h-24 h-48 object-cover rounded"
               />
             )}
 
             {/* Product Details */}
-            <div className="flex-1 flex flex-wrap gap-x-6 text-gray-900">
-              <p className="w-[150px] font-semibold">{p.title}</p>
-              <p className="w-[80px]">₹{p.price}</p>
-              <p className="w-[120px]">Category: {p.category}</p>
-              <p className="w-[100px]">Discount: {p.percentage}</p>
-              <p className="w-[100px]">Units: {p.units}</p>
-              <p className="w-[200px]">
-                Sizes: S({p.sizes?.S || 0}) M({p.sizes?.M || 0}) L({p.sizes?.L || 0})
+            <div className="flex-1 flex flex-col sm:flex-wrap sm:flex-row gap-x-6 text-gray-500 pt-3">
+              <p className="sm:w-[150px] font-extrabold font-serif text-black">{p.title}</p>
+              <p className="sm:w-[80px]">
+                <span className="text-black">Price:</span> ₹{p.price}
               </p>
-              <p className="w-[180px] text-sm text-gray-500">
-                Added: {new Date(p.timestamp).toLocaleString()}
+              <p className="sm:w-[120px]">
+                <span className="text-black">Category:</span> {p.category}
+              </p>
+              <p className="sm:w-[130px]">
+                <span className="text-black">Discount:</span> {p.percentage}
+              </p>
+              <p className="sm:w-[100px]">
+                <span className="text-black">Units:</span> {p.units}
+              </p>
+              <p className="sm:w-[200px]">
+                <span className="text-black"> Sizes:</span> S({p.sizes?.S || 0}) M({p.sizes?.M || 0}) L({p.sizes?.L || 0})
+              </p>
+              <p className="sm:w-[200px] text-sm text-gray-500 pt-2 sm:pt-5">
+                <span className="text-black">Added:</span>{" "}
+                {new Date(p.timestamp).toLocaleString()}
               </p>
             </div>
 
             {/* Edit/Delete Buttons */}
-            <div className="flex flex-col gap-2">
+            <div className="flex sm:flex-col gap-2 pt-2 sm:pt-0">
               <button
                 onClick={() => handleEdit(p._id)}
                 className="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600"
