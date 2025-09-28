@@ -16,6 +16,7 @@ import VerifyOtp from './pages/VerifyOtp';
 import UserProfile from './UserProfile';
 import ResetPasswordOtpVerify from './pages/ResetPasswordOtpVerify';
 import Product from './pages/Product';
+import Checkout from './pages/Checkout';
 
 const App = () => {
   return (
@@ -36,6 +37,7 @@ const App = () => {
           <Route path='verifyotp' element={<VerifyOtp/>} />
           <Route path='resetotpverify' element={<ResetPasswordOtpVerify/>} />
           <Route path='*' element={<NotFound />} />
+          <Route path='checkout' element={<Checkout/>}/>
         </Route>
           <Route path='userprofile' element={<UserProfile/>} />
       </Routes>

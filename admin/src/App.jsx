@@ -8,6 +8,7 @@ import AdminLayout from './layout/AdminLayout.jsx';
 import Dashboard from './Dashboard.jsx';
 import Users from './Users.jsx';
 import Products from './Products.jsx';
+import NotFound from '../../frontend/src/pages/NotFound.jsx';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="add-product" element={<AddProduct />} />
           <Route path="users" element={<Users />} />
+           <Route path='*' element={<NotFound />} />
           <Route path="products" element={<Products />} />
         </Route>
       </Routes>
