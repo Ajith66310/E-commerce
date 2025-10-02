@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { UserContext } from "../context/UserContext"; // 👈 import context
 
 const Product = () => {
   const { id } = useParams();
@@ -10,6 +11,8 @@ const Product = () => {
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [units, setUnits] = useState(1);
+
+  const { setCartIcon } = useContext(UserContext); 
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -59,10 +62,10 @@ const Product = () => {
     selectedSize === "S"
       ? sizeS
       : selectedSize === "M"
-        ? sizeM
-        : selectedSize === "L"
-          ? sizeL
-          : totalStock;
+      ? sizeM
+      : selectedSize === "L"
+      ? sizeL
+      : totalStock;
 
   const handleUnitsChange = (e) => {
     const val = Number(e.target.value);
@@ -71,10 +74,49 @@ const Product = () => {
     else setUnits(val);
   };
 
+  // ✅ Updated handleAddToCart
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      alert("Please select a size!");
+      return;
+    }
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    const existingIndex = cart.findIndex(
+      (item) => item.id === product._id && item.size === selectedSize
+    );
+
+    if (existingIndex !== -1) {
+      const existingItem = cart[existingIndex];
+      const maxStock =
+        selectedSize === "S"
+          ? sizeS
+          : selectedSize === "M"
+          ? sizeM
+          : sizeL;
+      existingItem.units = Math.min(existingItem.units + units, maxStock);
+      cart[existingIndex] = existingItem;
+    } else {
+      cart.push({
+        id: product._id,
+        title: product.title,
+        size: selectedSize,
+        units: units,
+        price: numericPrice,
+        percentage: product.percentage,
+        offerPrice: offerPrice,
+        image: product.images?.[0] || "",
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    setCartIcon(true);
+  };
+
   return (
     <div className="max-w-7xl mx-auto pt-20 px-4">
       <div className="flex flex-col lg:flex-row gap-4 bg-white p-6">
-
         {/* Thumbnails */}
         <div className="order-2 lg:order-1 flex flex-row lg:flex-col gap-1 justify-center lg:justify-start w-full lg:w-1/6">
           {product.images?.map((imgUrl, idx) => (
@@ -83,36 +125,49 @@ const Product = () => {
               src={imgUrl}
               alt={product.title}
               onClick={() => setSelectedImage(imgUrl)}
-              className={`w-28 h-28 lg:w-32 lg:h-32 object-cover rounded cursor-pointer border ${selectedImage === imgUrl ? "border-red-500" : "border-gray-300"
-                }`}
+              className={`w-28 h-28 lg:w-32 lg:h-32 object-cover rounded cursor-pointer border ${
+                selectedImage === imgUrl
+                  ? "border-red-500"
+                  : "border-gray-300"
+              }`}
             />
           ))}
         </div>
 
         {/* Main image */}
-        <div className="order-1 lg:order-2 flex-1 w-full lg:w-2/3 flex justify-center">
+        <div className="order-1 lg:order-2 flex-1 w-full lg:w-2/3 flex pr-30  justify-center">
           <img
             src={selectedImage}
             alt={product.title}
-            className="w-[525px] md:w-[600px] lg:w-full max-w-2xl lg:max-w-none lg:h-[75vh] object-contain rounded"
+            className="w-[525px] md:w-[600px] lg:w-full max-w-2xl lg:max-w-none lg:h-[71vh] object-contain rounded"
           />
         </div>
 
         {/* Product details */}
-        <div className="order-3 flex flex-col w-full lg:w-1/3 mt-4 lg:mt-0">
+        <div className="order-3 flex flex-col w-full lg:w-1/3 mt-4 pt-20 lg:mt-0">
           <h1 className="text-2xl md:text-3xl font-bold">{product.title}</h1>
-          <p className="text-gray-600 mt-2 text-sm md:text-base">{product.description}</p>
+          <p className="text-gray-600 mt-2 text-sm md:text-base">
+            {product.description}
+          </p>
 
           {/* Price */}
           <div className="mt-3">
             {numericDiscount > 0 ? (
               <>
-                <p className="text-sm text-gray-500 line-through">₹{numericPrice}</p>
-                <p className="text-xl md:text-2xl font-semibold text-red-600">₹{offerPrice}</p>
-                <p className="text-green-600 text-sm">Save {numericDiscount}%!</p>
+                <p className="text-sm text-gray-500 line-through">
+                  ₹{numericPrice}
+                </p>
+                <p className="text-xl md:text-2xl font-semibold text-red-600">
+                  ₹{offerPrice}
+                </p>
+                <p className="text-green-600 text-sm">
+                  Save {numericDiscount}%!
+                </p>
               </>
             ) : (
-              <p className="text-xl md:text-2xl font-semibold">₹{numericPrice}</p>
+              <p className="text-xl md:text-2xl font-semibold">
+                ₹{numericPrice}
+              </p>
             )}
           </div>
 
@@ -123,9 +178,13 @@ const Product = () => {
               {["S", "M", "L"].map((size) => (
                 <div
                   key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={`cursor-pointer border rounded px-3 py-2 ${selectedSize === size ? "bg-black text-white" : ""
-                    }`}
+                  onClick={() => {
+                    setSelectedSize(size);
+                    setUnits(1);
+                  }}
+                  className={`cursor-pointer border rounded px-3 py-2 ${
+                    selectedSize === size ? "bg-black text-white" : ""
+                  }`}
                 >
                   {size}
                 </div>
@@ -152,17 +211,25 @@ const Product = () => {
           </div>
 
           {/* Stock */}
-          <p className={`mt-3 text-sm font-medium ${totalStock > 0 ? "text-green-600" : "text-red-600"}`}>
-            {totalStock > 0 ? `In Stock (${totalStock})` : "Out of Stock"}
+          <p
+            className={`mt-3 text-sm font-medium ${
+              totalStock > 0 ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {totalStock > 0
+              ? `In Stock (${totalStock})`
+              : "Out of Stock"}
           </p>
 
           {/* Add to cart */}
           <button
             disabled={totalStock <= 0 || !selectedSize}
-            className={`mt-6 w-full py-3 rounded transition ${totalStock > 0 && selectedSize
+            className={`mt-6 w-full py-3 rounded transition ${
+              totalStock > 0 && selectedSize
                 ? "bg-red-600 text-white hover:bg-red-700"
                 : "bg-gray-400 text-gray-100 cursor-not-allowed"
-              }`}
+            }`}
+            onClick={handleAddToCart}
           >
             ADD TO CART
           </button>
