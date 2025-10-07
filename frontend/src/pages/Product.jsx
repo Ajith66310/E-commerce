@@ -12,7 +12,7 @@ const Product = () => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [units, setUnits] = useState(1);
 
-  const { setCartIcon } = useContext(UserContext);
+  const { setCartIcon,cartUpdated} = useContext(UserContext);
 
     const fetchProduct = async () => {
     try {
@@ -54,7 +54,18 @@ const Product = () => {
 
   useEffect(() => {
   fetchProduct();
-  }, [id]);
+  }, [id,cartUpdated]);
+
+  useEffect(() => {
+  const onStorageChange = (e) => {
+    if (e.key === "cart") {
+      fetchProduct();
+    }
+  };
+  window.addEventListener("storage", onStorageChange);
+  return () => window.removeEventListener("storage", onStorageChange);
+}, []);
+
 
   if (loading) return <div className="p-6 text-center">Loading...</div>;
   if (!product)
@@ -97,7 +108,7 @@ const Product = () => {
     else setUnits(val);
   };
 
-  // ✅ Updated handleAddToCart with stock update
+  //  Updated handleAddToCart with stock update
   const handleAddToCart = () => {
     if (!selectedSize) {
       alert("Please select a size!");
@@ -143,6 +154,7 @@ const Product = () => {
     const newSizes = { ...product.sizes };
     newSizes[selectedSize] = Math.max(0, newSizes[selectedSize] - units);
     setProduct({ ...product, sizes: newSizes });
+    setUnits(1)
   };
 
   return (

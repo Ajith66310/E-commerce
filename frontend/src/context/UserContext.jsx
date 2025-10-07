@@ -6,7 +6,7 @@ export const UserContext = createContext();
 
 const UserContextProvider = ({ children }) => {
   const [cartIcon, setCartIcon] = useState(false);
-
+  const [cartUpdated, setCartUpdated] = useState(false);
   // reusable function to fetch products
   const fetchProducts = async (limit = 20) => {
     try {
@@ -24,6 +24,7 @@ const UserContextProvider = ({ children }) => {
     fetchProducts,
     cartIcon,
     setCartIcon,
+    cartUpdated, setCartUpdated
   };
 
   return (

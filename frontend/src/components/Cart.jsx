@@ -3,7 +3,7 @@ import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const { cartIcon, setCartIcon } = useContext(UserContext);
+  const { cartIcon, setCartIcon,setCartUpdated } = useContext(UserContext);
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
 
@@ -41,47 +41,20 @@ const Cart = () => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const handleQuantityChange = (index, delta) => {
-    const newCart = [...cartItems];
-    const item = newCart[index];
-
-    const maxStock =
-      item.size === "S"
-        ? item.sizeS
-        : item.size === "M"
-          ? item.sizeM
-          : item.sizeL || 100;
-
-    // If user decreases quantity, restore 1 unit of stock
-    if (delta < 0 && item.units > 1) {
-      const products = JSON.parse(localStorage.getItem("products")) || [];
-      const updatedProducts = products.map((p) => {
-        if (p._id === item._id) {
-          if (item.size === "S") p.sizeS += 1;
-          else if (item.size === "M") p.sizeM += 1;
-          else if (item.size === "L") p.sizeL += 1;
-        }
-        return p;
-      });
-      localStorage.setItem("products", JSON.stringify(updatedProducts));
-    }
-
-    item.units = Math.min(Math.max(item.units + delta, 1), maxStock);
-    setCartItems(newCart);
-  };
 
 
   const handleDeleteItem = (index) => {
-    const newCart = [...cartItems];
-    const removedItem = newCart[index];
+  const newCart = [...cartItems];
+  const removedItem = newCart[index];
 
-    // Restore stock for the removed item
-    restoreStock(removedItem);
+  restoreStock(removedItem); // restore stock for removed item
 
-    // Remove from cart
-    newCart.splice(index, 1);
-    setCartItems(newCart);
-  };
+  newCart.splice(index, 1);
+  setCartItems(newCart);
+
+  setCartUpdated((prev) => !prev); // notify Product.jsx to refresh
+};
+
 
 
   const cartSubtotal = cartItems.reduce(
@@ -103,7 +76,7 @@ const Cart = () => {
       navigate("/login");
       return;
     }
-    navigate("/checkout");
+    // navigate("/checkout");
   };
 
   return (
