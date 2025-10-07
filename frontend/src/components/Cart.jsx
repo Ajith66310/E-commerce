@@ -10,8 +10,31 @@ const Cart = () => {
   // Load cart from localStorage
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCartItems(storedCart);
+    setCartItems(storedCart.reverse());
   }, [cartIcon]);
+
+  const restoreStock = (item) => {
+    // Get all products from localStorage (the main product list stored when browsing)
+    const products = JSON.parse(localStorage.getItem("products")) || [];
+
+    // Find the product being restored
+    const updatedProducts = products.map((p) => {
+      if (p._id === item._id) {
+        if (item.size === "S") {
+          p.sizeS = (p.sizeS || 0) + item.units;
+        } else if (item.size === "M") {
+          p.sizeM = (p.sizeM || 0) + item.units;
+        } else if (item.size === "L") {
+          p.sizeL = (p.sizeL || 0) + item.units;
+        }
+      }
+      return p;
+    });
+
+    // Save back the updated stock to localStorage
+    localStorage.setItem("products", JSON.stringify(updatedProducts));
+  };
+
 
   // Update localStorage whenever cart changes
   useEffect(() => {
@@ -21,20 +44,45 @@ const Cart = () => {
   const handleQuantityChange = (index, delta) => {
     const newCart = [...cartItems];
     const item = newCart[index];
-    const maxStock = item.size === "S"
-      ? item.sizeS
-      : item.size === "M"
-      ? item.sizeM
-      : item.sizeL || 100; // fallback
+
+    const maxStock =
+      item.size === "S"
+        ? item.sizeS
+        : item.size === "M"
+          ? item.sizeM
+          : item.sizeL || 100;
+
+    // If user decreases quantity, restore 1 unit of stock
+    if (delta < 0 && item.units > 1) {
+      const products = JSON.parse(localStorage.getItem("products")) || [];
+      const updatedProducts = products.map((p) => {
+        if (p._id === item._id) {
+          if (item.size === "S") p.sizeS += 1;
+          else if (item.size === "M") p.sizeM += 1;
+          else if (item.size === "L") p.sizeL += 1;
+        }
+        return p;
+      });
+      localStorage.setItem("products", JSON.stringify(updatedProducts));
+    }
+
     item.units = Math.min(Math.max(item.units + delta, 1), maxStock);
     setCartItems(newCart);
   };
 
+
   const handleDeleteItem = (index) => {
     const newCart = [...cartItems];
+    const removedItem = newCart[index];
+
+    // Restore stock for the removed item
+    restoreStock(removedItem);
+
+    // Remove from cart
     newCart.splice(index, 1);
     setCartItems(newCart);
   };
+
 
   const cartSubtotal = cartItems.reduce(
     (sum, item) => sum + item.offerPrice * item.units,

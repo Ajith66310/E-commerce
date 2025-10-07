@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "../context/UserContext"; // 👈 import context
+import { UserContext } from "../context/UserContext";
 
 const Product = () => {
   const { id } = useParams();
@@ -12,27 +12,48 @@ const Product = () => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [units, setUnits] = useState(1);
 
-  const { setCartIcon } = useContext(UserContext); 
+  const { setCartIcon } = useContext(UserContext);
+
+    const fetchProduct = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_URL}/api/fetchproduct/${id}`
+      );
+      if (res.data.success) {
+        let fetchedProduct = res.data.product;
+
+        //  Adjust stock from localStorage cart
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const cartItems = cart.filter((item) => item.id === fetchedProduct._id);
+
+        if (cartItems.length > 0) {
+          const newSizes = { ...fetchedProduct.sizes };
+          cartItems.forEach((item) => {
+            if (newSizes[item.size] !== undefined) {
+              newSizes[item.size] = Math.max(
+                0,
+                newSizes[item.size] - item.units
+              );
+            }
+          });
+          fetchedProduct = { ...fetchedProduct, sizes: newSizes };
+        }
+
+        setProduct(fetchedProduct);
+
+        if (fetchedProduct.images?.length) {
+          setSelectedImage(fetchedProduct.images[0]);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_URL}/api/fetchproduct/${id}`
-        );
-        if (res.data.success) {
-          setProduct(res.data.product);
-          if (res.data.product.images?.length) {
-            setSelectedImage(res.data.product.images[0]);
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProduct();
+  fetchProduct();
   }, [id]);
 
   if (loading) return <div className="p-6 text-center">Loading...</div>;
@@ -58,14 +79,16 @@ const Product = () => {
   const sizeL = Number(product.sizes?.L) || 0;
   const totalStock = sizeS + sizeM + sizeL;
 
+
+  
   const maxForSelected =
     selectedSize === "S"
       ? sizeS
       : selectedSize === "M"
-      ? sizeM
-      : selectedSize === "L"
-      ? sizeL
-      : totalStock;
+        ? sizeM
+        : selectedSize === "L"
+          ? sizeL
+          : totalStock;
 
   const handleUnitsChange = (e) => {
     const val = Number(e.target.value);
@@ -74,7 +97,7 @@ const Product = () => {
     else setUnits(val);
   };
 
-  // ✅ Updated handleAddToCart
+  // ✅ Updated handleAddToCart with stock update
   const handleAddToCart = () => {
     if (!selectedSize) {
       alert("Please select a size!");
@@ -93,10 +116,14 @@ const Product = () => {
         selectedSize === "S"
           ? sizeS
           : selectedSize === "M"
-          ? sizeM
-          : sizeL;
-      existingItem.units = Math.min(existingItem.units + units, maxStock);
+            ? sizeM
+            : selectedSize === "L"
+          ? sizeL
+            : totalStock;
+      existingItem.units = existingItem.units + units;
       cart[existingIndex] = existingItem;
+      console.log("units="+existingItem.units)
+      console.log(existingItem)
     } else {
       cart.push({
         id: product._id,
@@ -112,6 +139,10 @@ const Product = () => {
 
     localStorage.setItem("cart", JSON.stringify(cart));
     setCartIcon(true);
+
+    const newSizes = { ...product.sizes };
+    newSizes[selectedSize] = Math.max(0, newSizes[selectedSize] - units);
+    setProduct({ ...product, sizes: newSizes });
   };
 
   return (
@@ -125,11 +156,10 @@ const Product = () => {
               src={imgUrl}
               alt={product.title}
               onClick={() => setSelectedImage(imgUrl)}
-              className={`w-28 h-28 lg:w-32 lg:h-32 object-cover rounded cursor-pointer border ${
-                selectedImage === imgUrl
+              className={`w-28 h-28 lg:w-32 lg:h-32 object-cover rounded cursor-pointer border ${selectedImage === imgUrl
                   ? "border-red-500"
                   : "border-gray-300"
-              }`}
+                }`}
             />
           ))}
         </div>
@@ -182,9 +212,8 @@ const Product = () => {
                     setSelectedSize(size);
                     setUnits(1);
                   }}
-                  className={`cursor-pointer border rounded px-3 py-2 ${
-                    selectedSize === size ? "bg-black text-white" : ""
-                  }`}
+                  className={`cursor-pointer border rounded px-3 py-2 ${selectedSize === size ? "bg-black text-white" : ""
+                    }`}
                 >
                   {size}
                 </div>
@@ -203,32 +232,29 @@ const Product = () => {
               onChange={handleUnitsChange}
               className="border rounded px-3 py-2 w-20"
             />
-            {selectedSize && (
-              <p className="text-xs text-gray-500 mt-1">
-                Max {maxForSelected} units for size {selectedSize}
-              </p>
-            )}
           </div>
 
           {/* Stock */}
           <p
-            className={`mt-3 text-sm font-medium ${
-              totalStock > 0 ? "text-green-600" : "text-red-600"
-            }`}
+            className={`mt-3 text-sm font-medium ${maxForSelected > 0 ? "text-green-600" : "text-red-600"
+              }`}
           >
-            {totalStock > 0
-              ? `In Stock (${totalStock})`
-              : "Out of Stock"}
+            {selectedSize
+              ? maxForSelected > 0
+                ? "In Stock"
+                : "Out of Stock"
+              : totalStock > 0
+                ? "In Stock"
+                : "Out of Stock"}
           </p>
 
           {/* Add to cart */}
           <button
             disabled={totalStock <= 0 || !selectedSize}
-            className={`mt-6 w-full py-3 rounded transition ${
-              totalStock > 0 && selectedSize
+            className={`mt-6 w-full py-3 rounded transition ${totalStock > 0 && selectedSize
                 ? "bg-red-600 text-white hover:bg-red-700"
                 : "bg-gray-400 text-gray-100 cursor-not-allowed"
-            }`}
+              }`}
             onClick={handleAddToCart}
           >
             ADD TO CART

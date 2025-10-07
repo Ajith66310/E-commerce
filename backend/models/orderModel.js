@@ -33,7 +33,7 @@ const orderSchema = new mongoose.Schema(
       default: false,
     },
     date: {
-      type: Number, // storing timestamp as Number (ms)
+      type: Number, 
       default: Date.now,
     },
   },
