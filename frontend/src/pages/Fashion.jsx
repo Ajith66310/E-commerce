@@ -1,25 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import ProductItem from '../components/ProductItem.jsx';
-import Marquee from '../components/Marquee.jsx';
-import Breadcrumb from '../components/Breadcrums.jsx';
-import { IoFilter } from 'react-icons/io5';
-import { RxCross2 } from 'react-icons/rx';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import ProductItem from "../components/ProductItem.jsx";
+import Marquee from "../components/Marquee.jsx";
+import Breadcrumb from "../components/Breadcrums.jsx";
+import { IoFilter } from "react-icons/io5";
+import { RxCross2 } from "react-icons/rx";
+import axios from "axios";
 
 const Fashion = () => {
-  const [products, setProducts] = useState([]);  // all products from DB
+  const [products, setProducts] = useState([]);
   const [showSidebar, setShowSidebar] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // call your backend
         const res = await axios.get(`${import.meta.env.VITE_URL}/api/adminfetchproducts`);
-        // adminGetProducts returns {products, totalPages, currentPage}
         setProducts(res.data.products || []);
       } catch (err) {
-        console.error('Error fetching products:', err);
+        console.error("Error fetching products:", err);
       } finally {
         setLoading(false);
       }
@@ -27,21 +25,24 @@ const Fashion = () => {
     fetchProducts();
   }, []);
 
+  // Skeleton placeholders (same layout as products)
+  const skeletons = Array.from({ length: 8 });
+
   return (
-    <div className='flex flex-col pt-[80px] w-full relative'>
+    <div className="flex flex-col pt-[80px] w-full relative">
       <Marquee />
       <div className="pl-10 pt-5 pb-5 w-full">
         <Breadcrumb Home="Home" Fashion="Fashion" />
       </div>
 
-      <div className='w-full grid grid-cols-2'>
+      <div className="w-full grid grid-cols-2">
         <div>
-          <p className='text-black text-3xl pl-10 font-[poppins]'>
-            All<span className='text-red-800 pl-2 font-[poppins]'>Products</span>
+          <p className="text-black text-3xl pl-10 font-[poppins]">
+            All<span className="text-red-800 pl-2 font-[poppins]">Products</span>
           </p>
         </div>
 
-        <div className='flex justify-end items-end font-[poppins] text-sm'>
+        <div className="flex justify-end items-end font-[poppins] text-sm">
           <button
             onClick={() => setShowSidebar(!showSidebar)}
             className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-gray-800 bg-white border border-gray-300 rounded-full shadow-sm hover:bg-gray-200 transition-all duration-300 mr-10"
@@ -52,40 +53,52 @@ const Fashion = () => {
         </div>
       </div>
 
-      {/* Loading */}
-      {loading && (
-        <div className="p-6 text-center">Loading products…</div>
-      )}
-
-      {/* Product Grid */}
-      <div className='grid grid-cols-2 gap-5 m-auto md:grid-cols-3 md:w-180 lg:grid-cols-4 lg:w-[95%]'>
-        {products.map((item) => (
-          <ProductItem
-            key={item._id}
-            title={item.title}
-            id={item._id}
-            img={item.images && item.images[0]}  // show first image
-            price={item.price}
-            percentage={item.percentage}
-            textColor="black"
-            btnText="View"
-          />
-        ))}
+      {/* ✅ Product Grid */}
+      <div className="grid grid-cols-2 gap-5 m-auto md:grid-cols-3 md:w-180 lg:grid-cols-4 lg:w-[95%] mt-5">
+        {loading
+          ? skeletons.map((_, i) => (
+            <div
+              key={i}
+              className="flex flex-col bg-gray-100 rounded-lg animate-pulse duration-2000"
+            >
+              <div className="w-full h-100 bg-gray-200 rounded-t-lg"></div>
+              <div className="p-4 space-y-3">
+                <div className="h-5 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-8 bg-gray-200 rounded w-full mt-3"></div>
+              </div>
+            </div>
+          ))
+          : products.map((item) => (
+            <ProductItem
+              key={item._id}
+              title={item.title}
+              id={item._id}
+              img={item.images && item.images[0]}
+              price={item.price}
+              percentage={item.percentage}
+              textColor="black"
+              btnText="View"
+            />
+          ))}
       </div>
 
-      {/* Filter Sidebar */}
+
+      {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 w-64 bg-white z-50 transform transition-transform duration-500 ease-in-out ${showSidebar ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed inset-y-0 left-0 w-64 bg-white z-50 transform transition-transform duration-500 ease-in-out ${showSidebar ? "translate-x-0" : "-translate-x-full"
           } shadow-lg`}
       >
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-800">Filters & Sort</h2>
-          <button onClick={() => setShowSidebar(false)} className="text-gray-500 hover:text-gray-800">
+          <button
+            onClick={() => setShowSidebar(false)}
+            className="text-gray-500 hover:text-gray-800"
+          >
             <RxCross2 className="text-2xl" />
           </button>
         </div>
         <div className="p-6">
-          {/* Sort By */}
           <div className="mb-8">
             <h3 className="font-semibold text-lg mb-4 text-gray-700">Sort By</h3>
             <div className="relative">
@@ -114,15 +127,30 @@ const Fashion = () => {
             </div>
           </div>
 
-          {/* Filter Options */}
           <div>
             <h3 className="font-semibold text-lg mb-4 text-gray-700">Category</h3>
             <div className="space-y-3 text-gray-600">
               <label className="flex items-center cursor-pointer">
-                <input type="checkbox" className="h-4 w-4 text-red-600 accent-red-500 border-gray-300 rounded focus:ring-red-500 mr-2" />
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 text-red-600 accent-red-500 border-gray-300 rounded focus:ring-red-500 mr-2"
+                />
                 Men
               </label>
-              {/* etc… */}
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 text-red-600 accent-red-500 border-gray-300 rounded focus:ring-red-500 mr-2"
+                />
+                Women
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 text-red-600 accent-red-500 border-gray-300 rounded focus:ring-red-500 mr-2"
+                />
+                Kids
+              </label>
             </div>
           </div>
         </div>

@@ -5,11 +5,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import "swiper/css/autoplay"; // ✅ add autoplay styles
 
 import "./Swiper.css";
 
 // import required modules
-import { Pagination, Navigation } from "swiper/modules";
+import { Pagination, Navigation, Autoplay } from "swiper/modules"; // ✅ add Autoplay module
 
 // Import your images
 import images from "../assets/images.js";
@@ -22,7 +23,12 @@ export default function App() {
           dynamicBullets: true,
         }}
         navigation={true}
-        modules={[Pagination, Navigation]}
+        autoplay={{
+          delay: 3000, // ✅ 5 seconds delay
+          disableOnInteraction: false, // keeps autoplay after manual navigation
+        }}
+        loop={true} // ✅ optional: keeps looping infinitely
+        modules={[Pagination, Navigation, Autoplay]} // ✅ include Autoplay here
         className="mySwiper"
       >
         <SwiperSlide>

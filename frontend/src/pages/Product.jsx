@@ -123,18 +123,8 @@ const Product = () => {
 
     if (existingIndex !== -1) {
       const existingItem = cart[existingIndex];
-      const maxStock =
-        selectedSize === "S"
-          ? sizeS
-          : selectedSize === "M"
-            ? sizeM
-            : selectedSize === "L"
-          ? sizeL
-            : totalStock;
       existingItem.units = existingItem.units + units;
       cart[existingIndex] = existingItem;
-      console.log("units="+existingItem.units)
-      console.log(existingItem)
     } else {
       cart.push({
         id: product._id,
