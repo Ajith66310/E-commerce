@@ -12,9 +12,9 @@ const Product = () => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [units, setUnits] = useState(1);
 
-  const { setCartIcon,cartUpdated} = useContext(UserContext);
+  const { setCartIcon, cartUpdated } = useContext(UserContext);
 
-    const fetchProduct = async () => {
+  const fetchProduct = async () => {
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_URL}/api/fetchproduct/${id}`
@@ -53,18 +53,18 @@ const Product = () => {
   };
 
   useEffect(() => {
-  fetchProduct();
-  }, [id,cartUpdated]);
+    fetchProduct();
+  }, [id, cartUpdated]);
 
   useEffect(() => {
-  const onStorageChange = (e) => {
-    if (e.key === "cart") {
-      fetchProduct();
-    }
-  };
-  window.addEventListener("storage", onStorageChange);
-  return () => window.removeEventListener("storage", onStorageChange);
-}, []);
+    const onStorageChange = (e) => {
+      if (e.key === "cart") {
+        fetchProduct();
+      }
+    };
+    window.addEventListener("storage", onStorageChange);
+    return () => window.removeEventListener("storage", onStorageChange);
+  }, []);
 
 
   if (loading) return <div className="p-6 text-center">Loading...</div>;
@@ -91,7 +91,7 @@ const Product = () => {
   const totalStock = sizeS + sizeM + sizeL;
 
 
-  
+
   const maxForSelected =
     selectedSize === "S"
       ? sizeS
@@ -159,8 +159,8 @@ const Product = () => {
               alt={product.title}
               onClick={() => setSelectedImage(imgUrl)}
               className={`w-28 h-28 lg:w-32 lg:h-32 object-cover rounded cursor-pointer border ${selectedImage === imgUrl
-                  ? "border-red-500"
-                  : "border-gray-300"
+                ? "border-red-500"
+                : "border-gray-300"
                 }`}
             />
           ))}
@@ -252,15 +252,16 @@ const Product = () => {
 
           {/* Add to cart */}
           <button
-            disabled={totalStock <= 0 || !selectedSize}
-            className={`mt-6 w-full py-3 rounded transition ${totalStock > 0 && selectedSize
+            disabled={maxForSelected <= 0 || !selectedSize} // disable if no size selected or stock is 0
+            className={`mt-6 w-full py-3 rounded transition ${maxForSelected > 0 && selectedSize
                 ? "bg-red-600 text-white hover:bg-red-700"
                 : "bg-gray-400 text-gray-100 cursor-not-allowed"
               }`}
             onClick={handleAddToCart}
           >
-            ADD TO CART
+            {maxForSelected > 0 ? "ADD TO CART" : "OUT OF STOCK"}
           </button>
+
         </div>
       </div>
     </div>

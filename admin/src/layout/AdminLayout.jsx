@@ -2,11 +2,11 @@ import React from "react";
 import Sidebar from "../components/Sidebar";
 import { Outlet } from "react-router-dom";
 
-const AdminLayout = () => {
+const AdminLayout = ({setToken}) => {
   return (
     <div className="flex">
       {/* Sidebar stays fixed */}
-      <Sidebar />
+      <Sidebar  setToken={setToken}/>
 
       {/* Content area */}
       <div className="ml-64 bg-gray-100 h-screen overflow-y-auto w-full">

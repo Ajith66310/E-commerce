@@ -4,15 +4,16 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaUsers,FaHome, FaPlus, FaSignOutAlt } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 
-const Sidebar = () => {
+const Sidebar = ({setToken}) => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    
-    navigate("/login"); 
-  };
+  localStorage.removeItem("token");
+  setToken("");
+  navigate("/login", { replace: true });
+};
+
 
   return (
     <div className="h-screen w-64 fixed top-0 left-0 bg-gray-900 text-white flex flex-col">

@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 
-function Login() {
+function Login({setToken}) {
 
   const [form, setForm] = useState({ email: "", password: "" });
   const navigate = useNavigate()
@@ -21,15 +21,12 @@ function Login() {
         email: form.email,
         password: form.password
       })
-       const { message, token } = response.data;
-
+      const { message, token } = response.data;
+      setToken(token)
       // store token in localStorage
-      localStorage.setItem("token", token);
-
+      localStorage.setItem("token", token)
       toast.success(message)
 
-      localStorage.setItem("token",token)
-      
       navigate('/')
 
     } catch (error) {
