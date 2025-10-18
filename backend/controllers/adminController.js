@@ -15,7 +15,13 @@ const adminLogin = async (req, res) => {
     { email: data.email },
     process.env.SECRET_KEY,
     { expiresIn: "1d" }
-  );
+  ); 
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+    });
+
 
   return res.status(200).json({ message: "Login successfully", token })
 

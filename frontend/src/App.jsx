@@ -37,7 +37,7 @@ const App = () => {
           <Route path='verifyotp' element={<VerifyOtp/>} />
           <Route path='resetotpverify' element={<ResetPasswordOtpVerify/>} />
           <Route path='*' element={<NotFound />} />
-          <Route path='checkout' element={<Shipping/>}/>
+          <Route path='shipping' element={<Shipping/>}/>
         </Route>
           <Route path='userprofile' element={<UserProfile/>} />
       </Routes>

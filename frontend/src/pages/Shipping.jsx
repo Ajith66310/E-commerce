@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Checkout = () => {
+const Shipping = () => {
   const [paymentMethod, setPaymentMethod] = useState("COD");
 
   return (
@@ -127,4 +127,4 @@ const Checkout = () => {
   );
 };
 
-export default Checkout;
+export default Shipping;

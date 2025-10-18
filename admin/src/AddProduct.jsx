@@ -83,9 +83,11 @@ const AddProduct = () => {
         `${import.meta.env.VITE_BACKEND_URL}/api/add-product`,
         data,
         {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+      headers: { "Content-Type": "multipart/form-data" },
+      withCredentials: true, 
+    }
       );
+
       toast.success("Product added successfully!");
       setFormData({
         title: "",

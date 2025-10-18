@@ -20,8 +20,10 @@ function Login({setToken}) {
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/admin/login`, {
         email: form.email,
         password: form.password
-      })
+      },{ withCredentials: true })
+      
       const { message, token } = response.data;
+      
       setToken(token)
       // store token in localStorage
       localStorage.setItem("token", token)
