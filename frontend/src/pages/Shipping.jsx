@@ -1,7 +1,48 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 const Shipping = () => {
   const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [address, setAddress] = useState({
+    street: '',
+    city: '',
+    state: '',
+    zipcode: '',
+    country: '',
+    phone: ''
+  })
+
+  const [user,setUser] = useState({
+    name:"",
+    email: ""
+  })
+
+  const token = localStorage.getItem('token')
+
+
+  const fetchUserAddress = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_URL}/fetchuseraddress`,
+        {},
+        {
+          headers: { token },
+          withCredentials: true,
+        }
+      );
+
+      setAddress(response.data.data.address);
+      setUser(response.data.data);
+
+    } catch (err) {
+      console.error("Fetch user address error:", err);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchUserAddress()
+  }, []);
 
   return (
     <div className="min-h-screen bg-white py-10 px-6 pt-40">
@@ -12,30 +53,30 @@ const Shipping = () => {
             DELIVERY <span className="text-black">INFORMATION</span>
           </h2>
           <form className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="w-full">
               <input
                 type="text"
+                defaultValue={user.name}
                 placeholder="First name"
                 className="border w-full p-3 rounded-md"
-              />
-              <input
-                type="text"
-                placeholder="Last name"
-                className="border w-full p-3 rounded-md"
-              />
+                />
+
             </div>
             <input
               type="email"
+              defaultValue={user.email}
               placeholder="Email address"
               className="border w-full p-3 rounded-md"
             />
             <input
               type="text"
               placeholder="Street"
+              defaultValue={address.street}
               className="border w-full p-3 rounded-md"
             />
             <div className="grid grid-cols-2 gap-4">
               <input
+                defaultValue={address.city}
                 type="text"
                 placeholder="City"
                 className="border w-full p-3 rounded-md"
@@ -43,22 +84,26 @@ const Shipping = () => {
               <input
                 type="text"
                 placeholder="State"
+                defaultValue={address.state}
                 className="border w-full p-3 rounded-md"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <input
+                defaultValue={address.zipcode}
                 type="text"
                 placeholder="Zipcode"
                 className="border w-full p-3 rounded-md"
               />
               <input
+                defaultValue={address.country}
                 type="text"
                 placeholder="Country"
                 className="border w-full p-3 rounded-md"
               />
             </div>
             <input
+              defaultValue={address.phone}
               type="text"
               placeholder="Phone"
               className="border w-full p-3 rounded-md"
@@ -67,7 +112,7 @@ const Shipping = () => {
         </div>
 
         {/* Cart Totals */}
-        <div  className="pt-5">
+        <div className="pt-5">
           <h2 className="text-2xl font-bold text-gray-700 mb-6">
             CART <span className="text-black">TOTALS</span>
           </h2>

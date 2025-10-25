@@ -412,6 +412,27 @@ const userAddress = async (req, res) => {
   }
 };
 
+const fetchUserAddress = async (req, res) => {
+  try {
+    const token = req.headers.token; 
+
+    if (!token || typeof token !== "string") {
+      return res.status(401).json({ message: "Token missing or invalid" });
+    }
+
+    const decoded = jwt.verify(token,process.env.SECRET_KEY); 
+
+    const data = await userModel.findOne({email:decoded.email})
+    
+    if(data.address){
+      res.json({ success: true, data });    
+    }
+
+  } catch (error) {
+    console.error("JWT Error:", error.message);
+    res.status(401).json({ message: "Invalid or expired token" });
+  }
+};
 
 
-export { userAddress, fetchUser, resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };
+export { fetchUserAddress,userAddress, fetchUser, resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };

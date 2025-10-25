@@ -58,7 +58,7 @@ const resendOtp = async () => {
     const response = await axios.post(
       `${import.meta.env.VITE_URL}/resendresetotp`,
       {},
-      { withCredentials: true } // 👈 important
+      { withCredentials: true } // important
     );
     toast.success(response.data.message);
   } catch (error) {
