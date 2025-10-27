@@ -1,72 +1,111 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import Breadcrumb from '../components/Breadcrums.jsx';
-import Marquee from '../components/Marquee.jsx';
+import React from "react";
 
 const Contact = () => {
   return (
-    <div className="flex flex-col mt-[80px] w-full absolute">
-
-      {/* Marquee */}
-      <Marquee />
-      <div className="pl-10 pt-5 pb-5 w-full">
-        <Breadcrumb Home="Home" Contact="Contact" />
+    <div className="min-h-screen bg-white py-16 px-6 flex flex-col items-center">
+      {/* Header */}
+      <div className="text-center mt-7 mb-12">
+        {/* <h2 className="text-4xl font-bold text-black mb-3">Get In Touch</h2> */}
+        <p className="text-gray-600 max-w-2xl mx-auto">
+           Discover the perfect outfit for every occasion. From trendy streetwear to
+  elegant formals, we bring you the latest styles with the finest quality.
+  Have questions about your order or need styling assistance? Our team is here
+  to help you look and feel your best.
+        </p>
       </div>
 
       {/* Contact Section */}
-      <motion.section
-        className="w-full flex flex-col items-center justify-center py-12 px-4 md:px-8 lg:px-16"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-      >
-        <div className="max-w-4xl text-center">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Get in Touch</h2>
-          <p className="text-gray-600 mb-8">
-            Have any questions or feedback? Fill out the form below and we’ll get back to you as soon as possible.
-          </p>
-        </div>
+      <div className="bg-white shadow-2xl rounded-2xl overflow-hidden max-w-5xl w-full grid md:grid-cols-2">
+        {/* Left Info Box */}
+        <div className="bg-red-600 text-white p-10 flex flex-col justify-between">
+          <div>
+            <h3 className="text-2xl font-semibold mb-3">Contact Information</h3>
+            <p className="text-red-100 mb-6">
+              Reach out to us anytime — we’re always ready to help with your
+              project or inquiry.
+            </p>
 
-        {/* Contact Form */}
-        <motion.form
-          className="w-full max-w-3xl bg-white shadow-xl rounded-2xl p-6 md:p-10 space-y-6"
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <input
-              type="text"
-              placeholder="Your Name"
-              className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-red-500 outline-none"
-            />
-            <input
-              type="email"
-              placeholder="Your Email"
-              className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-red-500 outline-none"
-            />
+            <ul className="space-y-4">
+              <li>
+                <span className="block font-semibold">Phone</span>
+                <p className="text-red-100">+91 6282612177</p>
+                <p className="text-red-100">+91 8590123072</p>
+              </li>
+              <li>
+                <span className="block font-semibold">Email</span>
+                <p className="text-red-100">support@bonkerscorner.com</p>
+              </li>
+              <li>
+                <span className="block font-semibold">Address</span>
+                <p className="text-red-100">New Delhi, India</p>
+              </li>
+            </ul>
           </div>
 
-          <input
-            type="text"
-            placeholder="Subject"
-            className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-red-500 outline-none"
-          />
+          <div className="mt-10">
+            <p className="text-sm text-red-100">
+              © {new Date().getFullYear()} bonkerscorner. All Rights Reserved.
+            </p>
+          </div>
+        </div>
 
-          <textarea
-            rows="5"
-            placeholder="Your Message"
-            className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-red-500 outline-none"
-          ></textarea>
+        {/* Right Contact Form */}
+        <div className="p-10 bg-white">
+          <form className="space-y-5">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-1">
+                  Your Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your name"
+                  className="border border-gray-300 w-full p-3 rounded-md focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-1">
+                  Your Email
+                </label>
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="border border-gray-300 w-full p-3 rounded-md focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none"
+                />
+              </div>
+            </div>
 
-          <button
-            type="submit"
-            className="w-full bg-red-600 text-white font-medium py-3 rounded-xl hover:bg-red-700 transition-all duration-300 shadow-md"
-          >
-            Send Message
-          </button>
-        </motion.form>
-      </motion.section>
+            <div>
+              <label className="block text-gray-700 font-medium mb-1">
+                Subject
+              </label>
+              <input
+                type="text"
+                placeholder="Enter your subject"
+                className="border border-gray-300 w-full p-3 rounded-md focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-medium mb-1">
+                Message
+              </label>
+              <textarea
+                rows="4"
+                placeholder="Write your message"
+                className="border border-gray-300 w-full p-3 rounded-md focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none"
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              className="bg-red-600 hover:bg-black text-white font-semibold py-3 px-6 rounded-md transition w-full"
+            >
+              Send Message
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

@@ -19,7 +19,6 @@ const Shipping = () => {
 
   const token = localStorage.getItem('token')
 
-
   const fetchUserAddress = async () => {
     try {
       const response = await axios.post(
@@ -30,10 +29,8 @@ const Shipping = () => {
           withCredentials: true,
         }
       );
-
       setAddress(response.data.data.address);
       setUser(response.data.data);
-
     } catch (err) {
       console.error("Fetch user address error:", err);
     }
@@ -44,6 +41,9 @@ const Shipping = () => {
     fetchUserAddress()
   }, []);
 
+  const handleFormSubmission = async(req,res)=>{
+
+  }
   return (
     <div className="min-h-screen bg-white py-10 px-6 pt-40">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-80">
@@ -52,7 +52,7 @@ const Shipping = () => {
           <h2 className="text-2xl font-bold text-gray-700 mb-6">
             DELIVERY <span className="text-black">INFORMATION</span>
           </h2>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleFormSubmission}>
             <div className="w-full">
               <input
                 type="text"
