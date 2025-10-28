@@ -1,5 +1,8 @@
 import hero_img from './hero_img.webp';
 import hero_img2 from './hero_img2.webp';
+import hero_img3 from './hero_img3.jpg';
+import hero_img4 from './hero_img4.jpg';
+import hero_img6 from './hero_img6.jpg';
 import p1 from './p1.jpg';
 import p2 from '../assets/p2.jpg';
 import p3 from '../assets/p3.jpg';
@@ -12,6 +15,9 @@ const images = {
   bglanding,
   hero_img,
   hero_img2,
+  hero_img3,
+  hero_img4,
+  hero_img6,
  p1,
  p2,
  p3,

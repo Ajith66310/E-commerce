@@ -1,57 +1,66 @@
-import React, { useState } from 'react'
+import React, { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { NavLink } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
 
 const ProductItem = ({ id, title, img, price, percentage, textColor, btnText }) => {
-  const [liked, setLiked] = useState(false);
-
+  const { toggleLike, isLiked } = useContext(UserContext);
+  const liked = isLiked(id);
   const textClass = textColor === "black" ? "text-black" : "text-white";
 
-  // Coerce to numbers, default to 0 if missing
+  // Coerce to numbers safely
   const numericPrice = Number(price) || 0;
-  const numericDiscount = Number(String(percentage).replace('%', '')) || 0;
-
-  const offerPrice = Math.round(
-    numericPrice - (numericPrice * numericDiscount / 100)
-  );
-
+  const numericDiscount = Number(String(percentage).replace("%", "")) || 0;
+  const offerPrice = Math.round(numericPrice - (numericPrice * numericDiscount) / 100);
   const btn = btnText === "View" ? "View" : "Add to cart";
 
+  // Stop NavLink navigation when clicking heart
+  const handleLike = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    toggleLike({ _id: id, title, img, price, percentage });
+  };
+
   return (
-    <NavLink to={`/product/${id}`}>
-      <div className="relative">
-        {/* Product Image */}
-        <img src={img} className="pt-10 duration-200" alt={title} />
+    <div className="relative rounded-lg shadow-md overflow-hidden group hover:shadow-lg transition duration-300">
+      {/* Heart Button (above image, top-right corner) */}
+      <button
+        onClick={handleLike}
+        className="absolute top-3 right-3 z-20 bg-white/80 rounded-full p-2 text-xl shadow hover:scale-110 transition"
+      >
+        {liked ? (
+          <FaHeart className="text-red-600" />
+        ) : (
+          <FaRegHeart className="text-gray-500 hover:text-red-600" />
+        )}
+      </button>
 
-        {/* Wishlist Heart */}
-        <button
-          onClick={(e) => {
-            e.preventDefault(); // prevent NavLink navigation when clicking heart
-            setLiked(!liked);
-          }}
-          className="flex items-center justify-center rounded-full w-8 h-8 absolute top-11 right-2 min-md:right-3 bg-white/70 hover:bg-white shadow"
-        >
-          {liked ? (
-            <FaHeart className="text-red-600 text-base" />
-          ) : (
-            <FaRegHeart className="text-red-600 text-base" />
-          )}
-        </button>
-
-        {/* Product Info */}
-        <p className={`text-lg font-extrabold mt-2 ${textClass}`}>{title}</p>
-        <div className="flex gap-3 items-center">
-          <p className={`line-through ${textClass}`}>₹{Math.round(numericPrice)}</p>
-          <p className={`font-bold ${textClass}`}>₹{offerPrice}</p>
-          <p className="text-red-600 font-medium">-{numericDiscount}%</p>
+      {/* Product Image wrapped in NavLink */}
+      <NavLink to={`/product/${id}`}>
+        <div className="relative w-full aspect-[3/4] bg-gray-100 overflow-hidden">
+          <img
+            src={img}
+            alt={title}
+            className="w-full h-full object-cover transform group-hover:scale-105 transition duration-300"
+          />
         </div>
 
-        {/* View Button */}
-        <button className="bg-red-800 text-white w-full mt-2 py-1 rounded-md hover:bg-gray-900">
-          {btn}
-        </button>
-      </div>
-    </NavLink>
+        {/* Product Info */}
+        <div className="p-3">
+          <p className={`text-lg font-extrabold mt-2 ${textClass}`}>{title}</p>
+          <div className="flex gap-3 items-center">
+            <p className={`line-through ${textClass}`}>₹{Math.round(numericPrice)}</p>
+            <p className={`font-bold ${textClass}`}>₹{offerPrice}</p>
+            <p className="text-red-600 font-medium">-{numericDiscount}%</p>
+          </div>
+
+          {/* View Button */}
+          <button className="bg-red-800 text-white w-full mt-3 py-2 rounded-md hover:bg-gray-900 transition">
+            {btn}
+          </button>
+        </div>
+      </NavLink>
+    </div>
   );
 };
 

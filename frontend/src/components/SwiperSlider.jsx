@@ -34,7 +34,7 @@ export default function App() {
         <SwiperSlide>
           <div className="relative w-full h-[40vh] sm:h-[60vh] md:h-[80vh] lg:h-[100vh]">
             <img
-              src={images.hero_img}
+              src={images.hero_img2}
               alt="Fashion 1"
               className="w-full h-full object-cover"
             />
@@ -52,11 +52,11 @@ export default function App() {
         <SwiperSlide>
           <div className="relative w-full h-[40vh] sm:h-[60vh] md:h-[80vh] lg:h-[100vh]">
             <img
-              src={images.bglanding}
+              src={images.hero_img4}
               alt="Fashion 2"
               className="w-full h-full object-cover"
             />
-            <div className="absolute bottom-10 left-5 sm:left-10 text-white">
+            <div className="absolute bottom-10 left-5 sm:left-10 text-black">
               <h2 className="text-xl sm:text-3xl md:text-5xl font-bold">
                 Women’s Fashion
               </h2>
@@ -70,11 +70,11 @@ export default function App() {
         <SwiperSlide>
           <div className="relative w-full h-[40vh] sm:h-[60vh] md:h-[80vh] lg:h-[100vh]">
             <img
-              src={images.hero_img2}
+              src={images.hero_img6}
               alt="Fashion 3"
               className="w-full h-full object-cover"
             />
-            <div className="absolute bottom-10 left-5 sm:left-10 text-white">
+            <div className="absolute bottom-10 left-5 sm:left-10 text-black">
               <h2 className="text-xl sm:text-3xl md:text-5xl font-bold">
                 New Arrivals
               </h2>
