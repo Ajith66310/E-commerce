@@ -1,8 +1,9 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { CiShoppingCart } from "react-icons/ci";
+import { RxHamburgerMenu } from "react-icons/rx";
 import { GoPerson } from "react-icons/go";
 import { CiLogin } from "react-icons/ci";
 import { IoIosLogOut } from "react-icons/io";
@@ -13,6 +14,7 @@ const Navbar = () => {
   const [userIcon, setUserIcon] = useState(false);
   const navigate = useNavigate();
   const { setCartIcon } = useContext(UserContext);
+  const drawerRef = useRef(null); 
 
   useGSAP(() => {
     const tl = gsap.timeline();
@@ -34,6 +36,22 @@ const Navbar = () => {
   };
 
   const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (userIcon && drawerRef.current && !drawerRef.current.contains(e.target)) {
+        setUserIcon(false);
+      }
+    };
+
+    if (userIcon) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    } else {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    }
+
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [userIcon]);
 
   return (
     <>
@@ -61,9 +79,7 @@ const Navbar = () => {
             <p className="font-serif hover:text-red-900 text-red-800">HOME</p>
           </NavLink>
           <NavLink to="/fashion" className="flex flex-col items-center">
-            <p className="font-serif hover:text-red-900 text-red-800">
-              FASHION
-            </p>
+            <p className="font-serif hover:text-red-900 text-red-800">FASHION</p>
           </NavLink>
           <NavLink to="/favourite" className="flex flex-col items-center">
             <p className="font-serif hover:text-red-900 text-red-800">
@@ -71,9 +87,7 @@ const Navbar = () => {
             </p>
           </NavLink>
           <NavLink to="/contact" className="flex flex-col items-center">
-            <p className="font-serif hover:text-red-900 text-red-800">
-              CONTACT
-            </p>
+            <p className="font-serif hover:text-red-900 text-red-800">CONTACT</p>
           </NavLink>
         </div>
 
@@ -111,9 +125,9 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* ✅ Small Screen Navbar (restored) */}
+      {/* Small Screen Navbar */}
       <div className="md:hidden fixed top-0 left-0 w-full z-50 bg-white shadow-sm flex items-center justify-between px-4 py-3">
-        <p className="text-xl font-bold text-red-800">BONKERS</p>
+        <p className="text-xl font-bold text-red-800">BONKERS CORNER</p>
 
         <div className="flex items-center gap-4 text-2xl">
           {/* Cart */}
@@ -122,20 +136,19 @@ const Navbar = () => {
             className="cursor-pointer text-red-800"
           />
 
-
-
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setUserIcon(true)}
             className="text-red-800 font-bold text-lg"
           >
-            ☰
+            <RxHamburgerMenu />
           </button>
         </div>
       </div>
 
-      {/* Mobile User Drawer */}
+      {/* Mobile User Drawer with outside click ref */}
       <div
+        ref={drawerRef}
         className={`fixed top-0 right-0 h-full bg-black/90 z-50 overflow-hidden transition-all duration-300 ease-in-out
           ${userIcon ? "w-[50%]" : "w-0"}
         `}

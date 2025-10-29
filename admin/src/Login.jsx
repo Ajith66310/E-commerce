@@ -29,7 +29,7 @@ function Login({setToken}) {
       localStorage.setItem("token", token)
       toast.success(message)
 
-      navigate('/')
+      navigate('/dashboard')
 
     } catch (error) {
       if (error.response && error.response.data && error.response.data.message) {

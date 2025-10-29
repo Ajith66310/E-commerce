@@ -104,6 +104,88 @@ const adminGetProducts = async (req, res) => {
 };
 
 
+const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await productModel.findById(id);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    //  Extract public IDs from Cloudinary URLs 
+    const extractPublicId = (url) => {
+      try {
+        const parts = url.split("/");
+        const filename = parts.pop().split(".")[0];
+        const folder = parts.slice(-2).join("/");
+        return `${folder}/${filename}`;
+      } catch {
+        return null;
+      }
+    };
+
+    //  Delete product images from Cloudinary 
+    if (product.images && product.images.length > 0) {
+      for (const imageUrl of product.images) {
+        const publicId = extractPublicId(imageUrl);
+        if (publicId) {
+          try {
+            await cloudinary.uploader.destroy(publicId);
+          } catch (err) {
+            console.warn(`Failed to delete image: ${publicId}`);
+          }
+        }
+      }
+    }
+
+    await productModel.findByIdAndDelete(id);
+
+    res.json({ success: true, message: "Product deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// UPDATE PRODUCT
+const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, price, percentage, category, sizes } = req.body;
+
+    // Parse sizes if sent as JSON string
+    const parsedSizes = typeof sizes === "string" ? JSON.parse(sizes) : sizes;
+
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
+      {
+        title,
+        description,
+        price,
+        percentage,
+        category,
+        sizes: parsedSizes,
+      },
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    res.json({ success: true, product: updatedProduct });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+ 
 
 
-export { adminGetProducts, addProduct, fetchProduct };
+
+
+export {updateProduct , deleteProduct,adminGetProducts, addProduct, fetchProduct };
