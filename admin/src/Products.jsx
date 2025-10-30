@@ -24,7 +24,7 @@ const Products = () => {
       setTotalPages(res.data.totalPages);
       setCurrentPage(res.data.currentPage);
     } catch (err) {
-      console.error(err);
+      toast.error(err);
     }
   };
 
@@ -73,16 +73,16 @@ const Products = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      try {
-        await axios.delete(
-          `${import.meta.env.VITE_BACKEND_URL}/api/deleteproduct/${id}`,
-          { withCredentials: true }
-        );
-        fetchProducts(currentPage);
-      } catch (error) {
-        console.error(error);
-      }
+
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}/api/deleteproduct/${id}`,
+        { withCredentials: true }
+      );
+      toast('Product Removed');
+      fetchProducts(currentPage);
+    } catch (error) {
+      toast.error(error);
     }
   };
 
@@ -109,7 +109,7 @@ const Products = () => {
       setEditingProduct(null);
       fetchProducts(currentPage);
     } catch (error) {
-      console.error(error);
+      toast.error(error);
       toast("Failed to update product");
     }
   };

@@ -183,9 +183,17 @@ const updateProduct = async (req, res) => {
   }
 };
 
+ const fetchbycategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+    const products = await productModel.find({ category });
+    res.json({ success: true, products });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
  
+ }
 
 
 
-
-export {updateProduct , deleteProduct,adminGetProducts, addProduct, fetchProduct };
+export {updateProduct ,fetchbycategory, deleteProduct,adminGetProducts, addProduct, fetchProduct };

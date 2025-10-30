@@ -32,7 +32,7 @@ const Users = () => {
 
   const handleRemove = async (id) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/admin/users/${id}`);
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/admin/removeusers/${id}`);
       fetchUsers(currentPage);
     } catch (err) {
       console.error(err);

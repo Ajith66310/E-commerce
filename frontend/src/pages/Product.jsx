@@ -2,6 +2,9 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
+import RelatedProducts from "../components/RelatedProducts";
+import { toast } from 'react-toastify';
+
 
 const Product = () => {
   const { id } = useParams();
@@ -88,14 +91,14 @@ const Product = () => {
     selectedSize === "S"
       ? sizeS
       : selectedSize === "M"
-      ? sizeM
-      : selectedSize === "L"
-      ? sizeL
-      : 0;
+        ? sizeM
+        : selectedSize === "L"
+          ? sizeL
+          : 0;
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      alert("Please select a size!");
+      toast("Please select a size!");
       return;
     }
 
@@ -132,7 +135,7 @@ const Product = () => {
   return (
     <div className="max-w-7xl mx-auto pt-20 px-4">
       <div className="flex flex-col lg:flex-row gap-4 bg-white p-6">
-        {/* Thumbnails */}
+        {/* Thumbnails */}3
         <div className="order-2 lg:order-1 flex flex-row lg:flex-col gap-1 justify-center lg:justify-start w-full lg:w-1/6">
           {product.images?.map((imgUrl, idx) => (
             <img
@@ -140,11 +143,10 @@ const Product = () => {
               src={imgUrl}
               alt={product.title}
               onClick={() => setSelectedImage(imgUrl)}
-              className={`w-28 h-28 lg:w-32 lg:h-32 object-cover rounded cursor-pointer border ${
-                selectedImage === imgUrl
-                  ? "border-red-500"
-                  : "border-gray-300"
-              }`}
+              className={`w-28 h-28 lg:w-32 lg:h-32 object-cover rounded cursor-pointer border ${selectedImage === imgUrl
+                ? "border-red-500"
+                : "border-gray-300"
+                }`}
             />
           ))}
         </div>
@@ -196,9 +198,8 @@ const Product = () => {
                 <div
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className={`cursor-pointer border rounded px-3 py-2 ${
-                    selectedSize === size ? "bg-black text-white" : ""
-                  }`}
+                  className={`cursor-pointer border rounded px-3 py-2 ${selectedSize === size ? "bg-black text-white" : ""
+                    }`}
                 >
                   {size}
                 </div>
@@ -208,13 +209,12 @@ const Product = () => {
 
           {/* Stock */}
           <p
-            className={`mt-3 text-sm font-medium ${
-              selectedSize
-                ? maxForSelected > 0
-                  ? "text-green-600"
-                  : "text-red-600"
-                : "text-gray-500"
-            }`}
+            className={`mt-3 text-sm font-medium ${selectedSize
+              ? maxForSelected > 0
+                ? "text-green-600"
+                : "text-red-600"
+              : "text-gray-500"
+              }`}
           >
             {selectedSize
               ? maxForSelected > 0
@@ -226,17 +226,21 @@ const Product = () => {
           {/* Add to cart */}
           <button
             disabled={maxForSelected <= 0 || !selectedSize}
-            className={`mt-6 w-full py-3 rounded transition ${
-              maxForSelected > 0 && selectedSize
-                ? "bg-red-600 text-white hover:bg-red-700"
-                : "bg-gray-400 text-gray-100 cursor-not-allowed"
-            }`}
+            className={`mt-6 w-full py-3 rounded transition ${maxForSelected > 0 && selectedSize
+              ? "bg-red-600 text-white hover:bg-red-700"
+              : "bg-gray-400 text-gray-100 cursor-not-allowed"
+              }`}
             onClick={handleAddToCart}
           >
             {maxForSelected > 0 ? "ADD TO CART" : "OUT OF STOCK"}
           </button>
         </div>
       </div>
+      <RelatedProducts
+        category={product.category}
+        currentProductId={product._id}
+      />
+
     </div>
   );
 };
