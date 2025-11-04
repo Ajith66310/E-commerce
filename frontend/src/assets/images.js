@@ -9,7 +9,7 @@ import p3 from '../assets/p3.jpg';
 import bglanding from './bg-landing.jpg';
 import p4 from '../assets/p4.jpg';
 import img1 from '../assets/img1.jpg'
-
+import Razorpay from '../assets/Razorpay.png'
 
 const images = {
   bglanding,
@@ -18,6 +18,7 @@ const images = {
   hero_img3,
   hero_img4,
   hero_img6,
+  Razorpay,
  p1,
  p2,
  p3,

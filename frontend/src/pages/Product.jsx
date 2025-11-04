@@ -135,7 +135,7 @@ const Product = () => {
   return (
     <div className="max-w-7xl mx-auto pt-20 px-4">
       <div className="flex flex-col lg:flex-row gap-4 bg-white p-6">
-        {/* Thumbnails */}3
+        {/* Thumbnails */}
         <div className="order-2 lg:order-1 flex flex-row lg:flex-col gap-1 justify-center lg:justify-start w-full lg:w-1/6">
           {product.images?.map((imgUrl, idx) => (
             <img

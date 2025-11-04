@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import images from "../assets/images";
 
 const Shipping = () => {
   const [paymentMethod, setPaymentMethod] = useState("COD");
@@ -134,7 +135,7 @@ const Shipping = () => {
             PAYMENT <span className="text-black">METHOD</span>
           </h2>
           <div className="flex gap-4">
-            <label className="flex items-center border p-3 rounded-md w-full cursor-pointer">
+            <label className="flex items-center font-bold border p-3 rounded-md w-full cursor-pointer">
               <input
                 type="radio"
                 name="payment"
@@ -144,12 +145,13 @@ const Shipping = () => {
                 className="mr-2"
               />
               <img
-                src="https://upload.wikimedia.org/wikipedia/commons/3/31/Razorpay_logo.png"
+                src={images.Razorpay}
                 alt="Razorpay"
                 className="h-5"
               />
+              Razorpay
             </label>
-            <label className="flex items-center border p-3 rounded-md w-full cursor-pointer">
+            <label className="flex items-center border p-3 font-bold rounded-md w-full cursor-pointer">
               <input
                 type="radio"
                 name="payment"
@@ -158,7 +160,7 @@ const Shipping = () => {
                 onChange={(e) => setPaymentMethod(e.target.value)}
                 className="mr-2"
               />
-              CASH ON DELIVERY
+              Cash on delivery
             </label>
           </div>
 

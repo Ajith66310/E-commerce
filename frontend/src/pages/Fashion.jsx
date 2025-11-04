@@ -34,7 +34,7 @@ const Fashion = () => {
     fetchProducts();
   }, []);
 
-  // ✅ Handle sorting
+  //  Handle sorting
   const handleSortChange = (e) => {
     const value = e.target.value;
     setSortOption(value);
@@ -51,7 +51,7 @@ const Fashion = () => {
     setFilteredProducts(sorted);
   };
 
-  // ✅ Handle category filtering
+  //  Handle category filtering
   const handleCategoryChange = (e) => {
     const { checked, name } = e.target;
     let updatedCategories = [...selectedCategories];
@@ -74,7 +74,7 @@ const Fashion = () => {
     }
   };
 
-  // ✅ Close sidebar when clicking outside
+  //  Close sidebar when clicking outside
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
@@ -122,7 +122,7 @@ const Fashion = () => {
         </div>
       </div>
 
-      {/* ✅ Product Grid */}
+      {/*  Product Grid */}
       <div className="grid grid-cols-2 gap-5 m-auto md:grid-cols-3 md:w-180 lg:grid-cols-4 lg:w-[95%] mt-5">
         {loading
           ? skeletons.map((_, i) => (
@@ -175,7 +175,7 @@ const Fashion = () => {
         </div>
 
         <div className="p-6">
-          {/* ✅ Category Section */}
+          {/*  Category Section */}
           <div className="mb-8">
             <h3 className="font-semibold text-lg mb-4 text-gray-700">Category</h3>
             <div className="space-y-3 text-gray-600">
@@ -194,7 +194,7 @@ const Fashion = () => {
             </div>
           </div>
 
-          {/* ✅ Sort By Section (Moved Below Category) */}
+          {/*  Sort By Section (Moved Below Category) */}
           <div>
             <h3 className="font-semibold text-lg mb-4 text-gray-700">Sort By</h3>
             <div className="relative">
