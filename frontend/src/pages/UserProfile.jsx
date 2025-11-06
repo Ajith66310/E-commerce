@@ -77,7 +77,7 @@ const UserProfile = () => {
     <div className="min-h-screen bg-[#0f111a] text-gray-200 py-12 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
       <div className="max-w-5xl w-full bg-[#161a25] rounded-3xl shadow-2xl overflow-hidden md:flex">
         {/* Left Section */}
-        <div className="md:w-1/3 bg-[#1d2233] text-white p-8 flex flex-col items-center justify-center border-r border-gray-700">
+        <div className="md:w-1/3 bg-[#1d2233] text-white p-8 flex flex-col items-center justify-center border-r border-gray-700 relative">
           <button
             type="button"
             onClick={() => navigate("/")}
@@ -130,7 +130,6 @@ const UserProfile = () => {
           </label>
 
           <h2 className="text-2xl font-semibold">{user?.name}</h2>
-          {/* <p className="text-green-400 text-sm mt-1">Premium User</p> */}
           <p className="mt-3 flex items-center gap-2 text-gray-400">
             <FaEnvelope /> {user?.email}
           </p>
@@ -141,6 +140,14 @@ const UserProfile = () => {
             className="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-full transition transform hover:scale-105"
           >
             Reset Password
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigate("/orders")}
+            className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-full transition transform hover:scale-105"
+          >
+            My Orders
           </button>
         </div>
 
@@ -179,6 +186,7 @@ const UserProfile = () => {
               </div>
             </div>
 
+            {/* Address Fields */}
             <div className="relative">
               <FaMapMarkerAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
               <input

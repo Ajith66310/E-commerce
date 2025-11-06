@@ -144,10 +144,10 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Enter a valid password" })
     }
 
-    if (result) {
-      const token = jwt.sign({ email: data.email }, process.env.SECRET_KEY, { expiresIn: '15m' });
-      return res.status(200).json({ message: 'Login successful.', token })
-    }
+if (result) {
+  const token = jwt.sign({ id: data._id, email: data.email }, process.env.SECRET_KEY, { expiresIn: '7d' });
+  return res.status(200).json({ message: 'Login successful.', token });
+}
 
   })
 }
@@ -311,7 +311,7 @@ const googleLogin = async (req, res) => {
   const googleIdVerify = await bcrypt.compare(googleId, data.googleId)
 
   if (data.email === email && googleIdVerify) {
-    const token = jwt.sign({ email: data.email }, process.env.SECRET_KEY,);
+    const token = jwt.sign({ id: data._id, email: data.email }, process.env.SECRET_KEY, { expiresIn: "7d" });
     return res.status(200).json({ message: "Login successfully", token })
   }
 };
@@ -345,7 +345,7 @@ const googleSignup = async (req, res) => {
 
     const data = await userModel.findOne({ email });
     if (data) {
-      const token = jwt.sign({ email: data.email }, process.env.SECRET_KEY);
+      const token = jwt.sign({ id: data._id, email: data.email }, process.env.SECRET_KEY, { expiresIn: "7d" });
       try {
         const emailHtml = RegisterSuccessEmail(data.name);
         await resend.emails.send({

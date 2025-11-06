@@ -86,9 +86,6 @@ const Navbar = () => {
               FAVOURITE
             </p>
           </NavLink>
-          <NavLink to="/contact" className="flex flex-col items-center">
-            <p className="font-serif hover:text-red-900 text-red-800">CONTACT</p>
-          </NavLink>
         </div>
 
         {/* Desktop Right Items */}
@@ -187,13 +184,6 @@ const Navbar = () => {
             to="/favourite"
           >
             FAVOURITE
-          </NavLink>
-          <NavLink
-            onClick={() => setUserIcon(false)}
-            className="py-2 pl-6"
-            to="/contact"
-          >
-            CONTACT
           </NavLink>
         </div>
       </div>
