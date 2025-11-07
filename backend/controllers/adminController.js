@@ -1,3 +1,4 @@
+import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
 import jwt from 'jsonwebtoken';
 
@@ -62,4 +63,26 @@ const adminRemoveUser = async (req, res) => {
   }
 };
 
-export {adminRemoveUser, adminFetchUser, adminLogin }
+// getUserOrders
+const getUserOrders = async (req, res) => {
+  try {
+    const orders = await orderModel
+      .find()
+      .populate({
+        path: "userId",
+        select: "name email", // get username + email
+      })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, orders });
+  } catch (error) {
+    console.error("❌ Error fetching admin orders:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch orders",
+      error: error.message,
+    });
+  }
+};
+
+export {adminRemoveUser, adminFetchUser, adminLogin,getUserOrders }

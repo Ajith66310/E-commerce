@@ -16,15 +16,15 @@ const Sidebar = ({ setToken }) => {
     navigate("/login", { replace: true });
   };
 
-  // ✅ Close sidebar when clicking outside (mobile only)
-  // ✅ Close sidebar when clicking outside (mobile only)
+  //Close sidebar when clicking outside (mobile only)
+  //Close sidebar when clicking outside (mobile only)
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (
         isOpen &&
         drawerRef.current &&
         !drawerRef.current.contains(e.target) &&
-        !e.target.closest(".hamburger-btn") // 👈 ignore hamburger itself
+        !e.target.closest(".hamburger-btn") //  ignore hamburger itself
       ) {
         setIsOpen(false);
       }
@@ -33,15 +33,15 @@ const Sidebar = ({ setToken }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
-  // ✅ Toggle sidebar on hamburger click
+  //Toggle sidebar on hamburger click
   const handleHamburgerClick = (e) => {
-    e.stopPropagation(); // 👈 prevent bubbling
+    e.stopPropagation(); //  prevent bubbling
     setIsOpen((prev) => !prev);
   };
 
   return (
     <>
-      {/* ✅ Desktop Sidebar */}
+      {/*Desktop Sidebar */}
       <div className="hidden md:flex h-screen w-64 fixed top-0 left-0 bg-gray-900 text-white flex-col">
         <div className="flex items-center justify-center h-20 border-b border-gray-700">
           <h1 className="text-xl font-serif font-extrabold">BONKERS CORNER</h1>
@@ -106,7 +106,7 @@ const Sidebar = ({ setToken }) => {
         )}
       </div>
 
-      {/* ✅ Mobile Top Navbar */}
+      {/*Mobile Top Navbar */}
       <div className="md:hidden fixed top-0 left-0 w-full z-50 bg-gray-900 text-white flex items-center justify-between px-4 py-3 shadow-lg">
         <h1 className="text-lg font-serif font-extrabold">BONKERS CORNER</h1>
 
@@ -118,12 +118,12 @@ const Sidebar = ({ setToken }) => {
           )}
           <RxHamburgerMenu
             onClick={handleHamburgerClick}
-            className="text-2xl cursor-pointer hamburger-btn" // 👈 add this class
+            className="text-2xl cursor-pointer hamburger-btn" 
           />
         </div>
       </div>
 
-      {/* ✅ Mobile Sidebar (always mounted for smooth toggle) */}
+      {/*Mobile Sidebar (always mounted for smooth toggle) */}
       <div
         ref={drawerRef}
         className={`fixed top-0 left-0 h-full bg-gray-900 text-white z-40 transition-all duration-300 md:hidden ${isOpen ? "w-3/4 sm:w-1/2 p-4" : "w-0 p-0"
@@ -192,7 +192,7 @@ const Sidebar = ({ setToken }) => {
         </div>
       </div>
 
-      {/* ✅ Overlay (click outside to close) */}
+      {/*Overlay (click outside to close) */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-30 md:hidden"

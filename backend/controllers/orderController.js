@@ -18,7 +18,7 @@ export const placeOrder = async (req, res) => {
       amount,
       address,
       paymentMethod,
-      payment: paymentMethod === "COD",
+      payment: false,
       status: paymentMethod === "COD" ? "Confirmed" : "Pending",
     });
 
@@ -99,6 +99,7 @@ export const getUserOrders = async (req, res) => {
   }
 };
 
+
 //  Cancel order
 export const cancelOrder = async (req, res) => {
   try {
@@ -141,3 +142,4 @@ export const returnOrder = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+

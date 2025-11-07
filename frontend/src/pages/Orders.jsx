@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -14,7 +15,7 @@ const Orders = () => {
         });
         setOrders(res.data.orders || []);
       } catch (error) {
-        console.error("Fetch Orders Error:", error);
+        toast.error("Failed to fetch orders");
       } finally {
         setLoading(false);
       }
@@ -23,13 +24,12 @@ const Orders = () => {
   }, []);
 
   const handleCancel = async (id) => {
-    if (!window.confirm("Cancel this order?")) return;
     try {
       await axios.put(`${import.meta.env.VITE_URL}/order/cancel/${id}`, {}, { headers: { token } });
-      alert("Order cancelled successfully");
+      toast.success("Order cancelled successfully");
       setOrders((prev) => prev.map((o) => (o._id === id ? { ...o, status: "Cancelled" } : o)));
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to cancel order");
+      toast.error(error.response?.data?.message || "Failed to cancel order");
     }
   };
 
@@ -37,10 +37,10 @@ const Orders = () => {
     if (!window.confirm("Return this order?")) return;
     try {
       await axios.put(`${import.meta.env.VITE_URL}/order/return/${id}`, {}, { headers: { token } });
-      alert("Order returned successfully");
+      toast.success("Order returned successfully");
       setOrders((prev) => prev.map((o) => (o._id === id ? { ...o, status: "Returned" } : o)));
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to return order");
+      toast.error(error.response?.data?.message || "Failed to return order");
     }
   };
 
@@ -79,9 +79,6 @@ const Orders = () => {
   if (loading)
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#0f111a] to-[#1a1d29] pt-32 px-6 pb-20 font-[Poppins]">
-        {/* <h1 className="text-4xl font-extrabold text-left text-white mb-14 tracking-wide">
-          My <span className="text-red-400">Orders</span>
-        </h1> */}
         <div className="max-w-6xl mx-auto space-y-10">
           {[1, 2, 3].map((_, idx) => (
             <SkeletonOrder key={idx} />
@@ -100,10 +97,6 @@ const Orders = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0f111a] to-[#1a1d29] pt-32 px-6 pb-20 font-[Poppins]">
-      {/* <h1 className="text-4xl font-extrabold text-left font-sans text-white mb-14 tracking-wide">
-        My <span className="text-red-400">Orders</span>
-      </h1> */}
-
       <div className="max-w-6xl mx-auto space-y-10">
         {orders.map((order) => (
           <div
