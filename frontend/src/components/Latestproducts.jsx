@@ -1,38 +1,49 @@
-import { useState, useEffect, useContext } from 'react'
-import Title from './Title'
-import ProductItem from './ProductItem.jsx'
-import { UserContext } from '../context/UserContext.jsx'
+import { useState, useEffect, useContext } from "react";
+import Title from "./Title";
+import ProductItem from "./ProductItem.jsx";
+import { UserContext } from "../context/UserContext.jsx";
 
 const Latestproducts = () => {
-  const [latestProduct, setLatestProduct] = useState([])
-  const [loading, setLoading] = useState(true)
-  const { fetchProducts } = useContext(UserContext)
+  const [latestProduct, setLatestProduct] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { fetchProducts } = useContext(UserContext);
 
   useEffect(() => {
     const loadProducts = async () => {
-      const products = await fetchProducts(20)
-      setLatestProduct(products.reverse().slice(0, 6))
-      setLoading(false)
-    }
-    loadProducts()
-  }, [fetchProducts])
+      const products = await fetchProducts(20);
+      setLatestProduct(products.reverse().slice(0, 6));
+      setLoading(false);
+    };
+    loadProducts();
+  }, [fetchProducts]);
 
-  const skeletons = Array.from({ length: 6 })
+  const skeletons = Array.from({ length: 6 });
 
   return (
-    <div id="container" className='h-auto'>
-      <div className="title pt-10">
-        <Title text1="Latest Products" text2="LATEST TRENDS, HANDPICKED JUST FOR YOU!" />
+    <div
+      id="container"
+      className="min-h-screen py-16 px-5 md:px-10 bg-gradient-to-b from-white to-gray-50 font-[Inter]"
+    >
+      {/* Title Section */}
+      <div className="text-center mb-12">
+             <Title
+          text1="Latest Products"
+          text2="Latest Trends, Handpicked Just For You!"
+        />
       </div>
 
-      <div id="image-box" className='grid grid-cols-2 gap-5 w-100 m-auto  md:grid-cols-3 md:w-180 lg:grid-cols-4 lg:w-[95%]'>
+      {/* Product Grid */}
+      <div
+        id="image-box"
+        className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 mx-auto max-w-7xl"
+      >
         {loading
           ? skeletons.map((_, i) => (
               <div
                 key={i}
-                className="flex flex-col bg-gray-100 rounded-lg animate-pulse"
+                className="bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl overflow-hidden shadow-md animate-pulse"
               >
-                <div className="w-full h-100 bg-gray-200 rounded-t-lg"></div>
+                <div className="w-full h-48 bg-gray-200"></div>
                 <div className="p-4 space-y-3">
                   <div className="h-5 bg-gray-200 rounded w-3/4"></div>
                   <div className="h-4 bg-gray-200 rounded w-1/2"></div>
@@ -41,20 +52,24 @@ const Latestproducts = () => {
               </div>
             ))
           : latestProduct.map((item) => (
-              <ProductItem
+              <div
                 key={item._id}
-                id={item._id}
-                title={item.title}
-                img={item.images?.[0]}
-                price={item.price}
-                percentage={item.percentage}
-                textColor="black"
-                btnText="View"
-              />
+                className="transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl bg-white/90 backdrop-blur-lg rounded-2xl overflow-hidden border border-gray-100"
+              >
+                <ProductItem
+                  id={item._id}
+                  title={item.title}
+                  img={item.images?.[0]}
+                  price={item.price}
+                  percentage={item.percentage}
+                  textColor="black"
+                  btnText="View"
+                />
+              </div>
             ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Latestproducts
+export default Latestproducts;

@@ -37,6 +37,7 @@ const Bestseller = () => {
         <Title
           text1="Bestseller"
           text2="LATEST TRENDS, HANDPICKED JUST FOR YOU!"
+          bgcolor="black"
         />
       </div>
 
