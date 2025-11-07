@@ -29,7 +29,6 @@ const AddProduct = () => {
     img4: null,
   });
 
-  // ✅ Auto-calculate total units
   useEffect(() => {
     const total =
       (Number(formData.sizeS) || 0) +
@@ -71,6 +70,7 @@ const AddProduct = () => {
     data.append("description", formData.description);
     data.append("price", formData.price);
     data.append("percentage", formData.percentage);
+    data.append("bestseller", formData.bestseller);
     data.append("category", formData.category);
     data.append(
       "sizes",
@@ -117,153 +117,205 @@ const AddProduct = () => {
   };
 
   return (
-<div className="flex items-center justify-center p-4 mt-5 md:mt-0" >
-  <div className="rounded-2xl w-full max-w-3xl bg-white shadow-md p-4 sm:p-6 ">
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Title */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Title</label>
-        <input
-          type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          className="mt-1 block w-full px-4 py-2 border rounded-lg text-sm sm:text-base"
-          required
-        />
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-10 px-4 font-[Poppins] flex justify-center">
+      <div className="w-full max-w-4xl bg-white shadow-2xl rounded-3xl border border-gray-100 p-8 md:p-10">
+        <h2 className="text-3xl font-semibold text-gray-800 text-center mb-4">
+          🛒 Add New Product
+        </h2>
+        <p className="text-gray-500 text-center mb-8 text-sm md:text-base">
+          Enter product details and upload high-quality images.
+        </p>
 
-      {/* Description */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Description
-        </label>
-        <textarea
-          name="description"
-          rows="4"
-          value={formData.description}
-          onChange={handleChange}
-          className="mt-1 block w-full px-4 py-2 border rounded-lg text-sm sm:text-base"
-          required
-        ></textarea>
-      </div>
-
-      {/* Images */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Product Images
-        </label>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
-          {["img1", "img2", "img3", "img4"].map((imgKey) => (
-            <div key={imgKey} className="flex flex-col items-center">
-              <input
-                type="file"
-                name={imgKey}
-                accept="image/*"
-                onChange={handleFileChange}
-                className="text-xs sm:text-sm border rounded-lg w-full"
-                required
-              />
-              {previews[imgKey] && (
-                <img
-                  src={previews[imgKey]}
-                  alt="preview"
-                  className="mt-2 w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-md border"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Price, Percentage, Category */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Price
-          </label>
-          <input
-            type="number"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border rounded-lg text-sm sm:text-base"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Discount %
-          </label>
-          <input
-            type="text"
-            name="percentage"
-            placeholder="20%"
-            value={formData.percentage}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border rounded-lg text-sm sm:text-base"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Category
-          </label>
-          <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border rounded-lg bg-white text-sm sm:text-base"
-            required
-          >
-            <option value="">Select</option>
-            <option value="men">Men</option>
-            <option value="women">Women</option>
-            <option value="kids">Kids</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Sizes */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {["sizeS", "sizeM", "sizeL"].map((size, idx) => (
-          <div key={idx}>
-            <label className="block text-sm font-medium text-gray-700">
-              Size {size.slice(-1).toUpperCase()}
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Title */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Product Title
             </label>
             <input
-              type="number"
-              name={size}
-              value={formData[size]}
+              type="text"
+              name="title"
+              value={formData.title}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border rounded-lg text-sm sm:text-base"
+              placeholder="Enter product name"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+              required
             />
           </div>
-        ))}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Total Units
-          </label>
-          <input
-            type="number"
-            name="units"
-            value={formData.units}
-            readOnly
-            className="mt-1 block w-full px-3 py-2 border rounded-lg bg-gray-100 text-sm sm:text-base"
-          />
-        </div>
-      </div>
 
-      {/* Submit */}
-      <button
-        type="submit"
-        className="w-full py-3 px-6 rounded-lg text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-700"
-      >
-        Add Product
-      </button>
-    </form>
-  </div>
-</div>
+          {/* Description */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Description
+            </label>
+            <textarea
+              name="description"
+              rows="4"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Describe your product..."
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+              required
+            ></textarea>
+          </div>
+
+          {/* Image Upload */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Product Images
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {["img1", "img2", "img3", "img4"].map((imgKey) => (
+                <div
+                  key={imgKey}
+                  className="relative border border-gray-200 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center p-3 aspect-square overflow-hidden group"
+                >
+                  {/* Custom upload button */}
+                  <label
+                    htmlFor={imgKey}
+                    className="cursor-pointer flex flex-col items-center justify-center text-center w-full h-full"
+                  >
+                    {previews[imgKey] ? (
+                      <img
+                        src={previews[imgKey]}
+                        alt="preview"
+                        className="w-full h-full object-cover rounded-lg shadow-sm group-hover:opacity-90 transition"
+                      />
+                    ) : (
+                      <>
+                        <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xl font-bold mb-2">
+                          +
+                        </div>
+                        <p className="text-xs text-gray-500 font-medium">
+                          Upload Image
+                        </p>
+                      </>
+                    )}
+                  </label>
+                  {/* Hidden file input */}
+                  <input
+                    id={imgKey}
+                    type="file"
+                    name={imgKey}
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    required
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Price, Discount, Category */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Price (₹)
+              </label>
+              <input
+                type="number"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                placeholder="Enter price"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Discount %
+              </label>
+              <input
+                type="text"
+                name="percentage"
+                placeholder="20%"
+                value={formData.percentage}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Category
+              </label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                required
+              >
+                <option value="">Select</option>
+                <option value="men">Men</option>
+                <option value="women">Women</option>
+                <option value="kids">Kids</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Sizes */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+            {["sizeS", "sizeM", "sizeL"].map((size, idx) => (
+              <div key={idx}>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Size {size.slice(-1).toUpperCase()}
+                </label>
+                <input
+                  type="number"
+                  name={size}
+                  value={formData[size]}
+                  onChange={handleChange}
+                  placeholder="Qty"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                />
+              </div>
+            ))}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Total Units
+              </label>
+              <input
+                type="number"
+                name="units"
+                value={formData.units}
+                readOnly
+                className="w-full px-4 py-3 border border-gray-200 bg-gray-100 rounded-xl text-gray-600 shadow-inner"
+              />
+            </div>
+          </div>
+
+          {/* Bestseller */}
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              name="bestseller"
+              checked={formData.bestseller || false}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  bestseller: e.target.checked,
+                }))
+              }
+              className="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+            />
+            <label className="text-sm font-semibold text-gray-700">
+              Mark as Bestseller
+            </label>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full py-4 px-6 rounded-2xl font-semibold text-white text-lg bg-gradient-to-r from-indigo-500 to-indigo-700 hover:from-indigo-600 hover:to-indigo-800 shadow-md transition-transform hover:scale-[1.02]"
+          >
+            Add Product
+          </button>
+        </form>
+      </div>
+    </div>
   );
 };
 

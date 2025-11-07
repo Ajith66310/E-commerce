@@ -25,18 +25,18 @@ const fetchProduct = async (req, res) => {
 
 
 const addProduct = async (req, res) => {
-  try {
+   try {
     const {
       title,
       description,
       price,
-      percentage, // or rename to discount
+      percentage,
       category,
       sizes,
       units,
+      bestseller,
     } = req.body;
 
-    // parse sizes if sent as JSON string
     const parsedSizes = sizes ? JSON.parse(sizes) : { S: 0, M: 0, L: 0 };
 
     // helper function to upload buffer to Cloudinary
@@ -65,11 +65,12 @@ const addProduct = async (req, res) => {
       title,
       description,
       price,
-      percentage, // or rename to discount
+      percentage, 
       category,
       sizes: parsedSizes,
       units: Number(units) || 0,
       images: imageUrls,
+       bestseller: bestseller === "true" || bestseller === true,
     };
 
     // save to DB
@@ -152,9 +153,8 @@ const deleteProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, price, percentage, category, sizes } = req.body;
+    const { title, description, price, percentage, category, sizes, bestseller } = req.body;
 
-    // Parse sizes if sent as JSON string
     const parsedSizes = typeof sizes === "string" ? JSON.parse(sizes) : sizes;
 
     const updatedProduct = await productModel.findByIdAndUpdate(
@@ -166,14 +166,13 @@ const updateProduct = async (req, res) => {
         percentage,
         category,
         sizes: parsedSizes,
+        bestseller: bestseller === "true" || bestseller === true, 
       },
       { new: true }
     );
 
     if (!updatedProduct) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
+      return res.status(404).json({ success: false, message: "Product not found" });
     }
 
     res.json({ success: true, product: updatedProduct });
@@ -195,5 +194,14 @@ const updateProduct = async (req, res) => {
  }
 
 
+const fetchBestseller = async (req, res) => {
+  try {
+    const products = await productModel.find({ bestseller: true });
+    res.json({ success: true, products });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching bestsellers" });
+  }
+};
 
-export {updateProduct ,fetchbycategory, deleteProduct,adminGetProducts, addProduct, fetchProduct };
+
+export {fetchBestseller,updateProduct ,fetchbycategory, deleteProduct,adminGetProducts, addProduct, fetchProduct };

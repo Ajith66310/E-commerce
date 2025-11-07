@@ -1,31 +1,47 @@
-import { useState, useEffect, useContext } from 'react'
-import Title from './Title'
-import ProductItem from './ProductItem.jsx'
-import { UserContext } from '../context/UserContext.jsx'
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Title from "./Title";
+import ProductItem from "./ProductItem.jsx";
 
 const Bestseller = () => {
-  const [latestProduct, setLatestProduct] = useState([])
-  const [loading, setLoading] = useState(true)
-  const { fetchProducts } = useContext(UserContext)
+  const [bestsellers, setBestsellers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch bestsellers directly from backend
+  const fetchBestsellers = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_URL}/api/bestsellers`);
+      if (res.data.success && res.data.products) {
+        setBestsellers(res.data.products.slice(0, 8)); 
+      } else {
+        setBestsellers([]);
+      }
+    } catch (err) {
+      console.error("Error fetching bestsellers:", err);
+      setBestsellers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadProducts = async () => {
-      const products = await fetchProducts(20)
-      setLatestProduct(products.slice(0, 6))
-      setLoading(false)
-    }
-    loadProducts()
-  }, [fetchProducts])
+    fetchBestsellers();
+  }, []);
 
-  const skeletons = Array.from({ length: 6 })
+  const skeletons = Array.from({ length: 8 });
 
   return (
-    <div id="container" className='bg-black mt-5 h-auto'>
-      <div className="title pt-10">
-        <Title text1="Bestseller" text2="LATEST TRENDS, HANDPICKED JUST FOR YOU!" />
+    <div className="bg-black mt-5 py-10">
+      {/* Section title */}
+      <div className="text-center mb-8">
+        <Title
+          text1="Bestseller"
+          text2="LATEST TRENDS, HANDPICKED JUST FOR YOU!"
+        />
       </div>
 
-      <div id="image-box" className='grid grid-cols-2  gap-5 w-100 m-auto md:grid-cols-3 md:w-180 lg:grid-cols-4 lg:w-[95%]'>
+      {/* Product Grid */}
+      <div className="grid grid-cols-2 gap-5 w-[95%] mx-auto md:grid-cols-3 lg:grid-cols-4">
         {loading
           ? skeletons.map((_, i) => (
               <div
@@ -40,7 +56,7 @@ const Bestseller = () => {
                 </div>
               </div>
             ))
-          : latestProduct.map((item) => (
+          : bestsellers.map((item) => (
               <ProductItem
                 key={item._id}
                 id={item._id}
@@ -54,7 +70,7 @@ const Bestseller = () => {
             ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Bestseller
+export default Bestseller;

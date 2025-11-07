@@ -1,7 +1,6 @@
-// src/components/RelatedProducts.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import ProductItem from "./ProductItem";
 
 const RelatedProducts = ({ category, currentProductId }) => {
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -38,23 +37,19 @@ const RelatedProducts = ({ category, currentProductId }) => {
         Related Products
       </h2>
 
+      {/* Use ProductItem cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
         {relatedProducts.map((product) => (
-          <Link
+          <ProductItem
             key={product._id}
-            to={`/product/${product._id}`}
-            className="bg-white shadow-md rounded-lg overflow-hidden border hover:shadow-xl transition-transform transform hover:-translate-y-1"
-          >
-            <img
-              src={product.images?.[0]}
-              alt={product.title}
-              className="w-full h-56 object-cover"
-            />
-            <div className="p-3">
-              <h3 className="text-base font-semibold truncate">{product.title}</h3>
-              <p className="text-sm text-gray-600 mt-1">₹{product.price}</p>
-            </div>
-          </Link>
+            id={product._id}
+            title={product.title}
+            img={product.images?.[0]}
+            price={product.price}
+            percentage={product.percentage}
+            textColor="black"
+            btnText="View"
+          />
         ))}
       </div>
     </div>

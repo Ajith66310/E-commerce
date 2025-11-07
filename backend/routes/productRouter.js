@@ -3,7 +3,8 @@ import {
   adminGetProducts,
   fetchProduct,
   addProduct,deleteProduct,updateProduct,
-  fetchbycategory
+  fetchbycategory,
+  fetchBestseller
 } from "../controllers/productController.js";
 import upload from "../middleware/multer.js";
 import adminAuth from "../middleware/adminAuth.js";
@@ -16,6 +17,8 @@ productRouter.get('/adminfetchproducts', adminGetProducts);
 productRouter.delete('/deleteproduct/:id', adminAuth, deleteProduct);
 productRouter.put('/updateproduct/:id', adminAuth, updateProduct);
 productRouter.get("/fetchbycategory/:category",fetchbycategory);
+productRouter.get("/bestsellers",fetchBestseller);
+
 
 
 export default productRouter;

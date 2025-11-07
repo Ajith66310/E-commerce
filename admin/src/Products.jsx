@@ -55,6 +55,7 @@ const Products = () => {
         category: product.category,
         price: product.price,
         percentage: product.percentage,
+        bestseller: product.bestseller || false,
         sizes: {
           S: product.sizes?.S || 0,
           M: product.sizes?.M || 0,
@@ -145,6 +146,7 @@ const Products = () => {
                 <p className="sm:w-[130px]">
                   <span className="text-black">Discount:</span> {p.percentage}
                 </p>
+
                 <p className="sm:w-[200px]">
                   <span className="text-black">Sizes:</span> S({p.sizes?.S || 0}) M({p.sizes?.M || 0}) L({p.sizes?.L || 0})
                 </p>
@@ -228,7 +230,23 @@ const Products = () => {
                     placeholder="Size L Units"
                     className="border p-2 rounded"
                   />
-
+                  {/* Bestseller Toggle */}
+                  <div className="flex items-center gap-3 col-span-1 sm:col-span-2 mt-2">
+                    <input
+                      type="checkbox"
+                      name="bestseller"
+                      checked={formData.bestseller || false}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          bestseller: e.target.checked,
+                        }))
+                      }
+                      className="w-5 h-5 text-indigo-600 border-gray-300 rounded"
+                    />
+                    <label className="text-gray-700 font-medium">Mark as Bestseller</label>
+                  </div>
+                  
                   <textarea
                     name="description"
                     value={formData.description}

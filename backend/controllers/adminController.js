@@ -14,7 +14,6 @@ const adminLogin = async (req, res) => {
   const token = jwt.sign(
     { email: data.email },
     process.env.SECRET_KEY,
-    { expiresIn: "1d" }
   ); 
 
     res.cookie("token", token, {
