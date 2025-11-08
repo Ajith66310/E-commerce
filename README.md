@@ -103,11 +103,11 @@ FASHION-ECOMMERCE/
 ###  Clone the Repository
 <pre>
   <code>
-git clone 
+git clone https://github.com/Ajith66310/Fashion-E-commerce.git 
+cd Fashion-Ecommerce
   </code>
 </pre>
 
-cd Fashion-Ecommerce
 
  ### Frontend Setup
 
