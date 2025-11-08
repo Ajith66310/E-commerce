@@ -6,15 +6,13 @@ import { NavLink } from "react-router-dom";
 const ProductItem = ({ id, title, img, price, percentage, textColor, btnText }) => {
   const { toggleLike, isLiked } = useContext(UserContext);
   const liked = isLiked(id);
-  const textClass = textColor === "black" ? "text-black" : "text-white";
 
-  // Coerce to numbers safely
+  const textClass = textColor === "black" ? "text-gray-900" : "text-white";
   const numericPrice = Number(price) || 0;
   const numericDiscount = Number(String(percentage).replace("%", "")) || 0;
   const offerPrice = Math.round(numericPrice - (numericPrice * numericDiscount) / 100);
-  const btn = btnText === "View" ? "View" : "Add to cart";
+  const btn = btnText === "View" ? "View" : "Add to Cart";
 
-  // Stop NavLink navigation when clicking heart
   const handleLike = (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -22,40 +20,55 @@ const ProductItem = ({ id, title, img, price, percentage, textColor, btnText }) 
   };
 
   return (
-    <div className="relative rounded-lg shadow-md overflow-hidden group hover:shadow-lg transition duration-300">
-      {/* Heart Button (above image, top-right corner) */}
+    <div
+      className="relative group overflow-hidden rounded-2xl shadow-md hover:shadow-xl
+                 transition-all duration-500 bg-white/80 backdrop-blur-sm border border-gray-100"
+    >
+      {/* Like Button */}
       <button
         onClick={handleLike}
-        className="absolute top-3 right-3 z-20 bg-white/80 rounded-full p-2 text-xl shadow hover:scale-110 transition"
+        className="absolute top-3 right-3 z-20 bg-white/80 backdrop-blur-sm rounded-full p-2 
+                   text-xl shadow-md hover:scale-110 hover:bg-white transition-all duration-300"
       >
         {liked ? (
-          <FaHeart className="text-red-600" />
+          <FaHeart className="text-red-600 transition-colors duration-300" />
         ) : (
-          <FaRegHeart className="text-gray-500 hover:text-red-600" />
+          <FaRegHeart className="text-gray-500 hover:text-red-600 transition-colors duration-300" />
         )}
       </button>
 
-      {/* Product Image wrapped in NavLink */}
+      {/* Product Image */}
       <NavLink to={`/product/${id}`}>
-        <div className="relative w-full aspect-[3/4] bg-gray-100 overflow-hidden">
+        <div className="relative w-full aspect-[3/4] overflow-hidden">
           <img
             src={img}
             alt={title}
-            className="w-full h-full object-cover transform group-hover:scale-105 transition duration-300"
+            className="w-full h-full object-cover transform group-hover:scale-110 transition-all duration-500"
           />
+
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
         </div>
 
         {/* Product Info */}
-        <div className="p-3">
-          <p className={`text-lg font-extrabold mt-2 ${textClass}`}>{title}</p>
-          <div className="flex gap-3 items-center">
-            <p className={`line-through ${textClass}`}>₹{Math.round(numericPrice)}</p>
-            <p className={`font-bold ${textClass}`}>₹{offerPrice}</p>
-            <p className="text-red-600 font-medium">-{numericDiscount}%</p>
+        <div className="p-4 md:p-5">
+          <p
+            className={`text-lg md:text-xl font-semibold font-[Playfair_Display] tracking-wide ${textClass} line-clamp-1`}
+          >
+            {title}
+          </p>
+
+          <div className="flex items-center gap-3 mt-2">
+            <p className="text-gray-500 line-through text-sm md:text-base">₹{Math.round(numericPrice)}</p>
+            <p className="text-lg md:text-xl font-bold text-gray-900">₹{offerPrice}</p>
+            <span className="text-red-600 text-sm font-medium">-{numericDiscount}%</span>
           </div>
 
-          {/* View Button */}
-          <button className="bg-red-800 text-white w-full mt-3 py-2 rounded-md hover:bg-gray-900 transition">
+          <button
+            className="mt-4 w-full py-2 md:py-3 rounded-lg bg-gradient-to-r from-red-800 to-red-600 
+                       text-white font-[Poppins] font-semibold tracking-wide shadow-md
+                       hover:from-gray-900 hover:to-gray-800 transition-all duration-300"
+          >
             {btn}
           </button>
         </div>

@@ -39,7 +39,6 @@ const Products = () => {
 
   const handleEdit = (product) => {
     if (editingProduct === product._id) {
-      // Close dropdown
       gsap.to(dropdownRefs.current[product._id], {
         height: 0,
         duration: 0.4,
@@ -47,7 +46,6 @@ const Products = () => {
       });
       setTimeout(() => setEditingProduct(null), 400);
     } else {
-      // Open dropdown
       setEditingProduct(product._id);
       setFormData({
         title: product.title,
@@ -62,7 +60,6 @@ const Products = () => {
           L: product.sizes?.L || 0,
         },
       });
-
       setTimeout(() => {
         gsap.fromTo(
           dropdownRefs.current[product._id],
@@ -74,13 +71,12 @@ const Products = () => {
   };
 
   const handleDelete = async (id) => {
-
     try {
       await axios.delete(
         `${import.meta.env.VITE_BACKEND_URL}/api/deleteproduct/${id}`,
         { withCredentials: true }
       );
-      toast('Product Removed');
+      toast("Product Removed");
       fetchProducts(currentPage);
     } catch (error) {
       toast.error(error);
@@ -116,92 +112,93 @@ const Products = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6">
-      <h1 className="text-xl sm:text-2xl font-bold mb-4">Products</h1>
-      <div className="space-y-4">
+    <div className="p-6 bg-gradient-to-br from-gray-50 via-white to-gray-100 min-h-screen">
+      <h1 className="text-3xl sm:text-4xl font-[Playfair_Display] font-bold text-center mb-8 text-gray-800 tracking-wide">
+        Product Management
+      </h1>
+
+      <div className="space-y-6 max-w-6xl mx-auto">
         {products.map((p) => (
           <div
             key={p._id}
-            className="flex flex-col border-b pb-4 bg-white rounded shadow-sm overflow-hidden"
+            className="flex flex-col border border-gray-200 rounded-2xl bg-white/90 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
           >
-            <div className="flex flex-col sm:flex-row sm:items-center py-4 px-2 gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between py-5 px-4 sm:px-6 gap-4">
               {p.images?.length > 0 && (
                 <img
                   src={p.images[0]}
                   alt={p.title}
-                  className="w-full sm:w-24 sm:h-24 h-48 object-cover rounded"
+                  className="w-full sm:w-28 sm:h-28 h-48 object-cover rounded-xl shadow-sm border border-gray-200"
                 />
               )}
 
-              <div className="flex-1 flex flex-col sm:flex-wrap sm:flex-row gap-x-6 text-gray-500 pt-3">
-                <p className="sm:w-[150px] font-extrabold font-serif text-black">
-                  {p.title}
+              <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-2 gap-x-6 text-gray-600">
+                <p className="font-semibold text-gray-900 text-lg">{p.title}</p>
+                <p>
+                  <span className="text-gray-800 font-medium">Price:</span> ₹{p.price}
                 </p>
-                <p className="sm:w-[80px]">
-                  <span className="text-black">Price:</span> ₹{p.price}
+                <p>
+                  <span className="text-gray-800 font-medium">Category:</span> {p.category}
                 </p>
-                <p className="sm:w-[120px]">
-                  <span className="text-black">Category:</span> {p.category}
+                <p>
+                  <span className="text-gray-800 font-medium">Discount:</span>{" "}
+                  {p.percentage}
                 </p>
-                <p className="sm:w-[130px]">
-                  <span className="text-black">Discount:</span> {p.percentage}
-                </p>
-
-                <p className="sm:w-[200px]">
-                  <span className="text-black">Sizes:</span> S({p.sizes?.S || 0}) M({p.sizes?.M || 0}) L({p.sizes?.L || 0})
+                <p className="col-span-2 sm:col-span-1">
+                  <span className="text-gray-800 font-medium">Sizes:</span> S({p.sizes?.S || 0}) M({p.sizes?.M || 0}) L({p.sizes?.L || 0})
                 </p>
               </div>
 
-              <div className="flex sm:flex-col gap-2 pt-2 sm:pt-0">
+              <div className="flex sm:flex-col gap-2">
                 <button
                   onClick={() => handleEdit(p)}
-                  className="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium hover:shadow-md hover:scale-[1.02] transition"
                 >
                   {editingProduct === p._id ? "Close" : "Edit"}
                 </button>
                 <button
                   onClick={() => handleDelete(p._id)}
-                  className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white font-medium hover:shadow-md hover:scale-[1.02] transition"
                 >
                   Remove
                 </button>
               </div>
             </div>
 
-            {/* Dropdown edit section */}
+            {/* Dropdown Edit Section */}
             <div
               ref={(el) => (dropdownRefs.current[p._id] = el)}
-              className="overflow-hidden bg-gray-100 px-4"
+              className="overflow-hidden bg-gray-50 px-4 sm:px-6 rounded-b-2xl border-t border-gray-200"
               style={{ height: 0 }}
             >
               {editingProduct === p._id && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-5">
                   <input
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
                     placeholder="Title"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none"
                   />
                   <input
                     name="price"
                     value={formData.price}
                     onChange={handleChange}
                     placeholder="Price"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none"
                   />
                   <input
                     name="percentage"
                     value={formData.percentage}
                     onChange={handleChange}
                     placeholder="Discount (%)"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none"
                   />
                   <select
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className="border p-2 rounded"
+                    className="border p-2 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none"
                   >
                     <option value="">Select Category</option>
                     <option value="men">Men</option>
@@ -214,23 +211,23 @@ const Products = () => {
                     value={formData.sizes.S}
                     onChange={handleChange}
                     placeholder="Size S Units"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none"
                   />
                   <input
                     name="M"
                     value={formData.sizes.M}
                     onChange={handleChange}
                     placeholder="Size M Units"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none"
                   />
                   <input
                     name="L"
                     value={formData.sizes.L}
                     onChange={handleChange}
                     placeholder="Size L Units"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none"
                   />
-                  {/* Bestseller Toggle */}
+
                   <div className="flex items-center gap-3 col-span-1 sm:col-span-2 mt-2">
                     <input
                       type="checkbox"
@@ -242,22 +239,24 @@ const Products = () => {
                           bestseller: e.target.checked,
                         }))
                       }
-                      className="w-5 h-5 text-indigo-600 border-gray-300 rounded"
+                      className="w-5 h-5 accent-blue-600 rounded"
                     />
-                    <label className="text-gray-700 font-medium">Mark as Bestseller</label>
+                    <label className="text-gray-700 font-medium">
+                      Mark as Bestseller
+                    </label>
                   </div>
-                  
+
                   <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
                     placeholder="Description"
-                    className="border p-2 rounded col-span-1 sm:col-span-2"
+                    className="border p-2 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none col-span-1 sm:col-span-2"
                   ></textarea>
 
                   <button
                     onClick={() => handleSave(p._id)}
-                    className="bg-green-500 text-white py-2 rounded hover:bg-green-600 col-span-1 sm:col-span-2"
+                    className="bg-gradient-to-r from-green-500 to-green-600 text-white py-2 rounded-lg font-medium hover:shadow-md hover:scale-[1.02] transition col-span-1 sm:col-span-2"
                   >
                     Save Changes
                   </button>
@@ -269,21 +268,21 @@ const Products = () => {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center items-center mt-6 gap-4">
+      <div className="flex justify-center items-center mt-8 gap-5">
         <button
           onClick={handlePrev}
           disabled={currentPage === 1}
-          className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+          className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg disabled:opacity-50 hover:bg-gray-300 transition-all duration-200"
         >
           Prev
         </button>
-        <span>
+        <span className="text-gray-800 font-medium text-lg">
           Page {currentPage} of {totalPages}
         </span>
         <button
           onClick={handleNext}
           disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+          className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg disabled:opacity-50 hover:bg-gray-300 transition-all duration-200"
         >
           Next
         </button>

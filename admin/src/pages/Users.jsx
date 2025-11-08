@@ -1,6 +1,7 @@
 // src/components/Users.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { User as UserIcon } from "lucide-react";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -49,29 +50,38 @@ const Users = () => {
   };
 
   return (
-    <div className="p-6 flex justify-center">
-      <div className="w-full max-w-6xl">
-        <h1 className="text-3xl font-semibold mb-6 text-gray-800">User Management</h1>
+    <div className="p-6 flex justify-center min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-100">
+      <div className="w-full max-w-6xl backdrop-blur-xl bg-white/80 border border-gray-200 rounded-3xl shadow-xl p-8 transition-all duration-300">
+        <h1 className="text-4xl font-[Playfair_Display] font-semibold mb-8 text-gray-800 text-center tracking-wide">
+          User Management
+        </h1>
 
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-6">
           {users.map((u) => (
             <div
               key={u._id}
-              className="w-full sm:w-[95%] md:w-[90%] lg:w-[85%] flex flex-col sm:flex-row items-center justify-between p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all"
+              className="w-full flex flex-col sm:flex-row items-center justify-between p-6 bg-gradient-to-r from-gray-50 to-white border border-gray-200 rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.01] transition-all duration-300"
             >
               {/* Left: user info */}
-              <div className="flex items-center gap-4 w-full sm:w-auto mb-3 sm:mb-0">
-                <img
-                  src={u.image || "/default-user.png"}
-                  alt={u.name}
-                  className="w-16 h-16 rounded-full object-cover border border-gray-300"
-                />
+              <div className="flex items-center gap-5 w-full sm:w-auto mb-3 sm:mb-0">
+                {u.image ? (
+                  <img
+                    src={u.image}
+                    alt={u.name}
+                    className="w-16 h-16 rounded-full object-cover border-2 border-gray-300 shadow-sm"
+                  />
+                ) : (
+                  <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gray-200 border-2 border-gray-300 text-gray-600">
+                    <UserIcon size={32} />
+                  </div>
+                )}
 
                 <div>
-                  <p className="font-semibold text-gray-900">{u.name}</p>
+                  <p className="font-semibold text-gray-900 text-lg">{u.name}</p>
                   <p className="text-gray-600 text-sm">{u.email}</p>
-                  <p className="text-sm text-gray-500">
-                    Role: <span className="font-medium">{u.role}</span> | Status:{" "}
+                  <p className="text-sm text-gray-500 mt-1">
+                    Role:{" "}
+                    <span className="font-medium text-gray-700">{u.role}</span> | Status:{" "}
                     <span
                       className={`font-medium ${
                         u.status === "blocked" ? "text-red-500" : "text-green-500"
@@ -81,7 +91,7 @@ const Users = () => {
                     </span>
                   </p>
                   {u.address?.city && (
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 mt-1">
                       City: {u.address.city} | Phone: {u.address.phone}
                     </p>
                   )}
@@ -92,17 +102,17 @@ const Users = () => {
               <div className="flex flex-row sm:flex-col md:flex-row gap-3">
                 <button
                   onClick={() => handleRemove(u._id)}
-                  className="px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white font-medium hover:shadow-md hover:opacity-90 transition-all duration-200"
                 >
                   Remove
                 </button>
 
                 <button
                   onClick={() => handleBlock(u._id)}
-                  className={`px-4 py-2 rounded-lg font-medium transition ${
+                  className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 ${
                     u.status === "blocked"
-                      ? "bg-blue-500 hover:bg-blue-600 text-white"
-                      : "bg-yellow-500 hover:bg-yellow-600 text-white"
+                      ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:shadow-md text-white"
+                      : "bg-gradient-to-r from-yellow-500 to-yellow-600 hover:shadow-md text-white"
                   }`}
                 >
                   {u.status === "blocked" ? "Unblock" : "Block"}
@@ -113,21 +123,21 @@ const Users = () => {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-center items-center mt-8 gap-4">
+        <div className="flex justify-center items-center mt-10 gap-6">
           <button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md disabled:opacity-50 hover:bg-gray-400"
+            className="px-5 py-2 bg-gray-200 text-gray-700 rounded-xl disabled:opacity-50 hover:bg-gray-300 transition-all duration-200"
           >
             Prev
           </button>
-          <span className="text-gray-800 font-medium">
+          <span className="text-gray-800 font-medium text-lg">
             Page {currentPage} of {totalPages}
           </span>
           <button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md disabled:opacity-50 hover:bg-gray-400"
+            className="px-5 py-2 bg-gray-200 text-gray-700 rounded-xl disabled:opacity-50 hover:bg-gray-300 transition-all duration-200"
           >
             Next
           </button>

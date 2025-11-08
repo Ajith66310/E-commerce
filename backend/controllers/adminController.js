@@ -76,7 +76,7 @@ const getUserOrders = async (req, res) => {
 
     res.status(200).json({ success: true, orders });
   } catch (error) {
-    console.error("❌ Error fetching admin orders:", error);
+    console.error(" Error fetching admin orders:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch orders",

@@ -34,7 +34,7 @@ const Fashion = () => {
     fetchProducts();
   }, []);
 
-  //  Handle sorting
+  // Handle sorting
   const handleSortChange = (e) => {
     const value = e.target.value;
     setSortOption(value);
@@ -45,13 +45,13 @@ const Fashion = () => {
     } else if (value === "high-low") {
       sorted.sort((a, b) => b.price - a.price);
     } else {
-      sorted = [...products]; // Relevant → reset to original order
+      sorted = [...products];
     }
 
     setFilteredProducts(sorted);
   };
 
-  //  Handle category filtering
+  // Handle category filtering
   const handleCategoryChange = (e) => {
     const { checked, name } = e.target;
     let updatedCategories = [...selectedCategories];
@@ -74,7 +74,7 @@ const Fashion = () => {
     }
   };
 
-  //  Close sidebar when clicking outside
+  // Close sidebar when clicking outside
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
@@ -93,28 +93,29 @@ const Fashion = () => {
     };
   }, [showSidebar]);
 
-  // Skeleton placeholders
+  // Skeleton loading placeholders
   const skeletons = Array.from({ length: 8 });
 
   return (
-    <div className="flex flex-col pt-[80px] w-full relative">
+    <div className="flex flex-col pt-[80px] w-full relative font-[Poppins] bg-gradient-to-b from-white to-gray-50">
       <Marquee />
-      <div className="pl-10 pt-5 pb-5 w-full">
+      <div className="pl-6 md:pl-10 pt-5 pb-5 w-full">
         <Breadcrumb Home="Home" Fashion="Fashion" />
       </div>
 
-      <div className="w-full grid grid-cols-2">
+      {/* Header */}
+      <div className="w-full grid grid-cols-2 items-center px-6 md:px-10">
         <div>
-          <p className="text-black text-3xl pl-10 font-[poppins]">
+          <h1 className="text-3xl md:text-4xl font-[Playfair_Display] tracking-wide text-gray-900">
             All
-            <span className="text-red-800 pl-2 font-[poppins]">Products</span>
-          </p>
+            <span className="text-red-700 pl-2">Products</span>
+          </h1>
         </div>
 
-        <div className="flex justify-end items-end font-[poppins] text-sm">
+        <div className="flex justify-end items-center">
           <button
             onClick={() => setShowSidebar(!showSidebar)}
-            className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-gray-800 bg-white border border-gray-300 rounded-full shadow-sm hover:bg-gray-200 transition-all duration-300 mr-10"
+            className="flex items-center gap-2 px-5 py-2 text-sm md:text-base font-semibold text-gray-700 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md hover:bg-gray-100 transition-all duration-300"
           >
             <IoFilter className="text-lg" />
             Filters & Sort
@@ -122,15 +123,15 @@ const Fashion = () => {
         </div>
       </div>
 
-      {/*  Product Grid */}
-      <div className="grid grid-cols-2 gap-5 m-auto md:grid-cols-3 md:w-180 lg:grid-cols-4 lg:w-[95%] mt-5">
+      {/* Product Grid */}
+      <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-6 px-4 sm:px-6 md:px-12">
         {loading
           ? skeletons.map((_, i) => (
               <div
                 key={i}
-                className="flex flex-col bg-gray-100 rounded-lg animate-pulse duration-2000"
+                className="flex flex-col bg-gray-100 rounded-2xl overflow-hidden animate-pulse shadow-sm"
               >
-                <div className="w-full h-100 bg-gray-200 rounded-t-lg"></div>
+                <div className="w-full h-64 bg-gray-200"></div>
                 <div className="p-4 space-y-3">
                   <div className="h-5 bg-gray-200 rounded w-3/4"></div>
                   <div className="h-4 bg-gray-200 rounded w-1/2"></div>
@@ -154,39 +155,46 @@ const Fashion = () => {
 
       {/* Sidebar Overlay */}
       {showSidebar && (
-        <div className="fixed inset-0 bg-opacity-30 z-40"></div>
+        <div className="fixed inset-0 bg-black bg-opacity-40 z-40 backdrop-blur-sm transition-opacity duration-300"></div>
       )}
 
       {/* Sidebar */}
       <div
         ref={sidebarRef}
-        className={`fixed inset-y-0 left-0 w-64 bg-white z-50 transform transition-transform duration-500 ease-in-out ${
+        className={`fixed inset-y-0 left-0 w-72 sm:w-80 bg-white z-50 transform transition-transform duration-500 ease-in-out ${
           showSidebar ? "translate-x-0" : "-translate-x-full"
-        } shadow-lg overflow-y-auto`}
+        } shadow-2xl rounded-r-2xl overflow-y-auto`}
       >
         <div className="flex justify-between items-center p-6 border-b border-gray-200 sticky top-0 bg-white z-50">
-          <h2 className="text-xl font-bold text-gray-800">Filters & Sort</h2>
+          <h2 className="text-xl font-bold text-gray-800 font-[Playfair_Display]">
+            Filters & Sort
+          </h2>
           <button
             onClick={() => setShowSidebar(false)}
-            className="text-gray-500 hover:text-gray-800"
+            className="text-gray-500 hover:text-gray-800 transition"
           >
             <RxCross2 className="text-2xl" />
           </button>
         </div>
 
-        <div className="p-6">
-          {/*  Category Section */}
-          <div className="mb-8">
-            <h3 className="font-semibold text-lg mb-4 text-gray-700">Category</h3>
+        <div className="p-6 space-y-8">
+          {/* Category Filter */}
+          <div>
+            <h3 className="font-semibold text-lg mb-4 text-gray-800 font-[Playfair_Display]">
+              Category
+            </h3>
             <div className="space-y-3 text-gray-600">
               {["men", "women", "kids"].map((cat) => (
-                <label key={cat} className="flex items-center cursor-pointer">
+                <label
+                  key={cat}
+                  className="flex items-center cursor-pointer hover:text-red-600 transition"
+                >
                   <input
                     type="checkbox"
                     name={cat}
                     checked={selectedCategories.includes(cat)}
                     onChange={handleCategoryChange}
-                    className="h-4 w-4 text-red-600 accent-red-500 border-gray-300 rounded focus:ring-red-500 mr-2"
+                    className="h-4 w-4 text-red-600 accent-red-500 border-gray-300 rounded focus:ring-red-500 mr-3"
                   />
                   {cat.charAt(0).toUpperCase() + cat.slice(1)}
                 </label>
@@ -194,12 +202,14 @@ const Fashion = () => {
             </div>
           </div>
 
-          {/*  Sort By Section (Moved Below Category) */}
+          {/* Sort Section */}
           <div>
-            <h3 className="font-semibold text-lg mb-4 text-gray-700">Sort By</h3>
+            <h3 className="font-semibold text-lg mb-4 text-gray-800 font-[Playfair_Display]">
+              Sort By
+            </h3>
             <div className="relative">
               <select
-                className="w-full px-5 py-3 border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-300 bg-white shadow-sm"
+                className="w-full px-5 py-3 border border-gray-300 rounded-xl appearance-none focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-300 bg-white text-gray-700 shadow-sm"
                 value={sortOption}
                 onChange={handleSortChange}
               >

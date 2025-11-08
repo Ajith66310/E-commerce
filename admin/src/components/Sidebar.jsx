@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaUsers, FaHome, FaPlus, FaSignOutAlt } from "react-icons/fa";
-import { FaCartShopping } from "react-icons/fa6";
+import { IoCartSharp } from "react-icons/io5";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { LiaClipboardListSolid } from "react-icons/lia";
 
 const Sidebar = ({ setToken }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,7 +78,7 @@ const Sidebar = ({ setToken }) => {
               }`
             }
           >
-            <FaCartShopping className="mr-3" />
+            <IoCartSharp className="mr-3" />
             Products
           </NavLink>
 
@@ -90,6 +91,16 @@ const Sidebar = ({ setToken }) => {
           >
             <FaUsers className="mr-3" />
             Users
+          </NavLink>
+          <NavLink
+            to="/orders"
+            className={({ isActive }) =>
+              `flex items-center p-3 rounded-lg hover:bg-gray-800 ${isActive ? "bg-gray-800" : ""
+              }`
+            }
+          >
+            <LiaClipboardListSolid className="mr-3"/>
+              Orders
           </NavLink>
         </nav>
 
@@ -118,7 +129,7 @@ const Sidebar = ({ setToken }) => {
           )}
           <RxHamburgerMenu
             onClick={handleHamburgerClick}
-            className="text-2xl cursor-pointer hamburger-btn" 
+            className="text-2xl cursor-pointer hamburger-btn"
           />
         </div>
       </div>
@@ -173,7 +184,7 @@ const Sidebar = ({ setToken }) => {
                 }`
               }
             >
-              <FaCartShopping className="inline mr-3" />
+              <IoCartSharp className="inline mr-3" />
               Products
             </NavLink>
 
@@ -188,6 +199,19 @@ const Sidebar = ({ setToken }) => {
               <FaUsers className="inline mr-3" />
               Users
             </NavLink>
+            
+            <NavLink
+              onClick={() => setIsOpen(false)}
+              to="/orders"
+              className={({ isActive }) =>
+                `block p-3 rounded-lg hover:bg-gray-800 ${isActive ? "bg-gray-800" : ""
+                }`
+              }
+            >
+              <LiaClipboardListSolid className="inline mr-3" />
+              Orders
+            </NavLink>
+            
           </nav>
         </div>
       </div>

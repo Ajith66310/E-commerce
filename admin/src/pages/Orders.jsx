@@ -32,7 +32,6 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
-  // Loading spinner
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
@@ -66,7 +65,6 @@ const Orders = () => {
                     <Package className="w-5 h-5 text-blue-500" /> Order #
                     {order._id.slice(-6)}
                   </h2>
-                  {/* Show User ID */}
                   <p className="text-gray-500 text-sm mt-1">
                     <b>User ID:</b> {order.userId?._id || order.userId}
                     <br />
@@ -74,41 +72,54 @@ const Orders = () => {
                     <br />
                     <b>Email:</b> {order.userId?.email || "No Email"}
                   </p>
-
                 </div>
 
                 <span
-                  className={`px-3 py-1 text-sm rounded-full font-medium ${order.status === "Confirmed"
+                  className={`px-3 py-1 text-sm rounded-full font-medium ${
+                    order.status === "Confirmed"
                       ? "bg-green-100 text-green-700"
                       : order.status === "Pending"
-                        ? "bg-yellow-100 text-yellow-700"
-                        : order.status === "Cancelled"
-                          ? "bg-red-100 text-red-700"
-                          : order.status === "Delivered"
-                            ? "bg-blue-100 text-blue-700"
-                            : order.status === "Returned"
-                              ? "bg-purple-100 text-purple-700"
-                              : "bg-gray-100 text-gray-700"
-                    }`}
+                      ? "bg-yellow-100 text-yellow-700"
+                      : order.status === "Cancelled"
+                      ? "bg-red-100 text-red-700"
+                      : order.status === "Delivered"
+                      ? "bg-blue-100 text-blue-700"
+                      : order.status === "Returned"
+                      ? "bg-purple-100 text-purple-700"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
                 >
                   {order.status}
                 </span>
               </div>
 
               {/* Items */}
-              <div className="space-y-2 border-t border-gray-100 pt-2">
+              <div className="space-y-3 border-t border-gray-100 pt-3">
                 {order.items.map((item, idx) => (
                   <div
                     key={idx}
-                    className="flex justify-between items-center border-b border-gray-100 pb-2"
+                    className="flex items-center justify-between gap-4 p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition"
                   >
-                    <div className="flex flex-col">
-                      <p className="text-gray-700 font-medium">{item.title}</p>
-                      <p className="text-gray-500 text-xs">
-                        Size: {item.size} | Units: {item.units}
-                      </p>
+                    {/* Product Image */}
+                    <div className="flex items-center gap-4 w-full">
+                      <img
+                        src={
+                          Array.isArray(item.images)
+                            ? item.images[0]
+                            : item.image || "/placeholder.png"
+                        }
+                        alt={item.title}
+                        className="w-16 h-16 object-cover rounded-lg border border-gray-200"
+                      />
+                      <div className="flex flex-col flex-1">
+                        <p className="text-gray-800 font-medium">{item.title}</p>
+                        <p className="text-gray-500 text-xs">
+                          Size: {item.size} | Units: {item.units}
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-gray-500 text-sm">
+
+                    <p className="text-gray-600 text-sm font-medium whitespace-nowrap">
                       ₹{item.offerPrice || item.price} × {item.units}
                     </p>
                   </div>
