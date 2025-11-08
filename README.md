@@ -108,19 +108,23 @@ cd Fashion-Ecommerce
 
 Create a .env file inside frontend/env
 
+<pre><code>
 VITE_BACKEND_URL=YOUR_BACKEND_URL
 VITE_RAZORPAY_KEY_ID=YOUR_RAZORPAY_KEY_ID
 VITE_GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
+</code></pre>
 
-
+<pre><code>
 cd frontend
 npm install
 npm run dev
+</code></pre>
 
 3️⃣ Backend Setup
 
 Create a .env file inside backend/env
 
+  <pre><code>
 PORT=YOUR_PORT_NUMBER
 MONGO_URI=YOUR_MONGODB_URI
 JWT_SECRET=YOUR_JWT_SECRET
@@ -135,20 +139,26 @@ REDIS_URL=YOUR_REDIS_CONNECTION_STRING
 RESEND_API_KEY=YOUR_RESEND_API_KEY
 ADMIN_EMAIL=YOUR_ADMIN_EMAIL
 ADMIN_PASSWORD=YOUR_ADMIN_PASSWORD
+</code></pre>
 
 
+  <pre><code>
 cd backend
 npm install
 npm run server
-
+</code></pre>
+ 
 4️⃣ Admin Panel Setup
 
 Create a .env file inside admin/env
 
+<pre><code>
 VITE_BACKEND_URL=YOUR_BACKEND_URL
-
+</code></pre>
+  <pre><code>
 cd admin
 npm install
 npm run dev
+    </code></pre>
 
 
