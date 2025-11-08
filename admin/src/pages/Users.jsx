@@ -1,16 +1,17 @@
-// src/components/Users.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { User as UserIcon } from "lucide-react";
+import { User as UserIcon, Loader2 } from "lucide-react";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
   const limit = 10;
 
   const fetchUsers = async (page) => {
     try {
+      setLoading(true);
       const res = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/admin/adminfetchuser?page=${page}&limit=${limit}`
       );
@@ -19,6 +20,8 @@ const Users = () => {
       setCurrentPage(res.data.currentPage);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -33,21 +36,35 @@ const Users = () => {
 
   const handleRemove = async (id) => {
     try {
+      setLoading(true);
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/admin/removeusers/${id}`);
       fetchUsers(currentPage);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleBlock = async (id) => {
     try {
+      setLoading(true);
       await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/admin/users/${id}/block`);
       fetchUsers(currentPage);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <Loader2 className="animate-spin w-10 h-10 text-gray-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 flex justify-center min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-100">
@@ -62,7 +79,6 @@ const Users = () => {
               key={u._id}
               className="w-full flex flex-col sm:flex-row items-center justify-between p-6 bg-gradient-to-r from-gray-50 to-white border border-gray-200 rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.01] transition-all duration-300"
             >
-              {/* Left: user info */}
               <div className="flex items-center gap-5 w-full sm:w-auto mb-3 sm:mb-0">
                 {u.image ? (
                   <img
@@ -98,7 +114,6 @@ const Users = () => {
                 </div>
               </div>
 
-              {/* Right: action buttons */}
               <div className="flex flex-row sm:flex-col md:flex-row gap-3">
                 <button
                   onClick={() => handleRemove(u._id)}
@@ -122,7 +137,6 @@ const Users = () => {
           ))}
         </div>
 
-        {/* Pagination */}
         <div className="flex justify-center items-center mt-10 gap-6">
           <button
             onClick={handlePrev}

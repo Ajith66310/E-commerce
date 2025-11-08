@@ -125,7 +125,7 @@ const AddProduct = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-10 px-4 font-[Poppins] flex justify-center">
       <div className="w-full max-w-4xl bg-white shadow-2xl rounded-3xl border border-gray-100 p-8 md:p-10">
         <h2 className="text-3xl font-semibold text-gray-800 text-center mb-4">
-          🛒 Add New Product
+         Add New Product
         </h2>
         <p className="text-gray-500 text-center mb-8 text-sm md:text-base">
           Enter product details and upload high-quality images.

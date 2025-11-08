@@ -1,5 +1,6 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
+import productModel from "../models/productModel.js";
 import jwt from 'jsonwebtoken';
 
 
@@ -85,4 +86,52 @@ const getUserOrders = async (req, res) => {
   }
 };
 
-export {adminRemoveUser, adminFetchUser, adminLogin,getUserOrders }
+
+ const getDashboardData = async (req, res) => {
+  try {
+    // Total counts
+    const totalUsers = await userModel.countDocuments();
+    const totalProducts = await productModel.countDocuments();
+    const totalOrders = await orderModel.countDocuments();
+
+    // Total revenue (sum of all order amounts)
+    const totalRevenueData = await orderModel.aggregate([
+      { $group: { _id: null, total: { $sum: "$amount" } } },
+    ]);
+    const totalRevenue = totalRevenueData[0]?.total || 0;
+
+    // Monthly revenue (for graphs)
+    const monthlyRevenue = await orderModel.aggregate([
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          totalRevenue: { $sum: "$amount" },
+          totalOrders: { $sum: 1 },
+        },
+      },
+      { $sort: { "_id": 1 } },
+    ]);
+
+    const formattedMonthlyRevenue = monthlyRevenue.map((item) => ({
+      month: new Date(0, item._id - 1).toLocaleString("default", {
+        month: "short",
+      }),
+      revenue: item.totalRevenue,
+      orders: item.totalOrders,
+    }));
+
+    res.status(200).json({
+      success: true,
+      totalUsers,
+      totalProducts,
+      totalOrders,
+      totalRevenue,
+      monthlyRevenue: formattedMonthlyRevenue,
+    });
+  } catch (error) {
+    console.error("Dashboard fetch error:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch data" });
+  }
+};
+
+export {adminRemoveUser, adminFetchUser, adminLogin,getUserOrders ,getDashboardData}

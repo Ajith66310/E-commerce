@@ -15,6 +15,21 @@ const registerOtpMail = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+        //  Email format: must be username@gmail.com
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email format. Must be username@gmail.com" });
+    }
+
+    //  Password format: at least 8 chars, one uppercase, one lowercase, one number, one special char
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message:
+          "Password must include at least 8 characters, one uppercase, one lowercase, one number, and one special character",
+      });
+    }
     const existing = await userModel.findOne({ email });
 
     if (existing) {
@@ -130,6 +145,22 @@ const resendOtp = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
+
+      //  Email format: must be username@gmail.com
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email format. Must be username@gmail.com" });
+    }
+
+    //  Password format: at least 8 chars, one uppercase, one lowercase, one number, one special char
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message:
+          "Password must include at least 8 characters, one uppercase, one lowercase, one number, and one special character",
+      });
+    }
 
   const data = await userModel.findOne({ email: email });
 

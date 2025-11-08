@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import gsap from "gsap";
 import { toast } from "react-toastify";
+import gsap from "gsap";
+import { Loader2 } from "lucide-react"; 
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -10,13 +10,14 @@ const Products = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({});
-  const [loadingDelete, setLoadingDelete] = useState(null); 
+  const [loadingDelete, setLoadingDelete] = useState(null);
+  const [loading, setLoading] = useState(true);
   const limit = 5;
-  // const navigate = useNavigate();
   const dropdownRefs = useRef({});
 
   const fetchProducts = async (page) => {
     try {
+      setLoading(true); 
       const res = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/api/adminfetchproducts?page=${page}&limit=${limit}`
       );
@@ -24,7 +25,9 @@ const Products = () => {
       setTotalPages(res.data.totalPages);
       setCurrentPage(res.data.currentPage);
     } catch (err) {
-      toast.error(err);
+      toast.error("Failed to fetch products");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,17 +75,17 @@ const Products = () => {
 
   const handleDelete = async (id) => {
     try {
-      setLoadingDelete(id); //  start loader
+      setLoadingDelete(id);
       await axios.delete(
         `${import.meta.env.VITE_BACKEND_URL}/api/deleteproduct/${id}`,
         { withCredentials: true }
       );
-      toast("Product Removed");
+      toast.success("Product Removed");
       fetchProducts(currentPage);
     } catch (error) {
-      toast.error(error);
+      toast.error("Failed to delete product");
     } finally {
-      setLoadingDelete(null); //  stop loader
+      setLoadingDelete(null);
     }
   };
 
@@ -105,14 +108,22 @@ const Products = () => {
         formData,
         { withCredentials: true }
       );
-      toast("Product updated successfully!");
+      toast.success("Product updated successfully!");
       setEditingProduct(null);
       fetchProducts(currentPage);
     } catch (error) {
-      toast.error(error);
-      toast("Failed to update product");
+      toast.error("Failed to update product");
     }
   };
+
+  //  Page loader
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <Loader2 className="animate-spin w-10 h-10 text-gray-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 bg-gradient-to-br from-gray-50 via-white to-gray-100 min-h-screen">
@@ -138,10 +149,12 @@ const Products = () => {
               <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-2 gap-x-6 text-gray-600">
                 <p className="font-semibold text-gray-900 text-lg">{p.title}</p>
                 <p>
-                  <span className="text-gray-800 font-medium">Price:</span> ₹{p.price}
+                  <span className="text-gray-800 font-medium">Price:</span> ₹
+                  {p.price}
                 </p>
                 <p>
-                  <span className="text-gray-800 font-medium">Category:</span> {p.category}
+                  <span className="text-gray-800 font-medium">Category:</span>{" "}
+                  {p.category}
                 </p>
                 <p>
                   <span className="text-gray-800 font-medium">Discount:</span>{" "}
@@ -165,31 +178,14 @@ const Products = () => {
                   onClick={() => handleDelete(p._id)}
                   disabled={loadingDelete === p._id}
                   className={`px-4 py-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white font-medium hover:shadow-md hover:scale-[1.02] transition flex items-center justify-center gap-2 ${
-                    loadingDelete === p._id ? "opacity-70 cursor-not-allowed" : ""
+                    loadingDelete === p._id
+                      ? "opacity-70 cursor-not-allowed"
+                      : ""
                   }`}
                 >
                   {loadingDelete === p._id ? (
                     <>
-                      <svg
-                        className="animate-spin h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                        ></path>
-                      </svg>
+                      <Loader2 className="animate-spin w-5 h-5 text-white" />
                       Removing...
                     </>
                   ) : (
