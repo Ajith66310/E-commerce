@@ -1,4 +1,3 @@
-// src/components/Products.jsx
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -11,8 +10,9 @@ const Products = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({});
+  const [loadingDelete, setLoadingDelete] = useState(null); 
   const limit = 5;
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dropdownRefs = useRef({});
 
   const fetchProducts = async (page) => {
@@ -72,6 +72,7 @@ const Products = () => {
 
   const handleDelete = async (id) => {
     try {
+      setLoadingDelete(id); //  start loader
       await axios.delete(
         `${import.meta.env.VITE_BACKEND_URL}/api/deleteproduct/${id}`,
         { withCredentials: true }
@@ -80,6 +81,8 @@ const Products = () => {
       fetchProducts(currentPage);
     } catch (error) {
       toast.error(error);
+    } finally {
+      setLoadingDelete(null); //  stop loader
     }
   };
 
@@ -145,7 +148,8 @@ const Products = () => {
                   {p.percentage}
                 </p>
                 <p className="col-span-2 sm:col-span-1">
-                  <span className="text-gray-800 font-medium">Sizes:</span> S({p.sizes?.S || 0}) M({p.sizes?.M || 0}) L({p.sizes?.L || 0})
+                  <span className="text-gray-800 font-medium">Sizes:</span>{" "}
+                  S({p.sizes?.S || 0}) M({p.sizes?.M || 0}) L({p.sizes?.L || 0})
                 </p>
               </div>
 
@@ -156,11 +160,41 @@ const Products = () => {
                 >
                   {editingProduct === p._id ? "Close" : "Edit"}
                 </button>
+
                 <button
                   onClick={() => handleDelete(p._id)}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white font-medium hover:shadow-md hover:scale-[1.02] transition"
+                  disabled={loadingDelete === p._id}
+                  className={`px-4 py-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white font-medium hover:shadow-md hover:scale-[1.02] transition flex items-center justify-center gap-2 ${
+                    loadingDelete === p._id ? "opacity-70 cursor-not-allowed" : ""
+                  }`}
                 >
-                  Remove
+                  {loadingDelete === p._id ? (
+                    <>
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                        ></path>
+                      </svg>
+                      Removing...
+                    </>
+                  ) : (
+                    "Remove"
+                  )}
                 </button>
               </div>
             </div>

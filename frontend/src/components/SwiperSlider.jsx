@@ -68,7 +68,7 @@ export default function App() {
               alt="Fashion 3"
               className="w-full h-full object-cover object-top"
             />
-            <div className="absolute bottom-8 left-4 sm:left-10 text-black drop-shadow-lg">
+            <div className="absolute bottom-8 left-4 sm:left-10 text-white drop-shadow-lg">
               <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold">
                 New Arrivals
               </h2>

@@ -155,7 +155,7 @@ const Fashion = () => {
 
       {/* Sidebar Overlay */}
       {showSidebar && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 z-40 backdrop-blur-sm transition-opacity duration-300"></div>
+        <div className="fixed inset-0  bg-opacity-40 z-40 backdrop-blur-sm transition-opacity duration-300"></div>
       )}
 
       {/* Sidebar */}

@@ -29,6 +29,8 @@ const AddProduct = () => {
     img4: null,
   });
 
+  const [loading, setLoading] = useState(false); // Loader state
+
   useEffect(() => {
     const total =
       (Number(formData.sizeS) || 0) +
@@ -64,6 +66,7 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loader
 
     const data = new FormData();
     data.append("title", formData.title);
@@ -113,6 +116,8 @@ const AddProduct = () => {
     } catch (error) {
       console.error("Error:", error);
       toast.error("Error uploading product");
+    } finally {
+      setLoading(false); // Stop loader
     }
   };
 
@@ -170,7 +175,6 @@ const AddProduct = () => {
                   key={imgKey}
                   className="relative border border-gray-200 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center p-3 aspect-square overflow-hidden group"
                 >
-                  {/* Custom upload button */}
                   <label
                     htmlFor={imgKey}
                     className="cursor-pointer flex flex-col items-center justify-center text-center w-full h-full"
@@ -192,7 +196,6 @@ const AddProduct = () => {
                       </>
                     )}
                   </label>
-                  {/* Hidden file input */}
                   <input
                     id={imgKey}
                     type="file"
@@ -306,12 +309,24 @@ const AddProduct = () => {
             </label>
           </div>
 
-          {/* Submit Button */}
+          {/* Submit Button with Loader */}
           <button
             type="submit"
-            className="w-full py-4 px-6 rounded-2xl font-semibold text-white text-lg bg-gradient-to-r from-indigo-500 to-indigo-700 hover:from-indigo-600 hover:to-indigo-800 shadow-md transition-transform hover:scale-[1.02]"
+            disabled={loading}
+            className={`w-full py-4 px-6 rounded-2xl font-semibold text-white text-lg shadow-md transition-transform hover:scale-[1.02] ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-indigo-500 to-indigo-700 hover:from-indigo-600 hover:to-indigo-800"
+            }`}
           >
-            Add Product
+            {loading ? (
+              <div className="flex justify-center items-center gap-2">
+                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                Adding...
+              </div>
+            ) : (
+              "Add Product"
+            )}
           </button>
         </form>
       </div>

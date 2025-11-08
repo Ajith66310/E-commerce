@@ -65,7 +65,7 @@ const Bestseller = () => {
                 img={item.images?.[0]}
                 price={item.price}
                 percentage={item.percentage}
-                textColor="white"
+                textColor="black"
                 btnText="View"
               />
             ))}
