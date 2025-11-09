@@ -11,7 +11,7 @@ const BonkersCornerAnimation = () => {
   useGSAP(() => {
     gsap.to("#hero #brand-name", {
       color: "red",
-      ease: "power1.inOut",
+      ease: "power3.inOut",
       transform: "translate(-270%)",
       scrollTrigger: {
         trigger: "#hero",
@@ -24,7 +24,7 @@ const BonkersCornerAnimation = () => {
   }, [])
   return (
     <div id="hero" className=" w-full h-[100vh] overflow-hidden  bg-[#FAF9F6] flex">
-      <p id='brand-name' className='pt-[2vw] pl-10 text-[350px] font-extrabold w-[40vw] '>BONKERSCORNER</p>
+      <p id='brand-name' className='pt-[2vw] h-[100vh]  pl-10 text-[350px] font-extrabold w-[90vw] '>BONKERSCORNER</p>
     </div>
   )
 }
