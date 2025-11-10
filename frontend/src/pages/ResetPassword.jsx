@@ -18,6 +18,7 @@ const ResetPassword = () => {
       const response = await axios.post(`${import.meta.env.VITE_URL}/resetpassword`, {
         password,
         confirmPassword,
+        token
       })
       toast.success(response.data.message)
       navigate('/login')

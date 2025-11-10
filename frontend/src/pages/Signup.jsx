@@ -73,7 +73,8 @@ const Signup = () => {
   };
 
   return (
-    <>
+   
+   <>
 
       <div className='pt-10 flex min-h-screen justify-center bg-[#F7F5F2] items-center'>
         <form

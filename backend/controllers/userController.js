@@ -16,20 +16,21 @@ const registerOtpMail = async (req, res) => {
     const { name, email, password } = req.body;
 
         //  Email format: must be username@gmail.com
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ message: "Invalid email format. Must be username@gmail.com" });
-    }
+    // const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    // if (!emailRegex.test(email)) {
+    //   return res.status(400).json({ message: "Invalid email format. Must be username@gmail.com" });
+    // }
 
-    //  Password format: at least 8 chars, one uppercase, one lowercase, one number, one special char
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    if (!passwordRegex.test(password)) {
-      return res.status(400).json({
-        message:
-          "Password must include at least 8 characters, one uppercase, one lowercase, one number, and one special character",
-      });
-    }
+    // //  Password format: at least 8 chars, one uppercase, one lowercase, one number, one special char
+    // const passwordRegex =
+    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    // if (!passwordRegex.test(password)) {
+    //   return res.status(400).json({
+    //     message:
+    //       "Password must include at least 8 characters, one uppercase, one lowercase, one number, and one special character",
+    //   });
+    // }
+
     const existing = await userModel.findOne({ email });
 
     if (existing) {
@@ -124,7 +125,7 @@ const signupOtpVerify = async (req, res) => {
 
 const resendOtp = async (req, res) => {
   try {
-    const tempToken = req.cookies.tempToken; //get token from cookie
+    const tempToken = req.cookies.tempToken; 
 
     if (!tempToken) return res.status(400).json({ message: "Missing token" });
 
@@ -146,21 +147,21 @@ const resendOtp = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-      //  Email format: must be username@gmail.com
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ message: "Invalid email format. Must be username@gmail.com" });
-    }
+    //   //  Email format: must be username@gmail.com
+    // const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    // if (!emailRegex.test(email)) {
+    //   return res.status(400).json({ message: "Invalid email format. Must be username@gmail.com" });
+    // }
 
-    //  Password format: at least 8 chars, one uppercase, one lowercase, one number, one special char
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    if (!passwordRegex.test(password)) {
-      return res.status(400).json({
-        message:
-          "Password must include at least 8 characters, one uppercase, one lowercase, one number, and one special character",
-      });
-    }
+    // //  Password format: at least 8 chars, one uppercase, one lowercase, one number, one special char
+    // const passwordRegex =
+    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    // if (!passwordRegex.test(password)) {
+    //   return res.status(400).json({
+    //     message:
+    //       "Password must include at least 8 characters, one uppercase, one lowercase, one number, and one special character",
+    //   });
+    // }
 
   const data = await userModel.findOne({ email: email });
 
@@ -231,6 +232,8 @@ const resetOtpVerify = async (req, res) => {
 
     const tempResetToken = req.cookies.tempResetToken;
 
+
+     
     if (!tempResetToken) {
       return res.status(400).json({ message: "Token missing" });
     }

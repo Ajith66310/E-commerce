@@ -13,7 +13,6 @@ const Home = () => {
 
   return (
     <>
-
       <SwiperSlider />
       <Latestproducts />
       <BonkersCornerAnimation />
