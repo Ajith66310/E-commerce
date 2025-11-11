@@ -93,6 +93,9 @@ const Orders = () => {
   if (orders.length === 0)
     return (
       <div className="pt-40 text-center text-gray-400">
+           <div className="pl-4 sm:pl-20 pt-5 pb-5 w-full">
+        <Breadcrumb Home="Home" Orders="Orders" />
+      </div>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-wide">No orders yet</h2>
         <p className="mt-2 text-sm sm:text-base">Start shopping and track your purchases here!</p>
       </div>

@@ -14,14 +14,7 @@ const Favourite = () => {
         <Breadcrumb Home="Home" Favourite="Favourite" />
       </div>
 
-      <div className="text-center mb-8">
-        <h1 className="text-4xl md:text-5xl font-[Playfair_Display] font-bold text-gray-800 tracking-wide">
-          Your Favourites
-        </h1>
-        <p className="text-gray-600 mt-2 text-lg font-[Poppins]">
-          Curated items you love — browse, revisit, or add to your cart anytime.
-        </p>
-      </div>
+      
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-10 pb-16">
         {wishlist.length > 0 ? (

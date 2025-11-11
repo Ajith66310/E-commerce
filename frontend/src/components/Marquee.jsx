@@ -90,7 +90,7 @@ const Marquee = () => {
       {/* Marquee container with hidden edges */}
       <div
         ref={wrapperRef}
-        className="relative mx-[10px] h-14 overflow-hidden bg-red-50 flex items-center rounded"
+        className="relative mx-[10px]  h-14 overflow-hidden bg-red-50 flex items-center rounded"
       >
         {/* Left + right wall effect */}
         <div className="pointer-events-none absolute top-0 left-0 h-full w-16 bg-gradient-to-r from-red-50 to-transparent z-10" />
@@ -99,7 +99,7 @@ const Marquee = () => {
         <div ref={trackRef} className="flex gap-5 whitespace-nowrap items-center">
           {[0, 1].map((rep) =>
             Array.from({ length: 12 }).map((_, i) => (
-              <div key={`${rep}-${i}`} className="marque flex gap-4 items-center shrink-0">
+              <div key={`${rep}-${i}`} className="marque  flex gap-4 items-center shrink-0">
                 <h1 className="text-2xl text-red-900 font-[mono] font-extrabold">
                   BONKERS CORNER
                 </h1>

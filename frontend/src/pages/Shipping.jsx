@@ -148,9 +148,10 @@ const Shipping = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 py-10 px-6 pt-36">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-32">
+        
         {/* Delivery Information */}
         {editToggle && (
-          <div className="p-6 space-y-5 text-gray-800 bg-transparent">
+          <div className="p-6 space-y-5 text-gray-800 border    border-gray-300 rounded-md bg-transparent h-60 w-150">
             <h2 className="text-3xl font-semibold tracking-wide text-gray-900">
               Delivery <span className="font-bold text-black">Information</span>
             </h2>
@@ -160,8 +161,7 @@ const Shipping = () => {
                 <p className="font-medium">{user.name}</p>
                 <p className="text-gray-600">{address.street}</p>
                 <p className="text-gray-600">
-                  {address.city}, {address.state}, {address.country} –{" "}
-                  {address.zipcode}
+                  {address.city}, {address.state}, {address.country} – {address.zipcode}
                 </p>
                 <p className="text-gray-600">{address.phone}</p>
                 <p className="text-gray-500 text-sm">{user.email}</p>

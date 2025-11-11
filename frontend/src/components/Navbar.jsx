@@ -44,7 +44,7 @@ const Navbar = () => {
     <>
       <div className="hidden md:grid grid-cols-3 w-full absolute z-50 h-20 bg-transparent">
         <div id="brand-name" className="flex items-center pl-10">
-          <p className="text-3xl font-serif font-extrabold bg-gradient-to-r from-red-800 to-black bg-clip-text text-transparent">
+          <p className="text-3xl font-serif font-extrabold text-red-800">
             BONKERS CORNER
           </p>
         </div>
@@ -104,7 +104,7 @@ const Navbar = () => {
       </div>
 
       <div className="md:hidden fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-lg flex items-center justify-between px-5 py-4 border-b border-gray-200">
-        <p className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-800 to-black tracking-wide">
+        <p className="text-2xl font-extrabold  tracking-wide">
           BONKERS<span className="text-gray-900">CORNER</span>
         </p>
 
