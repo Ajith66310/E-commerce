@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "../context/UserContext";
 import RelatedProducts from "../components/RelatedProducts";
-import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { addItem, toggleCart } from "../redux/cartSlice";
 
 const Product = () => {
   const { id } = useParams();
@@ -11,48 +11,26 @@ const Product = () => {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedSize, setSelectedSize] = useState(null);
-  const { setCartIcon, cartUpdated } = useContext(UserContext);
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
 
-  const fetchProduct = async () => {
-    try {
-      const res = await axios.get(`${import.meta.env.VITE_URL}/api/fetchproduct/${id}`);
-      if (res.data.success) {
-        let fetchedProduct = res.data.product;
-
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const cartItems = cart.filter((item) => item.id === fetchedProduct._id);
-
-        if (cartItems.length > 0) {
-          const newSizes = { ...fetchedProduct.sizes };
-          cartItems.forEach((item) => {
-            if (newSizes[item.size] !== undefined) {
-              newSizes[item.size] = Math.max(0, newSizes[item.size] - item.units);
-            }
-          });
-          fetchedProduct = { ...fetchedProduct, sizes: newSizes };
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_URL}/api/fetchproduct/${id}`);
+        if (res.data.success) {
+          const p = res.data.product;
+          setProduct(p);
+          if (p.images?.length) setSelectedImage(p.images[0]);
         }
-
-        setProduct(fetchedProduct);
-        if (fetchedProduct.images?.length) setSelectedImage(fetchedProduct.images[0]);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProduct();
-  }, [id, cartUpdated]);
-
-  useEffect(() => {
-    const onStorageChange = (e) => {
-      if (e.key === "cart") fetchProduct();
     };
-    window.addEventListener("storage", onStorageChange);
-    return () => window.removeEventListener("storage", onStorageChange);
-  }, []);
+    fetchProduct();
+  }, [id]);
 
   if (loading) {
     return (
@@ -90,71 +68,61 @@ const Product = () => {
   const numericDiscount = Number(String(product.percentage).replace("%", "")) || 0;
   const offerPrice = Math.round(numericPrice - (numericPrice * numericDiscount) / 100);
 
-  const sizeS = Number(product.sizes?.S) || 0;
-  const sizeM = Number(product.sizes?.M) || 0;
-  const sizeL = Number(product.sizes?.L) || 0;
+  const sizeStock = {
+    S: Number(product.sizes?.S) || 0,
+    M: Number(product.sizes?.M) || 0,
+    L: Number(product.sizes?.L) || 0,
+  };
 
-  const maxForSelected =
-    selectedSize === "S" ? sizeS : selectedSize === "M" ? sizeM : selectedSize === "L" ? sizeL : 0;
+  const maxForSelected = selectedSize ? sizeStock[selectedSize] : 0;
+
+  const existingItem = cartItems.find(
+    (item) => item.id === product._id && item.size === selectedSize
+  );
+
+  const currentUnits = existingItem ? existingItem.units : 0;
+  const isOutOfStock =
+    !selectedSize || maxForSelected <= 0 || currentUnits >= maxForSelected;
 
   const handleAddToCart = () => {
-    if (!selectedSize) {
-      toast("Please select a size!");
-      return;
-    }
+  if (isOutOfStock) return;
 
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingIndex = cart.findIndex(
-      (item) => item.id === product._id && item.size === selectedSize
-    );
-
-    if (existingIndex !== -1) {
-      const existingItem = cart[existingIndex];
-      existingItem.units += 1;
-      cart[existingIndex] = existingItem;
-    } else {
-      cart.push({
-        id: product._id,
-        title: product.title,
-        size: selectedSize,
-        units: 1,
-        price: numericPrice,
-        percentage: product.percentage,
-        offerPrice: offerPrice,
-        image: product.images?.[0] || "",
-      });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    setCartIcon(true);
-
-    const newSizes = { ...product.sizes };
-    newSizes[selectedSize] = Math.max(0, newSizes[selectedSize] - 1);
-    setProduct({ ...product, sizes: newSizes });
+  const newItem = {
+    id: product._id,
+    title: product.title,
+    size: selectedSize,
+    units: 1,
+    price: numericPrice,
+    percentage: numericDiscount,
+    offerPrice,
+    image: product.images?.[0] || "",
+    stock: maxForSelected, 
   };
+
+  dispatch(addItem(newItem));
+  dispatch(toggleCart(true));
+};
+
 
   return (
     <div className="max-w-7xl mx-auto pt-20 px-4 font-[Poppins]">
       <div className="flex flex-col lg:flex-row gap-8 bg-white p-6 rounded-2xl">
-
-        {/* Left: Main Image + Thumbnails */}
-        <div className="flex flex-col  lg:flex-row gap-4 w-full lg:w-2/3 items-center lg:items-start">
-          {/* Thumbnails vertical on large screens */}
-          <div className="hidden overflow-hidden lg:flex flex-col gap-3 w-34">
-            {product.images?.map((imgUrl, idx) => (
+        {/* LEFT: Images */}
+        <div className="flex flex-col lg:flex-row gap-4 w-full lg:w-2/3 items-center lg:items-start">
+          <div className="hidden lg:flex flex-col gap-3 w-34">
+            {product.images?.map((img, i) => (
               <img
-                key={idx}
-                src={imgUrl}
+                key={i}
+                src={img}
                 alt={product.title}
-                onClick={() => setSelectedImage(imgUrl)}
-                className={`w-35 h-35 object-cover rounded-lg cursor-pointer border transition-all duration-300
-                  ${selectedImage === imgUrl ? "border-red-500 scale-105" : "border-gray-200"}
-                `}
+                onClick={() => setSelectedImage(img)}
+                className={`w-35 h-35 object-cover rounded-lg cursor-pointer border transition-all duration-300 ${
+                  selectedImage === img ? "border-red-500 scale-105" : "border-gray-200"
+                }`}
               />
             ))}
           </div>
 
-          {/* Main Image */}
           <div className="flex-1 flex justify-center items-center">
             <img
               src={selectedImage}
@@ -163,31 +131,27 @@ const Product = () => {
             />
           </div>
 
-          {/* Thumbnails horizontal on small screens */}
           <div className="flex lg:hidden gap-3 mt-4 overflow-hidden">
-            {product.images?.map((imgUrl, idx) => (
+            {product.images?.map((img, i) => (
               <img
-                key={idx}
-                src={imgUrl}
+                key={i}
+                src={img}
                 alt={product.title}
-                onClick={() => setSelectedImage(imgUrl)}
-                className={`w-28 h-28 object-cover rounded-lg cursor-pointer border transition-all duration-300
-                  ${selectedImage === imgUrl ? "border-red-500 scale-105" : "border-gray-200"}
-                `}
+                onClick={() => setSelectedImage(img)}
+                className={`w-28 h-28 object-cover rounded-lg cursor-pointer border transition-all duration-300 ${
+                  selectedImage === img ? "border-red-500 scale-105" : "border-gray-200"
+                }`}
               />
             ))}
           </div>
         </div>
 
-        {/* Right: Product Info */}
+        {/* RIGHT: Info */}
         <div className="w-full lg:w-1/3 flex flex-col justify-center">
-        
-          <h1 className="text-3xl md:text-4xl font-[Playfair_Display] font-bold text-gray-900 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-[Playfair_Display] font-bold text-gray-900">
             {product.title}
           </h1>
-          <p className="text-gray-600 mt-3 text-sm md:text-base leading-relaxed">
-            {product.description}
-          </p>
+          <p className="text-gray-600 mt-3 text-sm md:text-base">{product.description}</p>
 
           <div className="mt-4">
             {numericDiscount > 0 ? (
@@ -203,7 +167,7 @@ const Product = () => {
             )}
           </div>
 
-          {/* Sizes */}
+          {/* SIZE OPTIONS */}
           <div className="mt-6">
             <label className="block text-sm font-semibold mb-2 text-gray-700">
               Select Size
@@ -213,11 +177,14 @@ const Product = () => {
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className={`px-5 py-3 rounded-lg border font-medium transition-all duration-300
-                    ${selectedSize === size
+                  disabled={sizeStock[size] <= 0}
+                  className={`px-5 py-3 rounded-lg border font-medium transition-all duration-300 ${
+                    sizeStock[size] <= 0
+                      ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                      : selectedSize === size
                       ? "bg-red-600 text-white border-red-600"
                       : "border-gray-300 hover:border-red-400"
-                    }`}
+                  }`}
                 >
                   {size}
                 </button>
@@ -225,44 +192,22 @@ const Product = () => {
             </div>
           </div>
 
-          {/* Stock Status */}
-          <p
-            className={`mt-4 text-sm font-medium ${
-              selectedSize
-                ? maxForSelected > 0
-                  ? "text-green-600"
-                  : "text-red-600"
-                : "text-gray-500"
+          {/* ADD TO CART BUTTON */}
+          <button
+            disabled={isOutOfStock}
+            onClick={handleAddToCart}
+            className={`mt-6 w-full py-3 rounded-xl text-lg font-semibold tracking-wide shadow-md transition-all duration-300 ${
+              isOutOfStock
+                ? "bg-gray-300 text-gray-100 cursor-not-allowed"
+                : "bg-gradient-to-r from-red-700 to-red-500 text-white hover:from-gray-900 hover:to-gray-700"
             }`}
           >
-            {selectedSize
-              ? maxForSelected > 0
-                ? "In Stock"
-                : "Out of Stock"
-              : "Select a size to check stock"}
-          </p>
-
-          {/* Add to Cart */}
-          <button
-            disabled={maxForSelected <= 0 || !selectedSize}
-            onClick={handleAddToCart}
-            className={`mt-6 w-full py-3 rounded-xl text-lg font-semibold tracking-wide shadow-md transition-all duration-300
-              ${
-                maxForSelected > 0 && selectedSize
-                  ? "bg-gradient-to-r from-red-700 to-red-500 text-white hover:from-gray-900 hover:to-gray-700"
-                  : "bg-gray-300 text-gray-100 cursor-not-allowed"
-              }`}
-          >
-            {maxForSelected > 0 ? "ADD TO CART" : "OUT OF STOCK"}
+            {isOutOfStock ? "OUT OF STOCK" : "ADD TO CART"}
           </button>
         </div>
       </div>
 
-      {/* Related Products */}
-      <RelatedProducts
-        category={product.category}
-        currentProductId={product._id}
-      />
+      <RelatedProducts category={product.category} currentProductId={product._id} />
     </div>
   );
 };

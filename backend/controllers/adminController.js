@@ -71,7 +71,7 @@ const getUserOrders = async (req, res) => {
       .find()
       .populate({
         path: "userId",
-        select: "name email", // get username + email
+        select: "name email", 
       })
       .sort({ createdAt: -1 });
 

@@ -1,32 +1,27 @@
-import { useState, useContext, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { CiShoppingCart } from "react-icons/ci";
-import { RxHamburgerMenu } from "react-icons/rx";
-import { GoPerson } from "react-icons/go";
-import { CiLogin } from "react-icons/ci";
-import { IoIosLogOut } from "react-icons/io";
+import { User, ShoppingBag, Menu, LogOut, Package } from "lucide-react";
 import Cart from "./Cart";
-import { UserContext } from "../context/UserContext";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleCart } from "../redux/cartSlice";
 
 const Navbar = () => {
   const [userIcon, setUserIcon] = useState(false);
+  const [profileDropdown, setProfileDropdown] = useState(false);
   const navigate = useNavigate();
-  const { setCartIcon } = useContext(UserContext);
-  const drawerRef = useRef(null); 
+  const drawerRef = useRef(null);
+  const dispatch = useDispatch();
+
+  const token = localStorage.getItem("token");
+  const isCartOpen = useSelector((state) => state.cart.isOpen);
 
   useGSAP(() => {
-    const tl = gsap.timeline();
-    tl.fromTo(
+    gsap.fromTo(
       "#brand-name,#nav-items",
-      { opacity: 0, y: 20, ease: "power3.inOut" },
-      { opacity: 1, y: 0, stagger: 0.5, delay: 0.2 }
-    );
-    tl.fromTo(
-      "#nav-links",
-      { opacity: 0, y: -20, ease: "power1.inOut" },
-      { opacity: 1, y: 0 }
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, stagger: 0.4, delay: 0.2 }
     );
   }, []);
 
@@ -35,161 +30,145 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  const token = localStorage.getItem("token");
-
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (userIcon && drawerRef.current && !drawerRef.current.contains(e.target)) {
         setUserIcon(false);
       }
     };
-
-    if (userIcon) {
-      document.addEventListener("mousedown", handleOutsideClick);
-    } else {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    }
-
+    document.addEventListener("mousedown", handleOutsideClick);
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, [userIcon]);
 
   return (
     <>
-      {/* Top Navbar */}
-      <div
-        className={`${
-          userIcon
-            ? "hidden"
-            : " bg-[transparent] absolute z-50 md:h-20 w-full grid md:grid-cols-3"
-        }`}
-      >
-        {/* Brand */}
-        <div id="brand-name" className="flex items-center lg:pl-10 md:pl-0">
-          <p className="lg:text-3xl font-serif text-red-800 max-md:hidden font-extrabold md:text-[20px]">
+      <div className="hidden md:grid grid-cols-3 w-full absolute z-50 h-20 bg-transparent">
+        <div id="brand-name" className="flex items-center pl-10">
+          <p className="text-3xl font-serif font-extrabold bg-gradient-to-r from-red-800 to-black bg-clip-text text-transparent">
             BONKERS CORNER
           </p>
         </div>
 
-        {/* Desktop Nav Links */}
-        <div
-          id="nav-links"
-          className="max-md:hidden flex justify-center gap-3 items-center"
-        >
-          <NavLink to="/" className="flex flex-col items-center">
-            <p className="font-serif hover:text-red-900 text-red-800">HOME</p>
-          </NavLink>
-          <NavLink to="/fashion" className="flex flex-col items-center">
-            <p className="font-serif hover:text-red-900 text-red-800">FASHION</p>
-          </NavLink>
-          <NavLink to="/favourite" className="flex flex-col items-center">
-            <p className="font-serif hover:text-red-900 text-red-800">
-              FAVOURITE
-            </p>
-          </NavLink>
+        <div id="nav-links" className="flex justify-center items-center gap-8 font-serif text-red-800">
+          <NavLink to="/" className="hover:text-red-900">HOME</NavLink>
+          <NavLink to="/fashion" className="hover:text-red-900">FASHION</NavLink>
+          <NavLink to="/favourite" className="hover:text-red-900">FAVOURITE</NavLink>
         </div>
 
-        {/* Desktop Right Items */}
-        <div
-          id="nav-items"
-          className="flex items-center max-md:hidden gap-3 justify-end text-2xl pr-10"
-        >
-          {token ? (
-            <IoIosLogOut
-              className="cursor-pointer text-red-800 hover:text-red-900"
-              onClick={handleLogout}
-            />
-          ) : (
-            <NavLink to="/login">
-              <div className="bg-red-800 w-20 rounded-sm hover:rounded-lg flex items-center justify-center">
-                <button className="text-white font-[poppins] cursor-pointer text-lg">
-                  Login
-                </button>
-              </div>
-            </NavLink>
-          )}
-
-          {/* Cart button */}
-          <CiShoppingCart
-            onClick={() => setCartIcon(true)}
-            className="hover:text-red-900 text-3xl cursor-pointer text-red-800"
+        <div id="nav-items" className="flex justify-end items-center gap-5 pr-10 text-red-800 text-2xl relative">
+          <ShoppingBag
+            onClick={() => dispatch(toggleCart())}
+            className="cursor-pointer hover:text-red-900"
           />
 
           {token && (
-            <NavLink to="/userprofile">
-              <GoPerson className="cursor-pointer text-red-800 hover:text-red-900" />
+            <div
+              className="relative"
+              onMouseEnter={() => setProfileDropdown(true)}
+              onMouseLeave={() => setProfileDropdown(false)}
+            >
+              <User className="cursor-pointer hover:text-red-900" />
+              {profileDropdown && (
+                <div className="absolute right-0  bg-white text-black shadow-xl rounded-lg py-2  ml-5 w-44 border border-gray-200">
+                  <NavLink
+                    to="/userprofile"
+                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-sm"
+                  >
+                    <User className="w-4 h-4" /> Profile
+                  </NavLink>
+                  <NavLink
+                    to="/orders"
+                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-sm"
+                  >
+                    <Package className="w-4 h-4" /> My Orders
+                  </NavLink>
+                  <div
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-sm cursor-pointer text-red-600"
+                  >
+                    <LogOut className="w-4 h-4" /> Logout
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {!token && (
+            <NavLink to="/login">
+              <div className="bg-red-800 px-4 py-1 rounded-md hover:bg-red-900">
+                <button className="text-white text-lg font-[poppins]">Login</button>
+              </div>
             </NavLink>
           )}
         </div>
       </div>
 
-      {/* Small Screen Navbar */}
-      <div className="md:hidden fixed top-0 left-0 w-full z-50 bg-white shadow-sm flex items-center justify-between px-4 py-3">
-        <p className="text-xl font-bold text-red-800">BONKERS CORNER</p>
+      <div className="md:hidden fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-lg flex items-center justify-between px-5 py-4 border-b border-gray-200">
+        <p className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-800 to-black tracking-wide">
+          BONKERS<span className="text-gray-900">CORNER</span>
+        </p>
 
-        <div className="flex items-center gap-4 text-2xl">
-          {/* Cart */}
-          <CiShoppingCart
-            onClick={() => setCartIcon(true)}
-            className="cursor-pointer text-red-800"
+        <div className="flex items-center gap-6 text-red-800">
+          {token && (
+            <NavLink to="/userprofile">
+              <User className="w-6 h-6 cursor-pointer hover:text-amber-600 transition-all" />
+            </NavLink>
+          )}
+          <ShoppingBag
+            onClick={() => dispatch(toggleCart())}
+            className="w-6 h-6 cursor-pointer hover:text-amber-600 transition-all"
           />
-
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setUserIcon(true)}
-            className="text-red-800 font-bold text-lg"
-          >
-            <RxHamburgerMenu />
+          <button onClick={() => setUserIcon(true)} className="hover:text-amber-600 transition-all">
+            <Menu className="w-7 h-7" />
           </button>
         </div>
       </div>
 
-      {/* Mobile User Drawer with outside click ref */}
       <div
         ref={drawerRef}
-        className={`fixed top-0 right-0 h-full bg-black/90 z-50 overflow-hidden transition-all duration-300 ease-in-out
-          ${userIcon ? "w-[50%]" : "w-0"}
-        `}
+        className={`fixed top-0 right-0 h-full bg-black/90 z-50 overflow-hidden transition-all duration-300 ease-in-out ${
+          userIcon ? "w-[55%]" : "w-0"
+        }`}
       >
-        <div className="md:hidden flex flex-col text-white h-full">
-          <div onClick={() => setUserIcon(false)} className="cursor-pointer">
-            <p className="text-white text-start p-3">Back</p>
+        <div className="flex flex-col justify-between text-white h-full">
+          <div>
+            <div onClick={() => setUserIcon(false)} className="cursor-pointer border-b border-gray-700">
+              <p className="text-white p-4 font-semibold">Back</p>
+            </div>
+
+            <div className="flex flex-col mt-4 space-y-4 pl-6 text-lg">
+              <NavLink onClick={() => setUserIcon(false)} to="/" className="hover:text-red-400">
+                HOME
+              </NavLink>
+              <NavLink onClick={() => setUserIcon(false)} to="/fashion" className="hover:text-red-400">
+                FASHION
+              </NavLink>
+              <NavLink onClick={() => setUserIcon(false)} to="/favourite" className="hover:text-red-400">
+                FAVOURITE
+              </NavLink>
+            </div>
+          </div>
+
+          <div className="p-6 border-t border-gray-700">
             {token ? (
-              <IoIosLogOut
-                className="absolute top-3 right-5 cursor-pointer text-2xl hover:text-red-900"
+              <p
+                className="cursor-pointer text-xl text-right text-red-500 hover:text-red-700"
                 onClick={handleLogout}
-              />
+              >
+                Logout
+              </p>
             ) : (
-              <NavLink to="/login">
-                <CiLogin className="absolute top-3 right-5 cursor-pointer text-2xl hover:text-green-900" />
+              <NavLink to="/login" onClick={() => setUserIcon(false)}>
+                <p className="cursor-pointer text-xl text-right text-green-500 hover:text-green-700">
+                  Login
+                </p>
               </NavLink>
             )}
           </div>
-          <NavLink
-            onClick={() => setUserIcon(false)}
-            className="py-2 pl-6"
-            to="/"
-          >
-            HOME
-          </NavLink>
-          <NavLink
-            onClick={() => setUserIcon(false)}
-            className="py-2 pl-6"
-            to="/fashion"
-          >
-            FASHION
-          </NavLink>
-          <NavLink
-            onClick={() => setUserIcon(false)}
-            className="py-2 pl-6"
-            to="/favourite"
-          >
-            FAVOURITE
-          </NavLink>
         </div>
       </div>
 
-      {/* Cart Sidebar */}
-      <Cart />
+      {isCartOpen && <Cart />}
     </>
   );
 };

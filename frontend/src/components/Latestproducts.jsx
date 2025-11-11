@@ -69,7 +69,7 @@ const Latestproducts = () => {
               </div>
             ))}
       </div>
-<div className="flex justify-center items-center my-30">
+<div className="flex justify-center items-center my-10 mt-20">
   <button
     className="relative px-10 py-2 text-lg animate-bounce font-semibold text-white rounded-2xl bg-black"
    onClick={()=>{navigate('/fashion')}}>

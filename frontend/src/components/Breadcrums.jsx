@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 
-export default function Breadcrumb({ Home, Fashion, Favourite, Contact }) {
+export default function Breadcrumb({ Home, Fashion, Favourite, Contact,Orders }) {
   return (
     <nav aria-label="breadcrumb" className="mb-6">
       <ol className="flex flex-wrap items-center text-sm font-medium text-gray-600">
@@ -70,6 +70,25 @@ export default function Breadcrumb({ Home, Fashion, Favourite, Contact }) {
                 }
               >
                 {Contact}
+              </NavLink>
+            </li>
+          </>
+        )}
+
+        {/* Orders */}
+        {Orders && (
+          <>
+            <span className="text-gray-400 px-2">/</span>
+            <li>
+              <NavLink
+                to="/orders"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-red-600 font-semibold"
+                    : "text-gray-500 hover:text-red-500"
+                }
+              >
+                {Orders}
               </NavLink>
             </li>
           </>

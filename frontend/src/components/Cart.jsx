@@ -1,70 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
-import { UserContext } from "../context/UserContext";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toggleCart, removeItem, updateUnits } from "../redux/cartSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Cart = () => {
-  const { cartIcon, setCartIcon, setCartUpdated } = useContext(UserContext);
-  const [cartItems, setCartItems] = useState([]);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCartItems(storedCart);
-  }, [cartIcon]);
-
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  const restoreStock = (item) => {
-    const products = JSON.parse(localStorage.getItem("products")) || [];
-    const updatedProducts = products.map((p) => {
-      if (p._id === item.id) {
-        p.sizes = p.sizes || {};
-        p.sizes[item.size] = (p.sizes[item.size] || 0) + item.units;
-      }
-      return p;
-    });
-    localStorage.setItem("products", JSON.stringify(updatedProducts));
-  };
-
-  const handleDeleteItem = (index) => {
-    const newCart = [...cartItems];
-    const removedItem = newCart[index];
-    restoreStock(removedItem);
-    newCart.splice(index, 1);
-    setCartItems(newCart);
-    setCartUpdated((prev) => !prev);
-    toast.success("Item removed from cart");
-  };
-
-  const handleUnitChange = (index, newUnits) => {
-    if (newUnits <= 0) return;
-
-    const updatedCart = [...cartItems];
-    const item = updatedCart[index];
-    const products = JSON.parse(localStorage.getItem("products")) || [];
-    const product = products.find((p) => p._id === item.id);
-
-    if (!product || !product.sizes) return;
-
-    const availableStock = product.sizes[item.size] ?? 0;
-    const totalStock = availableStock + item.units;
-
-    if (newUnits > totalStock) {
-      toast.warn(`Only ${totalStock} units available for this size.`);
-      return;
-    }
-
-    product.sizes[item.size] = totalStock - newUnits;
-    localStorage.setItem("products", JSON.stringify(products));
-
-    item.units = newUnits;
-    setCartItems(updatedCart);
-    setCartUpdated((prev) => !prev);
-  };
+  const { items: cartItems, isOpen: cartIcon } = useSelector(
+    (state) => state.cart
+  );
 
   const cartSubtotal = cartItems.reduce(
     (sum, item) => sum + item.offerPrice * item.units,
@@ -83,37 +29,47 @@ const Cart = () => {
       navigate("/login");
       return;
     }
-    setCartIcon(false);
+    dispatch(toggleCart(false));
     navigate("/Shipping");
   };
 
-  useEffect(() => {
-    document.body.style.overflow = cartIcon ? "hidden" : "auto";
-    return () => (document.body.style.overflow = "auto");
-  }, [cartIcon]);
+  const handleUnitChange = (index, newUnits) => {
+    const item = cartItems[index];
+    if (!item) return;
+    if (newUnits < 1) return;
+
+    // ✅ Prevent exceeding stock
+    if (newUnits > item.stock) {
+      toast.warning(`Only ${item.stock} units available in stock`);
+      dispatch(updateUnits({ index, units: item.stock }));
+      return;
+    }
+
+    dispatch(updateUnits({ index, units: newUnits }));
+  };
 
   return (
     <>
       {cartIcon && (
         <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity duration-300"
-          onClick={() => setCartIcon(false)}
+          onClick={() => dispatch(toggleCart(false))}
         ></div>
       )}
 
       <div
         className={`fixed top-0 right-0 h-screen bg-gradient-to-b from-neutral-900 via-neutral-800 to-neutral-900 text-white z-50 shadow-2xl transition-all duration-500 flex flex-col border-l border-white/10 ${
-          cartIcon ? "w-[90vw] sm:w-[70vw] md:w-[40vw] lg:w-[30vw]" : "w-0"
+          cartIcon
+            ? "w-[90vw] sm:w-[70vw] md:w-[40vw] lg:w-[30vw]"
+            : "w-0"
         }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex justify-between items-center p-5 border-b border-white/20 bg-neutral-950/60 backdrop-blur-md">
-          <p className="font-semibold text-lg tracking-wide">
-            🛍️ Your Cart
-          </p>
+          <p className="font-semibold text-lg tracking-wide">🛍️ Your Cart</p>
           <button
-            onClick={() => setCartIcon(false)}
+            onClick={() => dispatch(toggleCart(false))}
             className="text-2xl hover:text-red-400 transition-transform duration-200 hover:scale-110"
           >
             ✕
@@ -126,7 +82,7 @@ const Cart = () => {
             <div className="text-center text-gray-400 mt-20">
               <p className="text-lg font-medium">Your cart is empty 🛒</p>
               <button
-                onClick={() => setCartIcon(false)}
+                onClick={() => dispatch(toggleCart(false))}
                 className="mt-6 px-6 py-2 text-sm bg-gradient-to-r from-amber-500 to-yellow-500 rounded-lg text-black font-semibold hover:scale-105 transition-transform"
               >
                 Continue Shopping
@@ -148,15 +104,15 @@ const Cart = () => {
                   <p className="font-medium text-gray-100 text-sm sm:text-base">
                     {item.title}
                   </p>
-                  <p className="text-sm text-gray-400 mb-1">
-                    Size: {item.size}
-                  </p>
+                  <p className="text-sm text-gray-400 mb-1">Size: {item.size}</p>
 
                   {/* Quantity Controls */}
                   <div className="flex justify-center sm:justify-start items-center mt-2">
                     <div className="flex items-center border border-white/10 rounded-lg overflow-hidden bg-white/5">
                       <button
-                        onClick={() => handleUnitChange(index, item.units - 1)}
+                        onClick={() =>
+                          handleUnitChange(index, item.units - 1)
+                        }
                         className="px-3 py-1 hover:bg-amber-500/30 text-lg text-white"
                       >
                         −
@@ -171,7 +127,9 @@ const Cart = () => {
                         min="1"
                       />
                       <button
-                        onClick={() => handleUnitChange(index, item.units + 1)}
+                        onClick={() =>
+                          handleUnitChange(index, item.units + 1)
+                        }
                         className="px-3 py-1 hover:bg-amber-500/30 text-lg text-white"
                       >
                         +
@@ -181,7 +139,7 @@ const Cart = () => {
 
                   <button
                     className="mt-2 text-red-400 text-xs sm:text-sm hover:underline self-center sm:self-start"
-                    onClick={() => handleDeleteItem(index)}
+                    onClick={() => dispatch(removeItem(index))}
                   >
                     Remove
                   </button>
@@ -219,7 +177,7 @@ const Cart = () => {
             </button>
 
             <button
-              onClick={() => setCartIcon(false)}
+              onClick={() => dispatch(toggleCart(false))}
               className="w-full mt-3 border border-amber-500 text-amber-400 py-3 rounded-full hover:bg-amber-500/10 font-medium transition-all"
             >
               Continue Shopping

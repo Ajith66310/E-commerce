@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import images from "../assets/images";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useSelector, useDispatch } from "react-redux";
+import { clearCart } from "../redux/cartSlice";
 
 const Shipping = () => {
   const [paymentMethod, setPaymentMethod] = useState("COD");
@@ -17,20 +19,11 @@ const Shipping = () => {
   });
   const [user, setUser] = useState({ name: "", email: "" });
 
-  //  Load cart instantly from localStorage before anything renders
-  const [cartItems, setCartItems] = useState(() => {
-    try {
-      const stored = localStorage.getItem("cart");
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
-    }
-  });
-
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
 
-  //  Fetch user info + saved address if any
   const fetchUserAddress = async () => {
     try {
       const response = await axios.post(
@@ -38,7 +31,6 @@ const Shipping = () => {
         {},
         { headers: { token }, withCredentials: true }
       );
-
       const userData = response.data.data;
       setUser({
         name: userData.name || "",
@@ -57,23 +49,13 @@ const Shipping = () => {
     }
   };
 
-  //  Sync cart with localStorage changes across tabs/components
   useEffect(() => {
     fetchUserAddress();
-
-    const handleStorageChange = () => {
-      const stored = JSON.parse(localStorage.getItem("cart")) || [];
-      setCartItems(stored);
-    };
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  //  Recalculate total safely
   const calculateSubtotal = () =>
     cartItems.reduce((acc, item) => {
-      const qty = item.quantity || item.units || 1;
+      const qty = item.units || item.quantity || 1;
       const price = item.offerPrice || item.price || 0;
       return acc + price * qty;
     }, 0);
@@ -82,7 +64,6 @@ const Shipping = () => {
   const subtotal = calculateSubtotal();
   const total = subtotal + shippingFee;
 
-  //  Place Order Function
   const handleFormSubmission = async (e) => {
     e.preventDefault();
 
@@ -107,7 +88,7 @@ const Shipping = () => {
         );
 
         if (res.status === 200) {
-          localStorage.removeItem("cart");
+          dispatch(clearCart());
           toast.success("Order placed successfully (COD)");
           navigate("/orders");
         }
@@ -124,7 +105,7 @@ const Shipping = () => {
           key: import.meta.env.VITE_RAZORPAY_KEY,
           amount: order.amount,
           currency: "INR",
-          name: "Grocery Store",
+          name: "Fashion Store",
           description: "Order Payment",
           order_id: order.id,
           handler: async function (response) {
@@ -139,8 +120,7 @@ const Shipping = () => {
                 },
                 { headers: { token } }
               );
-
-              localStorage.removeItem("cart");
+              dispatch(clearCart());
               toast.success("Payment successful! Order placed.");
               navigate("/orders");
             } catch (err) {
@@ -166,148 +146,145 @@ const Shipping = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white py-10 px-6 pt-40">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-80">
-        
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 py-10 px-6 pt-36">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-32">
         {/* Delivery Information */}
-        { editToggle &&
-        <div className="bg-white shadow-md rounded-lg h-60 p-6 w-180 max-w-lg mx-auto text-gray-800">
-          {/* Title */}
-          <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center md:text-left">
-            DELIVERY <span className="text-black">INFORMATION</span>
-          </h2>
+        {editToggle && (
+          <div className="p-6 space-y-5 text-gray-800 bg-transparent">
+            <h2 className="text-3xl font-semibold tracking-wide text-gray-900">
+              Delivery <span className="font-bold text-black">Information</span>
+            </h2>
 
-          {/* Address Card */}
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-            <div className="flex-1 space-y-1">
-              <p className="font-semibold text-base">{user.name}</p>
-              <p className="text-gray-600 text-sm">{address.street}</p>
-              <p className="text-gray-600 text-sm">
-                {address.city}, {address.state}, {address.country} - {address.zipcode}
-              </p>
-              <p className="text-gray-600 text-sm">{address.phone}</p>
-              <p className="text-gray-600 text-sm break-all">{user.email}</p>
-            </div>
+            <div className="flex flex-col sm:flex-row sm:justify-between gap-5">
+              <div className="flex-1 text-lg leading-relaxed">
+                <p className="font-medium">{user.name}</p>
+                <p className="text-gray-600">{address.street}</p>
+                <p className="text-gray-600">
+                  {address.city}, {address.state}, {address.country} –{" "}
+                  {address.zipcode}
+                </p>
+                <p className="text-gray-600">{address.phone}</p>
+                <p className="text-gray-500 text-sm">{user.email}</p>
+              </div>
 
-            {/* Edit Button */}
-            <div className="flex justify-center sm:justify-end">
               <button
                 onClick={() => setEditToggle(false)}
-                className="bg-black text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-gray-800 transition duration-200"
+                className="self-start mt-2 px-6 py-2 text-sm font-semibold text-white bg-black rounded-full hover:opacity-90 transition"
               >
-                Change address
+                Change Address
               </button>
             </div>
           </div>
-        </div>
-        }
+        )}
 
-{editToggle === false &&
-        <div>
-          <h2 className="text-2xl font-bold text-gray-700 mb-6">
-            DELIVERY <span className="text-black">INFORMATION</span>
-          </h2>
-          <form className="space-y-4" onSubmit={handleFormSubmission}>
-            <input
-              type="text"
-              value={user.name}
-              onChange={(e) => setUser({ ...user, name: e.target.value })}
-              placeholder="First name"
-              className="border w-full p-3 rounded-md"
-            />
-            <input
-              type="email"
-              value={user.email}
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
-              placeholder="Email address"
-              className="border w-full p-3 rounded-md"
-            />
-            <input
-              type="text"
-              value={address.street}
-              onChange={(e) =>
-                setAddress({ ...address, street: e.target.value })
-              }
-              placeholder="Street"
-              className="border w-full p-3 rounded-md"
-            />
-            <div className="grid grid-cols-2 gap-4">
+        {!editToggle && (
+          <div className="space-y-5">
+            <h2 className="text-3xl font-semibold text-gray-900">
+              Delivery <span className="text-black">Information</span>
+            </h2>
+            <form className="space-y-5" onSubmit={handleFormSubmission}>
               <input
-                value={address.city}
-                onChange={(e) =>
-                  setAddress({ ...address, city: e.target.value })
-                }
                 type="text"
-                placeholder="City"
-                className="border w-full p-3 rounded-md"
+                value={user.name}
+                onChange={(e) => setUser({ ...user, name: e.target.value })}
+                placeholder="Full name"
+                className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
+              />
+              <input
+                type="email"
+                value={user.email}
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
+                placeholder="Email address"
+                className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
               />
               <input
                 type="text"
-                value={address.state}
+                value={address.street}
                 onChange={(e) =>
-                  setAddress({ ...address, state: e.target.value })
+                  setAddress({ ...address, street: e.target.value })
                 }
-                placeholder="State"
-                className="border w-full p-3 rounded-md"
+                placeholder="Street"
+                className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
               />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <input
+                  value={address.city}
+                  onChange={(e) =>
+                    setAddress({ ...address, city: e.target.value })
+                  }
+                  type="text"
+                  placeholder="City"
+                  className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
+                />
+                <input
+                  type="text"
+                  value={address.state}
+                  onChange={(e) =>
+                    setAddress({ ...address, state: e.target.value })
+                  }
+                  placeholder="State"
+                  className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <input
+                  value={address.zipcode}
+                  onChange={(e) =>
+                    setAddress({ ...address, zipcode: e.target.value })
+                  }
+                  type="text"
+                  placeholder="Zipcode"
+                  className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
+                />
+                <input
+                  value={address.country}
+                  onChange={(e) =>
+                    setAddress({ ...address, country: e.target.value })
+                  }
+                  type="text"
+                  placeholder="Country"
+                  className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
+                />
+              </div>
               <input
-                value={address.zipcode}
+                value={address.phone}
                 onChange={(e) =>
-                  setAddress({ ...address, zipcode: e.target.value })
+                  setAddress({ ...address, phone: e.target.value })
                 }
                 type="text"
-                placeholder="Zipcode"
-                className="border w-full p-3 rounded-md"
+                placeholder="Phone number"
+                className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
               />
-              <input
-                value={address.country}
-                onChange={(e) =>
-                  setAddress({ ...address, country: e.target.value })
-                }
-                type="text"
-                placeholder="Country"
-                className="border w-full p-3 rounded-md"
-              />
-            </div>
-            <input
-              value={address.phone}
-              onChange={(e) =>
-                setAddress({ ...address, phone: e.target.value })
-              }
-              type="text"
-              placeholder="Phone"
-              className="border w-full p-3 rounded-md"
-            />
-          </form>
-        </div>}
+            </form>
+          </div>
+        )}
 
         {/* Cart Totals */}
-        <div className="pt-5">
-          <h2 className="text-2xl font-bold text-gray-700 mb-6">
-            CART <span className="text-black">TOTALS</span>
+        <div className="pt-5 space-y-5">
+          <h2 className="text-3xl font-semibold text-gray-900">
+            Cart <span className="text-black">Summary</span>
           </h2>
 
-          {/* Cart Items */}
-          <div className="max-h-60 overflow-y-auto border-b pb-3">
+          <div className="max-h-56 overflow-y-auto divide-y divide-gray-200">
             {cartItems.length > 0 ? (
               cartItems.map((item, index) => {
                 const itemName = item.name || item.title;
-                const qty = item.quantity || item.units || 1;
+                const qty = item.units || item.quantity || 1;
                 const price = item.offerPrice || item.price || 0;
                 return (
                   <div
                     key={index}
-                    className="flex justify-between items-center mb-3 text-gray-700"
+                    className="flex justify-between py-3 text-gray-800"
                   >
                     <div>
-                      <p className="font-semibold">{itemName}</p>
+                      <p className="font-medium">{itemName}</p>
                       <p className="text-sm text-gray-500">
                         {qty} × ₹{price}
                       </p>
                     </div>
-                    <span className="font-bold">₹{price * qty}</span>
+                    <span className="font-semibold text-gray-900">
+                      ₹{price * qty}
+                    </span>
                   </div>
                 );
               })
@@ -318,55 +295,58 @@ const Shipping = () => {
             )}
           </div>
 
-          {/* Totals */}
-          <div className="border-b pb-3 flex justify-between text-gray-700 mt-3">
-            <span>Subtotal</span>
-            <span>₹{subtotal.toFixed(2)}</span>
-          </div>
-          <div className="border-b pb-3 flex justify-between text-gray-700 mt-3">
-            <span>Shipping Fee</span>
-            <span>₹{shippingFee.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between text-black font-bold mt-3">
-            <span>Total</span>
-            <span>₹{total.toFixed(2)}</span>
+          <div className="text-gray-800 space-y-2 text-lg">
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span>₹{subtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Shipping Fee</span>
+              <span>₹{shippingFee.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-black font-bold text-xl pt-2">
+              <span>Total</span>
+              <span>₹{total.toFixed(2)}</span>
+            </div>
           </div>
 
-          {/* Payment Method */}
-          <h2 className="text-xl font-bold text-gray-700 mt-8 mb-4">
-            PAYMENT <span className="text-black">METHOD</span>
+          <h2 className="text-2xl font-semibold text-gray-900 pt-6">
+            Payment <span className="text-black">Method</span>
           </h2>
-          <div className="flex gap-4">
-            <label className="flex items-center font-bold border p-3 rounded-md w-full cursor-pointer">
-              <input
-                type="radio"
-                name="payment"
-                value="Razorpay"
-                checked={paymentMethod === "Razorpay"}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                className="mr-2"
-              />
-              <img src={images.Razorpay} alt="Razorpay" className="h-5" />
-              Razorpay
+          <div className="flex flex-col gap-3">
+            <label className="flex items-center justify-between px-5 py-3 bg-gray-100 rounded-xl cursor-pointer hover:bg-gray-200">
+              <div className="flex items-center gap-3">
+                <input
+                  type="radio"
+                  name="payment"
+                  value="Razorpay"
+                  checked={paymentMethod === "Razorpay"}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                <img src={images.Razorpay} alt="Razorpay" className="h-6" />
+                <span className="font-semibold">Razorpay</span>
+              </div>
             </label>
-            <label className="flex items-center border p-3 font-bold rounded-md w-full cursor-pointer">
-              <input
-                type="radio"
-                name="payment"
-                value="COD"
-                checked={paymentMethod === "COD"}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                className="mr-2"
-              />
-              Cash on delivery
+
+            <label className="flex items-center justify-between px-5 py-3 bg-gray-100 rounded-xl cursor-pointer hover:bg-gray-200">
+              <div className="flex items-center gap-3">
+                <input
+                  type="radio"
+                  name="payment"
+                  value="COD"
+                  checked={paymentMethod === "COD"}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                <span className="font-semibold">Cash on Delivery</span>
+              </div>
             </label>
           </div>
 
           <button
             onClick={handleFormSubmission}
-            className="mt-6 bg-black text-white px-6 py-3 w-full rounded-md hover:bg-gray-800 transition"
+            className="mt-8 w-full bg-black text-white py-3 text-lg rounded-full font-medium tracking-wide hover:opacity-90 transition"
           >
-            PLACE ORDER
+            Place Order
           </button>
         </div>
       </div>

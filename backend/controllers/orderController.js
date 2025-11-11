@@ -1,7 +1,25 @@
 import Order from "../models/orderModel.js";
+import Product from "../models/productModel.js"; //  import product model
 import Razorpay from "razorpay";
 import crypto from "crypto";
 
+//  Helper: update product stock
+const updateProductStock = async (items) => {
+  for (const item of items) {
+    try {
+      const product = await Product.findById(item._id);
+      if (product) {
+        const qty = item.units;
+        product.stock = Math.max(product.stock - qty, 0);
+        await product.save();
+      }
+    } catch (error) {
+      console.error("Error updating stock for product:", item._id, error.message);
+    }
+  }
+};
+
+//  Place Order (COD)
 export const placeOrder = async (req, res) => {
   try {
     const { items, amount, address, paymentMethod } = req.body;
@@ -23,7 +41,11 @@ export const placeOrder = async (req, res) => {
     });
 
     await newOrder.save();
-    res.status(200).json({ success: true, message: "Order placed", newOrder });
+
+  
+    await updateProductStock(items);
+
+    res.status(200).json({ success: true, message: "Order placed successfully", newOrder });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -38,7 +60,7 @@ export const createRazorpayOrder = async (req, res) => {
     });
 
     const options = {
-      amount: req.body.amount * 100, // convert to paise
+      amount: req.body.amount * 100, 
       currency: "INR",
       receipt: "receipt_" + Date.now(),
     };
@@ -50,7 +72,7 @@ export const createRazorpayOrder = async (req, res) => {
   }
 };
 
-//  Verify Payment
+//  Verify Razorpay Payment & Update Stock
 export const verifyPayment = async (req, res) => {
   try {
     const {
@@ -79,6 +101,10 @@ export const verifyPayment = async (req, res) => {
       });
 
       await newOrder.save();
+
+
+      await updateProductStock(orderData.items);
+
       return res.status(200).json({ success: true, message: "Payment verified & order saved." });
     } else {
       return res.status(400).json({ success: false, message: "Invalid signature" });
@@ -88,6 +114,7 @@ export const verifyPayment = async (req, res) => {
   }
 };
 
+//  Get User Orders
 export const getUserOrders = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -99,8 +126,7 @@ export const getUserOrders = async (req, res) => {
   }
 };
 
-
-//  Cancel order
+//  Cancel Order
 export const cancelOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -109,7 +135,6 @@ export const cancelOrder = async (req, res) => {
     if (order.status === "Delivered")
       return res.status(400).json({ message: "Delivered orders cannot be cancelled" });
 
-    // Allow cancellation within 1 hour or if still pending
     const orderTime = new Date(order.createdAt).getTime();
     const oneHour = 60 * 60 * 1000;
 
@@ -119,13 +144,23 @@ export const cancelOrder = async (req, res) => {
     order.status = "Cancelled";
     await order.save();
 
+    //  Restore stock on cancellation
+    for (const item of order.items) {
+      const product = await Product.findById(item._id);
+      if (product) {
+        const qty = item.units || item.quantity || 1;
+        product.stock += qty;
+        await product.save();
+      }
+    }
+
     res.status(200).json({ success: true, message: "Order cancelled successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-//  Return order
+//  Return Order
 export const returnOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -137,9 +172,18 @@ export const returnOrder = async (req, res) => {
     order.status = "Returned";
     await order.save();
 
+    //  Restore stock on return
+    for (const item of order.items) {
+      const product = await Product.findById(item._id);
+      if (product) {
+        const qty = item.units || item.quantity || 1;
+        product.stock += qty;
+        await product.save();
+      }
+    }
+
     res.status(200).json({ success: true, message: "Order returned successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
