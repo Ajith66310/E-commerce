@@ -2,16 +2,17 @@ import { useState, useEffect, useContext } from "react";
 import Title from "./Title";
 import ProductItem from "./ProductItem.jsx";
 import { UserContext } from "../context/UserContext.jsx";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Latestproducts = () => {
   const [latestProduct, setLatestProduct] = useState([]);
   const [loading, setLoading] = useState(true);
   const { fetchProducts } = useContext(UserContext);
-
+  const navigate = useNavigate()
   useEffect(() => {
     const loadProducts = async () => {
       const products = await fetchProducts(20);
-      setLatestProduct(products.reverse().slice(0, 6));
+      setLatestProduct(products.reverse().slice(0, 4));
       setLoading(false);
     };
     loadProducts();
@@ -22,7 +23,7 @@ const Latestproducts = () => {
   return (
     <div
       id="container"
-      className="min-h-screen py-16 px-5 md:px-10 bg-gradient-to-b from-white to-gray-50 font-[Inter]"
+      className="min-h-screen py-16 px-5 md:px-10 bg-gradient-to-b bg-white font-[Inter]"
     >
       {/* Title Section */}
       <div className="text-center mb-12">
@@ -68,6 +69,13 @@ const Latestproducts = () => {
               </div>
             ))}
       </div>
+<div className="flex justify-center items-center my-30">
+  <button
+    className="relative px-10 py-2 text-lg animate-bounce font-semibold text-white rounded-2xl bg-black"
+   onClick={()=>{navigate('/fashion')}}>
+    Shop All
+  </button>
+</div>
     </div>
   );
 };

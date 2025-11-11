@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 const Shipping = () => {
   const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [editToggle, setEditToggle] = useState(true);
   const [address, setAddress] = useState({
     street: "",
     city: "",
@@ -167,7 +168,41 @@ const Shipping = () => {
   return (
     <div className="min-h-screen bg-white py-10 px-6 pt-40">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-80">
+        
         {/* Delivery Information */}
+        { editToggle &&
+        <div className="bg-white shadow-md rounded-lg h-60 p-6 w-180 max-w-lg mx-auto text-gray-800">
+          {/* Title */}
+          <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center md:text-left">
+            DELIVERY <span className="text-black">INFORMATION</span>
+          </h2>
+
+          {/* Address Card */}
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div className="flex-1 space-y-1">
+              <p className="font-semibold text-base">{user.name}</p>
+              <p className="text-gray-600 text-sm">{address.street}</p>
+              <p className="text-gray-600 text-sm">
+                {address.city}, {address.state}, {address.country} - {address.zipcode}
+              </p>
+              <p className="text-gray-600 text-sm">{address.phone}</p>
+              <p className="text-gray-600 text-sm break-all">{user.email}</p>
+            </div>
+
+            {/* Edit Button */}
+            <div className="flex justify-center sm:justify-end">
+              <button
+                onClick={() => setEditToggle(false)}
+                className="bg-black text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-gray-800 transition duration-200"
+              >
+                Change address
+              </button>
+            </div>
+          </div>
+        </div>
+        }
+
+{editToggle === false &&
         <div>
           <h2 className="text-2xl font-bold text-gray-700 mb-6">
             DELIVERY <span className="text-black">INFORMATION</span>
@@ -246,7 +281,7 @@ const Shipping = () => {
               className="border w-full p-3 rounded-md"
             />
           </form>
-        </div>
+        </div>}
 
         {/* Cart Totals */}
         <div className="pt-5">

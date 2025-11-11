@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import Header from "../components/Header.jsx";
 import Breadcrumb from "../components/Breadcrums.jsx";
 import Marquee from "../components/Marquee.jsx";
 import { UserContext } from "../context/UserContext.jsx";
@@ -9,7 +8,7 @@ const Favourite = () => {
   const { wishlist } = useContext(UserContext);
 
   return (
-    <div className="flex flex-col mt-[80px] w-full absolute bg-gradient-to-b from-gray-50 via-white to-gray-100">
+    <div className="flex flex-col mt-[80px] w-full absolute  bg-white">
       <Marquee />
       <div className="pl-10 pt-5 pb-5 w-full">
         <Breadcrumb Home="Home" Favourite="Favourite" />

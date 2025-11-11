@@ -42,7 +42,7 @@ const Bestseller = () => {
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-2 gap-5 w-[95%] mx-auto md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-5 w-[95%] mx-auto md:grid-cols-3 lg:grid-cols-4 ">
         {loading
           ? skeletons.map((_, i) => (
               <div
