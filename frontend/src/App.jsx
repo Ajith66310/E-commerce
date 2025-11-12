@@ -17,6 +17,7 @@ import Product from './pages/Product';
 import Shipping from './pages/Shipping';
 import UserProfile from './pages/UserProfile.jsx';
 import Orders from './pages/Orders.jsx';
+import Footer from './components/footer.jsx';
 
 const App = () => {
   return (
@@ -40,6 +41,7 @@ const App = () => {
         </Route>
           <Route path='userprofile' element={<UserProfile/>} />
       </Routes>
+         <Footer />
     </BrowserRouter>
   )
 }

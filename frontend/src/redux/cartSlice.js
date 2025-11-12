@@ -22,7 +22,7 @@ const cartSlice = createSlice({
       );
 
       if (existing) {
-        // ✅ Prevent exceeding stock
+        // Prevent exceeding stock
         if (existing.units + item.units > existing.stock) {
           toast.warning(`Only ${existing.stock} units available in stock`);
           existing.units = existing.stock;
@@ -31,7 +31,7 @@ const cartSlice = createSlice({
           toast.success("Item added to cart!");
         }
       } else {
-        // ✅ Add new item with stock property
+        // Add new item with stock property
         state.items.push(item);
         toast.success("Item added to cart!");
       }
@@ -54,7 +54,7 @@ const cartSlice = createSlice({
       const item = state.items[index];
       if (!item) return;
 
-      // ✅ Prevent negative or exceeding stock
+      // Prevent negative or exceeding stock
       if (units < 1) return;
       if (units > item.stock) {
         toast.warning(`Only ${item.stock} units available in stock`);
