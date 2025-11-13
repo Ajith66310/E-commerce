@@ -137,6 +137,8 @@ FASHION-ECOMMERCE/
 │       ├── components/        # Navbar, Footer, ProductCard, etc.
 │       ├── context/           # Global State (User, Wishlist, Cart)
 │       └── pages/             # Home, Profile, Cart, Wishlist, Checkout, Orders
+│       └── utils/             # socket.io
+│       └── redux/             # react-redux toolkit
 │
 └── README.md                  # Documentation
     
