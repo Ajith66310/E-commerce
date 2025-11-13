@@ -85,6 +85,14 @@ const Product = () => {
     !selectedSize || maxForSelected <= 0 || currentUnits >= maxForSelected;
 
   const handleAddToCart = () => {
+
+    const token = localStorage.getItem("token");
+  if (!token) {
+    toast.error("Please login to add items");
+    return;
+  }
+
+
   if (isOutOfStock) return;
 
   const newItem = {

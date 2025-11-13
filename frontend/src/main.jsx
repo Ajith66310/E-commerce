@@ -6,9 +6,10 @@ import UserContextProvider from './context/UserContext.jsx'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { Provider } from "react-redux";
 import { store } from "./redux/store.js";
+import { BrowserRouter } from 'react-router-dom'
 
 createRoot(document.getElementById('root')).render(
-
+<BrowserRouter>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <UserContextProvider>
              <Provider store={store}>
@@ -16,5 +17,6 @@ createRoot(document.getElementById('root')).render(
              </Provider>
         </UserContextProvider>
     </GoogleOAuthProvider>
+</BrowserRouter>
 
 )

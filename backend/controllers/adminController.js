@@ -2,7 +2,7 @@ import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
 import productModel from "../models/productModel.js";
 import jwt from 'jsonwebtoken';
-
+import { notifyUser } from "../index.js";
 
 const adminLogin = async (req, res) => {
 
@@ -44,23 +44,6 @@ const adminFetchUser = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
-  }
-};
-
-const adminRemoveUser = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const deletedUser = await userModel.findByIdAndDelete(id);
-
-    if (!deletedUser) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
-
-    return res.status(200).json({ success: true, message: "User removed successfully" });
-  } catch (error) {
-    console.error("Error removing user:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -134,4 +117,48 @@ const getUserOrders = async (req, res) => {
   }
 };
 
-export {adminRemoveUser, adminFetchUser, adminLogin,getUserOrders ,getDashboardData}
+const adminRemoveUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedUser = await userModel.findByIdAndDelete(id);
+
+    if (!deletedUser) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Notify user instantly
+    notifyUser(id, "removed");
+
+    return res.status(200).json({ success: true, message: "User removed successfully" });
+  } catch (error) {
+    console.error("Error removing user:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+// Block/unblock user + notify frontend
+const blockUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await userModel.findById(id);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    user.isBlocked = !user.isBlocked;
+    await user.save();
+
+    //  Notify the user (blocked/unblocked)
+    const action = user.isBlocked ? "blocked" : "unblocked";
+    notifyUser(id, action);
+
+    res.json({
+      success: true,
+      message: `User ${action} successfully`,
+      isBlocked: user.isBlocked,
+    });
+  } catch (error) {
+    console.error("Error blocking/unblocking user:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export {blockUser,adminRemoveUser,adminFetchUser,adminLogin,getUserOrders,getDashboardData}

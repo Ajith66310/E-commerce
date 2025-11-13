@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   password: String,
   role: { type: String, default: "user" },
   status: { type: String, default: "pending" },
+   isBlocked: { type: Boolean, default: false },
   googleId: String,
   image: String, 
   address: {

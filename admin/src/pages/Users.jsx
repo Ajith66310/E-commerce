@@ -49,14 +49,19 @@ const Users = () => {
   const handleBlock = async (id) => {
     try {
       setLoading(true);
-      await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/admin/users/${id}/block`);
+      const res = await axios.patch(
+        `${import.meta.env.VITE_BACKEND_URL}/admin/users/${id}/block`
+      );
+      toast.success(res.data.message);
       fetchUsers(currentPage);
     } catch (err) {
+      toast.error("Failed to update user status");
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
+
 
   if (loading) {
     return (
@@ -93,15 +98,21 @@ const Users = () => {
                 )}
 
                 <div>
-                  <p className="font-semibold text-gray-900 text-lg">{u.name}</p>
+                  <p className="font-semibold text-gray-900 text-lg">{u.name}
+                    <span
+                      className={`font-medium ${u.isBlocked ? "text-red-500" : "text-green-500"
+                        }`}
+                    >
+                      {u.isBlocked ? " (Blocked)" : " (Active)"}
+                    </span>
+                  </p>
                   <p className="text-gray-600 text-sm">{u.email}</p>
                   <p className="text-sm text-gray-500 mt-1">
                     Role:{" "}
                     <span className="font-medium text-gray-700">{u.role}</span> | Status:{" "}
                     <span
-                      className={`font-medium ${
-                        u.status === "blocked" ? "text-red-500" : "text-green-500"
-                      }`}
+                      className={`font-medium ${u.status === "blocked" ? "text-red-500" : "text-green-500"
+                        }`}
                     >
                       {u.status}
                     </span>
@@ -124,13 +135,12 @@ const Users = () => {
 
                 <button
                   onClick={() => handleBlock(u._id)}
-                  className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 ${
-                    u.status === "blocked"
-                      ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:shadow-md text-white"
-                      : "bg-gradient-to-r from-yellow-500 to-yellow-600 hover:shadow-md text-white"
-                  }`}
+                  className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 ${u.isBlocked
+                    ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:shadow-md text-white"
+                    : "bg-gradient-to-r from-yellow-500 to-yellow-600 hover:shadow-md text-white"
+                    }`}
                 >
-                  {u.status === "blocked" ? "Unblock" : "Block"}
+                  {u.isBlocked ? "Unblock" : "Block"}
                 </button>
               </div>
             </div>

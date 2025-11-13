@@ -35,7 +35,7 @@ const UserContextProvider = ({ children }) => {
     }
   };
 
-    // ❤️ Add or remove a product from wishlist
+    // Add or remove a product from wishlist
   const toggleLike = (product) => {
     setWishlist((prev) => {
       const isLiked = prev.find((item) => item._id === product._id);
