@@ -8,7 +8,7 @@ const Footer = () => {
         
         {/* Brand Section */}
         <div>
-          <h2 className="text-2xl font-bold text-white mb-4">Bonkers Corner</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">Vestido Club</h2>
           <p className="text-sm leading-6">
             Where fashion meets comfort. Discover trendy and sustainable outfits designed for everyday confidence.
           </p>
@@ -63,7 +63,7 @@ const Footer = () => {
       </div>
 
       <div className="border-t border-gray-700 mt-10 pt-6 text-center text-sm">
-        <p>© {new Date().getFullYear()} Bonkers Corner. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Vestido Club. All rights reserved.</p>
       </div>
     </footer>
   );

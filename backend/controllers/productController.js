@@ -1,7 +1,7 @@
 import productModel from "../models/productModel.js";
 import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
-
+import sharp from "sharp";
 
 
 /* fetch all products */
@@ -25,7 +25,7 @@ const fetchProduct = async (req, res) => {
 
 
 const addProduct = async (req, res) => {
-   try {
+  try {
     const {
       title,
       description,
@@ -39,45 +39,55 @@ const addProduct = async (req, res) => {
 
     const parsedSizes = sizes ? JSON.parse(sizes) : { S: 0, M: 0, L: 0 };
 
-    // helper function to upload buffer to Cloudinary
+    //  Helper function: Upload cropped buffer to Cloudinary
     const uploadBufferToCloudinary = (fileBuffer, folder = "products") => {
       return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-     {
-    folder,
-    allowed_formats: ["jpg", "png", "webp", "avif"],
-    quality: "auto:best", 
-    },
-   (error, result) => {
-    if (error) reject(error);
-    else resolve(result);
-    }
-    );
+          {
+            folder,
+            allowed_formats: ["jpg", "png", "webp", "avif"],
+            quality: "auto:best",
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
         streamifier.createReadStream(fileBuffer).pipe(stream);
       });
     };
 
-    // upload images from req.files
-    const uploadPromises = req.files.map((file) =>
-      uploadBufferToCloudinary(file.buffer)
-    );
+    //  Process each file: crop + resize before uploading
+    const uploadPromises = req.files.map(async (file) => {
+      //  Crop to square (center) and resize to 1000×1000
+      const croppedBuffer = await sharp(file.buffer)
+        .resize(1000, 1000, {
+          fit: "cover", // ensures crop to square center
+        })
+        .toFormat("jpeg")
+        .jpeg({ quality: 90 })
+        .toBuffer();
+
+      // Upload cropped version to Cloudinary
+      return uploadBufferToCloudinary(croppedBuffer);
+    });
+
     const uploadResults = await Promise.all(uploadPromises);
     const imageUrls = uploadResults.map((r) => r.secure_url);
 
-    // build product object
+    //  Build and save product
     const productData = {
       title,
       description,
       price,
-      percentage, 
+      percentage,
       category,
       sizes: parsedSizes,
       units: Number(units) || 0,
       images: imageUrls,
-       bestseller: bestseller === "true" || bestseller === true,
+      bestseller: bestseller === "true" || bestseller === true,
     };
 
-    // save to DB
     const savedProduct = await productModel.create(productData);
 
     res.json({ success: true, product: savedProduct });
@@ -86,7 +96,6 @@ const addProduct = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
-
 
 
 const adminGetProducts = async (req, res) => {

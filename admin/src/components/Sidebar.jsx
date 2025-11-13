@@ -45,7 +45,7 @@ const Sidebar = ({ setToken }) => {
       {/*Desktop Sidebar */}
       <div className="hidden md:flex h-screen w-64 fixed top-0 left-0 bg-gray-900 text-white flex-col">
         <div className="flex items-center justify-center h-20 border-b border-gray-700">
-          <h1 className="text-xl font-serif font-extrabold">BONKERS CORNER</h1>
+          <h1 className="text-xl font-serif font-extrabold">Vestido Club</h1>
         </div>
 
         <nav className="flex-1 p-4 space-y-2">
@@ -119,7 +119,7 @@ const Sidebar = ({ setToken }) => {
 
       {/*Mobile Top Navbar */}
       <div className="md:hidden fixed top-0 left-0 w-full z-50 bg-gray-900 text-white flex items-center justify-between px-4 py-3 shadow-lg">
-        <h1 className="text-lg font-serif font-extrabold">BONKERS CORNER</h1>
+        <h1 className="text-lg font-serif font-extrabold">Vestido Club</h1>
 
         <div className="flex items-center gap-4">
           {token && (

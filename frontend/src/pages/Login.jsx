@@ -67,7 +67,7 @@ const Login = () => {
         >
           <div className='text-center space-y-2'>
             <p className='font-[Poppins] text-lg tracking-wide'>
-              Welcome, <span className='font-bold'>Bonker</span>
+              Welcome, <span className='font-bold'>to club</span>
             </p>
           </div>
 

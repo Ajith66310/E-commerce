@@ -31,7 +31,7 @@ const Bestseller = () => {
   const skeletons = Array.from({ length: 8 });
 
   return (
-    <div className="bg-black mt-5 py-10">
+    <div className="bg-black py-10">
       {/* Section title */}
       <div className="text-center mb-8">
         <Title

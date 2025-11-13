@@ -37,7 +37,6 @@ function App() {
 
         if (userId) {
           socket.emit("registerUser", userId);
-          console.log("Socket registered for user:", userId);
         }
       } catch (error) {
         console.error("Invalid token:", error);

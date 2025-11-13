@@ -6,7 +6,7 @@ import { notifyUser } from "../index.js";
 
 const adminLogin = async (req, res) => {
 
-  const { email, password } = req.body;
+  const { email} = req.body;
   const data = await userModel.findOne({ email: email })
 
   if (!data) {
@@ -16,6 +16,7 @@ const adminLogin = async (req, res) => {
   const token = jwt.sign(
     { email: data.email },
     process.env.SECRET_KEY,
+    { expiresIn: "7d" }
   ); 
 
     res.cookie("token", token, {

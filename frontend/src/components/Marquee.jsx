@@ -101,8 +101,8 @@ const Marquee = () => {
             Array.from({ length: 12 }).map((_, i) => (
               <div key={`${rep}-${i}`} className="marque  flex gap-4 items-center shrink-0">
                 <h1 className="text-2xl text-red-900 font-[mono] font-extrabold">
-                  BONKERS CORNER
-                </h1>
+                  Vestido Club
+                                  </h1>
                 <img
                   src="https://www.brandium.nl/wp-content/uploads/2023/07/arrow-br.svg"
                   alt="arrow"

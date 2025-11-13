@@ -44,8 +44,8 @@ const Navbar = () => {
     <>
       <div className="hidden md:grid grid-cols-3 w-full absolute z-50 h-20 bg-transparent">
         <div id="brand-name" className="flex items-center pl-10">
-          <p className="text-3xl font-serif font-extrabold text-red-800">
-            BONKERS CORNER
+          <p className="text-3xl font-[poppins] font-extrabold text-red-800">
+            Vestido Club
           </p>
         </div>
 

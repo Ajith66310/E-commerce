@@ -32,6 +32,11 @@ const Product = () => {
     fetchProduct();
   }, [id]);
 
+  useEffect(() => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}, [id]);
+
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto pt-24 px-4 animate-pulse">
@@ -86,30 +91,31 @@ const Product = () => {
 
   const handleAddToCart = () => {
 
+
     const token = localStorage.getItem("token");
-  if (!token) {
-    toast.error("Please login to add items");
-    return;
-  }
+    if (!token) {
+      toast.error("Please login to add items");
+      return;
+    }
 
 
-  if (isOutOfStock) return;
+    if (isOutOfStock) return;
 
-  const newItem = {
-    id: product._id,
-    title: product.title,
-    size: selectedSize,
-    units: 1,
-    price: numericPrice,
-    percentage: numericDiscount,
-    offerPrice,
-    image: product.images?.[0] || "",
-    stock: maxForSelected, 
+    const newItem = {
+      id: product._id,
+      title: product.title,
+      size: selectedSize,
+      units: 1,
+      price: numericPrice,
+      percentage: numericDiscount,
+      offerPrice,
+      image: product.images?.[0] || "",
+      stock: maxForSelected,
+    };
+
+    dispatch(addItem(newItem));
+    dispatch(toggleCart(true));
   };
-
-  dispatch(addItem(newItem));
-  dispatch(toggleCart(true));
-};
 
 
   return (
@@ -124,9 +130,8 @@ const Product = () => {
                 src={img}
                 alt={product.title}
                 onClick={() => setSelectedImage(img)}
-                className={`w-35 h-35 object-cover rounded-lg cursor-pointer border transition-all duration-300 ${
-                  selectedImage === img ? "border-red-500 scale-105" : "border-gray-200"
-                }`}
+                className={`w-35 h-35 object-cover rounded-lg cursor-pointer border transition-all duration-300 ${selectedImage === img ? "border-red-500 scale-105" : "border-gray-200"
+                  }`}
               />
             ))}
           </div>
@@ -146,9 +151,8 @@ const Product = () => {
                 src={img}
                 alt={product.title}
                 onClick={() => setSelectedImage(img)}
-                className={`w-28 h-28 object-cover rounded-lg cursor-pointer border transition-all duration-300 ${
-                  selectedImage === img ? "border-red-500 scale-105" : "border-gray-200"
-                }`}
+                className={`w-28 h-28 object-cover rounded-lg cursor-pointer border transition-all duration-300 ${selectedImage === img ? "border-red-500 scale-105" : "border-gray-200"
+                  }`}
               />
             ))}
           </div>
@@ -186,13 +190,12 @@ const Product = () => {
                   key={size}
                   onClick={() => setSelectedSize(size)}
                   disabled={sizeStock[size] <= 0}
-                  className={`px-5 py-3 rounded-lg border font-medium transition-all duration-300 ${
-                    sizeStock[size] <= 0
+                  className={`px-5 py-3 rounded-lg border font-medium transition-all duration-300 ${sizeStock[size] <= 0
                       ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                       : selectedSize === size
-                      ? "bg-red-600 text-white border-red-600"
-                      : "border-gray-300 hover:border-red-400"
-                  }`}
+                        ? "bg-red-600 text-white border-red-600"
+                        : "border-gray-300 hover:border-red-400"
+                    }`}
                 >
                   {size}
                 </button>
@@ -202,16 +205,19 @@ const Product = () => {
 
           {/* ADD TO CART BUTTON */}
           <button
-            disabled={isOutOfStock}
             onClick={handleAddToCart}
-            className={`mt-6 w-full py-3 rounded-xl text-lg font-semibold tracking-wide shadow-md transition-all duration-300 ${
-              isOutOfStock
+            className={`mt-6 w-full py-3 rounded-xl text-lg font-semibold tracking-wide shadow-md transition-all duration-300 ${isOutOfStock
                 ? "bg-gray-300 text-gray-100 cursor-not-allowed"
                 : "bg-gradient-to-r from-red-700 to-red-500 text-white hover:from-gray-900 hover:to-gray-700"
-            }`}
+              }`}
           >
-            {isOutOfStock ? "OUT OF STOCK" : "ADD TO CART"}
+            {!selectedSize
+              ? "SELECT SIZE"
+              : isOutOfStock
+                ? "OUT OF STOCK"
+                : "ADD TO CART"}
           </button>
+
         </div>
       </div>
 

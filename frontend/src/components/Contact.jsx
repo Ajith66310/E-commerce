@@ -99,7 +99,7 @@ const Contact = () => {
           </div>
 
           <div className="mt-12 text-gray-400 text-xs">
-            © {new Date().getFullYear()} Bonkers Corner. All Rights Reserved.
+            © {new Date().getFullYear()} Vestido Club. All Rights Reserved.
           </div>
         </div>
 
