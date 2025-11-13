@@ -1,4 +1,4 @@
-# MERN Fashion E-Commerce Website
+# VestidoClub E-Commerce Website
 
 A **modern full-stack Fashion E-Commerce application** built using the **MERN stack (MongoDB, Express.js, React, Node.js)**.  
 It provides a seamless shopping experience with **Google Authentication**, **User Profiles**, **Wishlist**, **Cart**, **Secure Payments**, and a **powerful Admin Dashboard** for management and analytics.
@@ -7,64 +7,110 @@ It provides a seamless shopping experience with **Google Authentication**, **Use
 ### Features
 
 ###  User Features
--  **JWT + Google Login Authentication**
--  Create and update your **User Profile**
--  Browse trending fashion products
--  Add and manage items in **Wishlist**
--  **Add to Cart** and **checkout securely**
--  **Razorpay** integration for online payments
--  Track **order history and status**
--  Smooth **GSAP + Framer Motion** animations
--  **Cloudinary** for optimized image storage
--  **Resend + Nodemailer** for email confirmations
 
+ -- JWT + Google Login Authentication
+
+ -- Create & update your User Profile
+
+ -- Browse and filter fashion products
+
+ -- Manage your Wishlist
+
+ -- Add to Cart, update quantities, and checkout securely
+
+ -- Razorpay Payment Gateway integration
+
+ -- Track Orders with live status updates 
+
+ -- Real-time updates for stock, order status, and analytics
+
+ -- Cloudinary + Sharp for fast, optimized images
+
+ -- Email confirmations with Resend + Nodemailer
+
+ -- Smooth animations using GSAP + Framer Motion
+
+ -- Redux Toolkit for global state management (User, Cart, Wishlist)
 
 
 ###  Admin Features
--  Secure Admin Login
--  Product Management (Add / Edit / Delete)
--  User Management (Add / Remove Admins & Users)
--  Order Tracking & Status Updates
--  Stock Management (In Stock / Out of Stock)
--  Analytics Dashboard (Sales · Users · Revenue · Products)
--  Email notifications for order updates
 
+ -- Secure Admin Login
 
+ -- Product Management (Add · Edit · Delete)
 
+ -- User Management (Add / Remove Admins & Users)
+
+ -- Live Order Tracking via Socket.io
+
+ -- Analytics Dashboard (Sales · Users · Revenue · Products)
+
+ -- Stock Management (In Stock / Out of Stock)
+
+ -- Email Notifications for Order & Cancellation Updates
+
+ -- Sharp image optimization for all uploads
+
+ -- Real-time notifications and analytics refresh
+
+ -- Review Management System (Add / Remove Reviews)
 
 ##  Tech Stack
 
 ###  Frontend
-- **React 19**  
-- **React Router DOM 7**  
-- **Tailwind CSS 4**  
-- **Axios**  
-- **Framer Motion 12**  
-- **GSAP 3**  
-- **Lucide React / React Icons**  
-- **Recharts** (Analytics)  
-- **Swiper.js** (carousels)   
 
-###  Backend
-- **Node.js + Express 5**
-- **MongoDB + Mongoose 8**
-- **JWT Authentication**
-- **Google OAuth 2.0** (`@react-oauth/google`, `google-auth-library`)
-- **Razorpay Payments**
-- **Cloudinary + Multer** (Image Uploads)
-- **Nodemailer + Resend** (Transactional Emails)
-- **ioredis 5** (Caching)
-- **bcrypt 6** (Password Hashing)
-- **CORS + Cookie Parser + Dotenv**
+ • React 19 + Vite
+
+ • React Router DOM 7
+
+ • Redux Toolkit (State Management)
+
+ • Tailwind CSS 4
+
+ • Axios
+
+ • Framer Motion 12 + GSAP 3
+
+ • Lucide React / React Icons
+
+ • Recharts (Analytics)
+
+ • Swiper.js (Carousels)
+
+### Backend
+
+ • Node.js + Express 5
+
+ • MongoDB + Mongoose 8
+
+ • JWT Authentication
+
+ • Google OAuth 2.0 (@react-oauth/google, google-auth-library)
+
+ • Razorpay Payments
+
+ • Cloudinary + Multer + Sharp (Image Upload & Optimization)
+
+ • Socket.io (Real-time updates)
+
+ • Nodemailer + Resend (Transactional Emails)
+
+ • ioredis 5 
+
+ • bcrypt 6 (Password Hashing)
+
+ • CORS + Cookie Parser + Dotenv
+
+ • Streamifier (Buffer to Stream conversion)
 
 ###  Other Tools
+
 - **Vite** (Frontend bundler)
 - **ESLint + Prettier**
 - **Git & GitHub**
 - **Nodemon** (Development)
 - **Streamifier** (Buffer to stream conversion)
 
----
 
 ##  Project Structure
 <pre>
