@@ -129,16 +129,16 @@ FASHION-ECOMMERCE/
 │   ├── models/                # MongoDB Schemas
 │   ├── routes/                # API Routes
 │   ├── templates/             # Email templates (Resend/Nodemailer)
-│   └── utils/                 # JWT, Validators, Helpers
+│   └── utils/                 # Socket.io
 │
 ├── frontend/                  # User Frontend (React + Vite)
 │   └── src/
 │       ├── assets/            # Banners, Product Images
 │       ├── components/        # Navbar, Footer, ProductCard, etc.
 │       ├── context/           # Global State (User, Wishlist, Cart)
-│       └── pages/             # Home, Profile, Cart, Wishlist, Checkout, Orders
-│       └── utils/             # socket.io
-│       └── redux/             # react-redux toolkit
+│       ├── pages/             # Home, Profile, Cart, Wishlist, Checkout, Orders
+│       ├── utils/             # Socket.io
+│       └── redux/             # React-redux toolkit
 │
 └── README.md                  # Documentation
     
