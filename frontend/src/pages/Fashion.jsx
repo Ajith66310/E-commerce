@@ -97,7 +97,7 @@ const Fashion = () => {
   const skeletons = Array.from({ length: 8 });
 
   return (
-    <div className="flex flex-col pt-[80px] w-full relative  bg-gradient-to-b from-white to-gray-50">
+    <div className="flex flex-col pt-[80px] w-full relative  pb-[30vh] bg-gradient-to-b from-white to-gray-50">
       <Marquee />
       <div className="pl-6 md:pl-10 pt-5 pb-5 w-full">
         <Breadcrumb Home="Home" Fashion="Fashion" />

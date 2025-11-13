@@ -92,7 +92,7 @@ const Orders = () => {
 
   if (orders.length === 0)
     return (
-      <div className="pt-40 text-center text-gray-400">
+      <div className="pt-40 h-[60vh] text-center text-gray-400">
            <div className="pl-4 sm:pl-20 pt-5 pb-5 w-full">
         <Breadcrumb Home="Home" Orders="Orders" />
       </div>

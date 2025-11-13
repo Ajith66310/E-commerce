@@ -18,6 +18,7 @@ const Shipping = () => {
     phone: "",
   });
   const [user, setUser] = useState({ name: "", email: "" });
+  const [hasAddress, setHasAddress] = useState(false);
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ const Shipping = () => {
         country: userData?.address?.country || "",
         phone: userData?.address?.phone || "",
       });
+      setHasAddress(!!userData?.address?.street);
     } catch (err) {
       console.error("Fetch user address error:", err);
     }
@@ -69,6 +71,11 @@ const Shipping = () => {
 
     if (!cartItems.length) {
       toast.error("Your cart is empty!");
+      return;
+    }
+
+    if (!hasAddress) {
+      toast.error("Please add your address before placing an order.");
       return;
     }
 
@@ -151,27 +158,33 @@ const Shipping = () => {
         
         {/* Delivery Information */}
         {editToggle && (
-          <div className="p-6 space-y-5 text-gray-800 border    border-gray-300 rounded-md bg-transparent h-60 w-150">
+          <div className="p-6 space-y-5 text-gray-800 border border-gray-300 rounded-md bg-transparent h-60 w-150">
             <h2 className="text-3xl font-semibold tracking-wide text-gray-900">
               Delivery <span className="font-bold text-black">Information</span>
             </h2>
 
             <div className="flex flex-col sm:flex-row sm:justify-between gap-5">
               <div className="flex-1 text-lg leading-relaxed">
-                <p className="font-medium">{user.name}</p>
-                <p className="text-gray-600">{address.street}</p>
-                <p className="text-gray-600">
-                  {address.city}, {address.state}, {address.country} – {address.zipcode}
-                </p>
-                <p className="text-gray-600">{address.phone}</p>
-                <p className="text-gray-500 text-sm">{user.email}</p>
+                {hasAddress ? (
+                  <>
+                    <p className="font-medium">{user.name}</p>
+                    <p className="text-gray-600">{address.street}</p>
+                    <p className="text-gray-600">
+                      {address.city}, {address.state}, {address.country} – {address.zipcode}
+                    </p>
+                    <p className="text-gray-600">{address.phone}</p>
+                    <p className="text-gray-500 text-sm">{user.email}</p>
+                  </>
+                ) : (
+                  <p className="text-gray-500 italic">No address found.</p>
+                )}
               </div>
 
               <button
                 onClick={() => setEditToggle(false)}
                 className="self-start mt-2 px-6 py-2 text-sm font-semibold text-white bg-black rounded-full hover:opacity-90 transition"
               >
-                Change Address
+                {hasAddress ? "Change Address" : "Add Address"}
               </button>
             </div>
           </div>
@@ -182,7 +195,7 @@ const Shipping = () => {
             <h2 className="text-3xl font-semibold text-gray-900">
               Delivery <span className="text-black">Information</span>
             </h2>
-            <form className="space-y-5" onSubmit={handleFormSubmission}>
+            <form className="space-y-5">
               <input
                 type="text"
                 value={user.name}
@@ -255,6 +268,19 @@ const Shipping = () => {
                 placeholder="Phone number"
                 className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
               />
+
+              {/* Done Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setHasAddress(true);
+                  setEditToggle(true);
+                  toast.success("Address updated successfully");
+                }}
+                className="mt-4 w-full bg-black text-white py-3 rounded-full font-medium tracking-wide hover:opacity-90 transition"
+              >
+                Done
+              </button>
             </form>
           </div>
         )}
@@ -344,7 +370,12 @@ const Shipping = () => {
 
           <button
             onClick={handleFormSubmission}
-            className="mt-8 w-full bg-black text-white py-3 text-lg rounded-full font-medium tracking-wide hover:opacity-90 transition"
+            disabled={!hasAddress}
+            className={`mt-8 w-full text-white py-3 text-lg rounded-full font-medium tracking-wide transition ${
+              hasAddress
+                ? "bg-black hover:opacity-90"
+                : "bg-gray-400 cursor-not-allowed"
+            }`}
           >
             Place Order
           </button>

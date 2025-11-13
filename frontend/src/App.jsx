@@ -1,9 +1,7 @@
-import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
-import Header from './components/Header';
 import Fashion from './pages/Fashion';
 import Favourite from './pages/Favourite';
 import Signup from './pages/Signup';
@@ -17,16 +15,15 @@ import Product from './pages/Product';
 import Shipping from './pages/Shipping';
 import UserProfile from './pages/UserProfile.jsx';
 import Orders from './pages/Orders.jsx';
-import Footer from './components/footer.jsx';
+import Layout from './components/Layout.jsx';
 
 const App = () => {
   return (
     <BrowserRouter>
            <ToastContainer position="top-left" autoClose={2000}/>
       <Routes>
-        <Route path='/' element={<Header />}>
-          <Route path='*' element={<NotFound />} />
-          <Route index element={<Home /> } />
+        <Route  element={<Layout />}>
+          <Route path='/' element={<Home /> } />
           <Route path='login' element={<Login />} />
           <Route path='signup' element={<Signup />} />
           <Route path='fashion' element={<Fashion />} />
@@ -38,10 +35,10 @@ const App = () => {
           <Route path='resetotpverify' element={<ResetPasswordOtpVerify/>} />
           <Route path='shipping' element={<Shipping/>}/>
           <Route path='orders' element={<Orders/>}/>
+          <Route path='*' element={<NotFound />} />
         </Route>
           <Route path='userprofile' element={<UserProfile/>} />
       </Routes>
-         <Footer />
     </BrowserRouter>
   )
 }

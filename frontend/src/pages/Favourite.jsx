@@ -8,8 +8,10 @@ const Favourite = () => {
   const { wishlist } = useContext(UserContext);
 
   return (
-    <div className="flex flex-col mt-[80px] w-full absolute  bg-white">
+    <div className="flex flex-col pt-[11vh] w-full bg-white">
+      <div>
       <Marquee />
+      </div>
       <div className="pl-10 pt-5 pb-5 w-full">
         <Breadcrumb Home="Home" Favourite="Favourite" />
       </div>
