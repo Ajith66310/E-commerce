@@ -14,6 +14,7 @@ const UserProfile = () => {
 
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   const [value, setValue] = useState({
     street: "",
@@ -51,6 +52,8 @@ const UserProfile = () => {
 
   const handleUserAddress = async (e) => {
     e.preventDefault();
+    setSaving(true);
+
     try {
       const formData = new FormData();
       formData.append("email", user.email);
@@ -66,10 +69,13 @@ const UserProfile = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
+
       toast.success(response.data.message);
       navigate("/");
     } catch (error) {
       toast.error(error?.response?.data?.message || "Error saving address");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -256,12 +262,19 @@ const UserProfile = () => {
                 required
               />
             </div>
-
             <button
               type="submit"
-              className="w-full mt-8 bg-green-500 hover:bg-green-600 text-white font-semibold py-4 px-4 rounded-full shadow-lg transition transform hover:scale-105"
+              disabled={saving}
+              className="w-full mt-8 bg-green-500 hover:bg-green-600 disabled:bg-green-700 text-white font-semibold py-4 px-4 rounded-full shadow-lg transition transform hover:scale-105 disabled:cursor-not-allowed"
             >
-              Save Shipping Info
+              {saving ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Saving...
+                </div>
+              ) : (
+                "Save Shipping Info"
+              )}
             </button>
           </form>
         </div>

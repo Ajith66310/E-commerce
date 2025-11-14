@@ -35,7 +35,6 @@ const Orders = () => {
   };
 
   const handleReturn = async (id) => {
-    if (!window.confirm("Return this order?")) return;
     try {
       await axios.put(`${import.meta.env.VITE_URL}/order/return/${id}`, {}, { headers: { token } });
       toast.success("Order returned successfully");
@@ -93,9 +92,9 @@ const Orders = () => {
   if (orders.length === 0)
     return (
       <div className="pt-40 h-[60vh] text-center text-gray-400">
-           <div className="pl-4 sm:pl-20 pt-5 pb-5 w-full">
-        <Breadcrumb Home="Home" Orders="Orders" />
-      </div>
+        <div className="pl-4 sm:pl-20 pt-5 pb-5 w-full">
+          <Breadcrumb Home="Home" Orders="Orders" />
+        </div>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-wide">No orders yet</h2>
         <p className="mt-2 text-sm sm:text-base">Start shopping and track your purchases here!</p>
       </div>
@@ -119,15 +118,14 @@ const Orders = () => {
                 <span className="font-medium text-gray-300">Order ID:</span> {order._id}
               </p>
               <span
-                className={`self-start sm:self-auto px-3 py-1 rounded-full text-xs font-semibold ${
-                  order.status === "Delivered"
+                className={`self-start sm:self-auto px-3 py-1 rounded-full text-xs font-semibold ${order.status === "Delivered"
                     ? "bg-green-500/10 text-green-400 border border-green-500/30"
                     : order.status === "Cancelled"
-                    ? "bg-red-500/10 text-red-400 border border-red-500/30"
-                    : order.status === "Returned"
-                    ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30"
-                    : "bg-blue-500/10 text-blue-400 border border-blue-500/30"
-                }`}
+                      ? "bg-red-500/10 text-red-400 border border-red-500/30"
+                      : order.status === "Returned"
+                        ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30"
+                        : "bg-blue-500/10 text-blue-400 border border-blue-500/30"
+                  }`}
               >
                 {order.status}
               </span>
@@ -168,23 +166,27 @@ const Orders = () => {
               <p className="text-lg sm:text-xl font-bold text-white text-center sm:text-left">
                 Total: <span className="text-green-400">₹{order.amount}</span>
               </p>
-
               <div className="flex flex-wrap justify-center sm:justify-end gap-3">
-                {order.status === "Pending" || order.status === "Confirmed" ? (
+
+                {/* CANCEL BUTTON - only before shipped */}
+                {(order.status === "Pending" || order.status === "Confirmed") && (
                   <button
                     onClick={() => handleCancel(order._id)}
-                    className="bg-red-500 hover:bg-red-600 text-white px-5 sm:px-6 py-2.5 rounded-lg text-sm font-medium transition-all shadow-md hover:shadow-lg"
+                    className="bg-red-500 hover:bg-red-600 text-white px-5 sm:px-6 py-2.5 rounded-lg text-sm font-medium shadow-md"
                   >
                     Cancel Order
                   </button>
-                ) : order.status === "Delivered" ? (
+                )}
+
+                {/* RETURN BUTTON - only after delivered */}
+                {order.status === "Delivered" && (
                   <button
                     onClick={() => handleReturn(order._id)}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 sm:px-6 py-2.5 rounded-lg text-sm font-medium transition-all shadow-md hover:shadow-lg"
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 sm:px-6 py-2.5 rounded-lg text-sm font-medium shadow-md"
                   >
                     Return Order
                   </button>
-                ) : null}
+                )}
               </div>
             </div>
           </div>

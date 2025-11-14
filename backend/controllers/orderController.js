@@ -201,3 +201,27 @@ export const returnOrder = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+// ADMIN: Update order status (Shipped / Delivered / Cancelled / Returned)
+export const updateOrderStatusAdmin = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const { id } = req.params;
+
+    const validStatus = ["Shipped", "Delivered", "Cancelled", "Returned"];
+    if (!validStatus.includes(status)) {
+      return res.status(400).json({ success: false, message: "Invalid status" });
+    }
+
+    const order = await Order.findById(id);
+    if (!order) return res.status(404).json({ success: false, message: "Order not found" });
+
+    order.status = status;
+    await order.save();
+
+    return res.status(200).json({ success: true, message: "Order status updated", order });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

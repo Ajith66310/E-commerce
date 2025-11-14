@@ -32,6 +32,28 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
+
+  const handleAdminAction = async (id, status) => {
+  try {
+    const { data } = await axios.put(
+      `${import.meta.env.VITE_BACKEND_URL}/order/order-status/${id}`,
+      { status }
+    );
+
+    if (data.success) {
+      setOrders(prev =>
+        prev.map(o =>
+          o._id === id ? { ...o, status } : o
+        )
+      );
+    }
+    toast.success('Order status updated')
+  } catch (error) {
+    console.log("Update failed", error);
+  }
+};
+
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
@@ -75,19 +97,18 @@ const Orders = () => {
                 </div>
 
                 <span
-                  className={`px-3 py-1 text-sm rounded-full font-medium ${
-                    order.status === "Confirmed"
+                  className={`px-3 py-1 text-sm rounded-full font-medium ${order.status === "Confirmed"
                       ? "bg-green-100 text-green-700"
                       : order.status === "Pending"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : order.status === "Cancelled"
-                      ? "bg-red-100 text-red-700"
-                      : order.status === "Delivered"
-                      ? "bg-blue-100 text-blue-700"
-                      : order.status === "Returned"
-                      ? "bg-purple-100 text-purple-700"
-                      : "bg-gray-100 text-gray-700"
-                  }`}
+                        ? "bg-yellow-100 text-yellow-700"
+                        : order.status === "Cancelled"
+                          ? "bg-red-100 text-red-700"
+                          : order.status === "Delivered"
+                            ? "bg-blue-100 text-blue-700"
+                            : order.status === "Returned"
+                              ? "bg-purple-100 text-purple-700"
+                              : "bg-gray-100 text-gray-700"
+                    }`}
                 >
                   {order.status}
                 </span>
@@ -176,24 +197,40 @@ const Orders = () => {
 
               {/* Actions */}
               <div className="mt-6 flex flex-wrap gap-3">
-                {order.status === "Confirmed" && (
-                  <button
-                    onClick={() => handleCancel(order._id)}
-                    className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow"
-                  >
-                    <XCircle className="w-4 h-4" /> Cancel
-                  </button>
-                )}
 
-                {order.status === "Delivered" && (
-                  <button
-                    onClick={() => handleReturn(order._id)}
-                    className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow"
-                  >
-                    <RotateCcw className="w-4 h-4" /> Return
-                  </button>
-                )}
+                {/* SHIPPED */}
+                <button
+                  onClick={() => handleAdminAction(order._id, "Shipped")}
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow"
+                >
+                  Shipped
+                </button>
+
+                {/* DELIVERED */}
+                <button
+                  onClick={() => handleAdminAction(order._id, "Delivered")}
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow"
+                >
+                  Delivered
+                </button>
+
+                {/* CANCEL */}
+                <button
+                  onClick={() => handleAdminAction(order._id, "Cancelled")}
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow"
+                >
+                  Cancel
+                </button>
+
+                {/* RETURN */}
+                <button
+                  onClick={() => handleAdminAction(order._id, "Returned")}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow"
+                >
+                  Return
+                </button>
               </div>
+
             </motion.div>
           ))}
         </div>
