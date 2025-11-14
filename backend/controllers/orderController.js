@@ -1,5 +1,5 @@
 import Order from "../models/orderModel.js";
-import Product from "../models/productModel.js"; //  import product model
+import Product from "../models/productModel.js"; 
 import Razorpay from "razorpay";
 import crypto from "crypto";
 
@@ -23,8 +23,6 @@ import crypto from "crypto";
     }
   }
 };
-
-
 
 
 //  Place Order (COD)

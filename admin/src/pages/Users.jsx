@@ -34,17 +34,19 @@ const Users = () => {
   const handleNext = () =>
     currentPage < totalPages && setCurrentPage((prev) => prev + 1);
 
-  const handleRemove = async (id) => {
-    try {
-      setLoading(true);
-      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/admin/removeusers/${id}`);
-      fetchUsers(currentPage);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+const handleRemove = async (id) => {
+  try {
+    setLoading(true);
+    await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/admin/removeusers/${id}`);
+
+    setUsers((prev) => prev.filter((u) => u._id !== id));
+
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleBlock = async (id) => {
     try {
@@ -52,8 +54,16 @@ const Users = () => {
       const res = await axios.patch(
         `${import.meta.env.VITE_BACKEND_URL}/admin/users/${id}/block`
       );
+
+     
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === id ? { ...user, isBlocked: !user.isBlocked } : user
+        )
+      );
+
       toast.success(res.data.message);
-      fetchUsers(currentPage);
+
     } catch (err) {
       toast.error("Failed to update user status");
       console.error(err);
@@ -103,7 +113,7 @@ const Users = () => {
                       className={`font-medium ${u.isBlocked ? "text-red-500" : "text-green-500"
                         }`}
                     >
-                      {u.isBlocked ? " (Blocked)" : " (Active)"}
+                      {u.isBlocked === true ? " (Blocked)" : " (Active)"}
                     </span>
                   </p>
                   <p className="text-gray-600 text-sm">{u.email}</p>
@@ -135,12 +145,12 @@ const Users = () => {
 
                 <button
                   onClick={() => handleBlock(u._id)}
-                  className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 ${u.isBlocked
+                  className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 ${u.isBlocked === true
                     ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:shadow-md text-white"
                     : "bg-gradient-to-r from-yellow-500 to-yellow-600 hover:shadow-md text-white"
                     }`}
                 >
-                  {u.isBlocked ? "Unblock" : "Block"}
+                  {u.isBlocked === true ? "Unblock" : "Block"}
                 </button>
               </div>
             </div>

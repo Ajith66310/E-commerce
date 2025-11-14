@@ -152,28 +152,47 @@ const Shipping = () => {
     }
   };
 
+  const handleDone = () => {
+    if (
+      !user.name.trim() ||
+      !user.email.trim() ||
+      !address.street.trim() ||
+      !address.city.trim() ||
+      !address.state.trim() ||
+      !address.zipcode.trim() ||
+      !address.country.trim() ||
+      !address.phone.trim()
+    ) {
+      toast.error("Please fill in all required address fields.");
+      return;
+    }
+
+    setHasAddress(true);
+    setEditToggle(true);
+    toast.success("Address updated successfully");
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 py-10 px-6 pt-36">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-32">
-        
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 py-12 px-6 pt-36 font-[Poppins] text-gray-800">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
         {/* Delivery Information */}
         {editToggle && (
-          <div className="p-6 space-y-5 text-gray-800 border border-gray-300 rounded-md bg-transparent h-60 w-150">
-            <h2 className="text-3xl font-semibold tracking-wide text-gray-900">
-              Delivery <span className="font-bold text-black">Information</span>
+          <div className="p-8 backdrop-blur-md bg-white/80 border h-[35vh] border-gray-200 rounded-2xl shadow-lg space-y-5 transition-all duration-300 hover:shadow-xl">
+            <h2 className="text-3xl font-bold text-gray-900">
+              Delivery <span className="text-black">Information</span>
             </h2>
 
-            <div className="flex flex-col sm:flex-row sm:justify-between gap-5">
-              <div className="flex-1 text-lg leading-relaxed">
+            <div className="flex flex-col sm:flex-row sm:justify-between gap-6">
+              <div className="flex-1 text-base leading-relaxed">
                 {hasAddress ? (
                   <>
-                    <p className="font-medium">{user.name}</p>
+                    <p className="font-semibold text-lg">{user.name}</p>
                     <p className="text-gray-600">{address.street}</p>
                     <p className="text-gray-600">
                       {address.city}, {address.state}, {address.country} – {address.zipcode}
                     </p>
                     <p className="text-gray-600">{address.phone}</p>
-                    <p className="text-gray-500 text-sm">{user.email}</p>
+                    <p className="text-gray-500 text-sm mt-1">{user.email}</p>
                   </>
                 ) : (
                   <p className="text-gray-500 italic">No address found.</p>
@@ -182,7 +201,7 @@ const Shipping = () => {
 
               <button
                 onClick={() => setEditToggle(false)}
-                className="self-start mt-2 px-6 py-2 text-sm font-semibold text-white bg-black rounded-full hover:opacity-90 transition"
+                className="self-start px-6 py-2.5 text-sm font-medium text-white bg-black rounded-full hover:scale-105 transition-transform"
               >
                 {hasAddress ? "Change Address" : "Add Address"}
               </button>
@@ -191,93 +210,70 @@ const Shipping = () => {
         )}
 
         {!editToggle && (
-          <div className="space-y-5">
-            <h2 className="text-3xl font-semibold text-gray-900">
+          <div className="p-8 backdrop-blur-md bg-white/80 border border-gray-200 rounded-2xl shadow-lg space-y-6 transition-all duration-300 hover:shadow-xl">
+            <h2 className="text-3xl font-bold text-gray-900">
               Delivery <span className="text-black">Information</span>
             </h2>
             <form className="space-y-5">
+              {[
+                { value: user.name, label: "Full name", setter: (val) => setUser({ ...user, name: val }) },
+                { value: user.email, label: "Email address", setter: (val) => setUser({ ...user, email: val }) },
+                { value: address.street, label: "Street", setter: (val) => setAddress({ ...address, street: val }) },
+              ].map((input, i) => (
+                <input
+                  key={i}
+                  type="text"
+                  value={input.value}
+                  onChange={(e) => input.setter(e.target.value)}
+                  placeholder={input.label}
+                  className="w-full p-3 rounded-xl bg-gray-100 border border-gray-200 focus:ring-2 focus:ring-black focus:bg-white outline-none transition-all"
+                />
+              ))}
+
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { value: address.city, label: "City", setter: (val) => setAddress({ ...address, city: val }) },
+                  { value: address.state, label: "State", setter: (val) => setAddress({ ...address, state: val }) },
+                ].map((input, i) => (
+                  <input
+                    key={i}
+                    type="text"
+                    value={input.value}
+                    onChange={(e) => input.setter(e.target.value)}
+                    placeholder={input.label}
+                    className="p-3 rounded-xl bg-gray-100 border border-gray-200 focus:ring-2 focus:ring-black focus:bg-white outline-none transition-all"
+                  />
+                ))}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { value: address.zipcode, label: "Zipcode", setter: (val) => setAddress({ ...address, zipcode: val }) },
+                  { value: address.country, label: "Country", setter: (val) => setAddress({ ...address, country: val }) },
+                ].map((input, i) => (
+                  <input
+                    key={i}
+                    type="text"
+                    value={input.value}
+                    onChange={(e) => input.setter(e.target.value)}
+                    placeholder={input.label}
+                    className="p-3 rounded-xl bg-gray-100 border border-gray-200 focus:ring-2 focus:ring-black focus:bg-white outline-none transition-all"
+                  />
+                ))}
+              </div>
+
               <input
                 type="text"
-                value={user.name}
-                onChange={(e) => setUser({ ...user, name: e.target.value })}
-                placeholder="Full name"
-                className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
-              />
-              <input
-                type="email"
-                value={user.email}
-                onChange={(e) => setUser({ ...user, email: e.target.value })}
-                placeholder="Email address"
-                className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
-              />
-              <input
-                type="text"
-                value={address.street}
-                onChange={(e) =>
-                  setAddress({ ...address, street: e.target.value })
-                }
-                placeholder="Street"
-                className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
-              />
-              <div className="grid grid-cols-2 gap-4">
-                <input
-                  value={address.city}
-                  onChange={(e) =>
-                    setAddress({ ...address, city: e.target.value })
-                  }
-                  type="text"
-                  placeholder="City"
-                  className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
-                />
-                <input
-                  type="text"
-                  value={address.state}
-                  onChange={(e) =>
-                    setAddress({ ...address, state: e.target.value })
-                  }
-                  placeholder="State"
-                  className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <input
-                  value={address.zipcode}
-                  onChange={(e) =>
-                    setAddress({ ...address, zipcode: e.target.value })
-                  }
-                  type="text"
-                  placeholder="Zipcode"
-                  className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
-                />
-                <input
-                  value={address.country}
-                  onChange={(e) =>
-                    setAddress({ ...address, country: e.target.value })
-                  }
-                  type="text"
-                  placeholder="Country"
-                  className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
-                />
-              </div>
-              <input
                 value={address.phone}
-                onChange={(e) =>
-                  setAddress({ ...address, phone: e.target.value })
-                }
-                type="text"
+                onChange={(e) => setAddress({ ...address, phone: e.target.value })}
                 placeholder="Phone number"
-                className="w-full p-3 rounded-md bg-gray-100 focus:bg-white focus:outline-none"
+                className="w-full p-3 rounded-xl bg-gray-100 border border-gray-200 focus:ring-2 focus:ring-black focus:bg-white outline-none transition-all"
               />
 
-              {/* Done Button */}
               <button
                 type="button"
-                onClick={() => {
-                  setHasAddress(true);
-                  setEditToggle(true);
-                  toast.success("Address updated successfully");
-                }}
-                className="mt-4 w-full bg-black text-white py-3 rounded-full font-medium tracking-wide hover:opacity-90 transition"
+                onClick={handleDone}
+                className="mt-4 w-full bg-black text-white py-3 rounded-full font-medium tracking-wide hover:scale-[1.02] transition-transform"
               >
                 Done
               </button>
@@ -286,8 +282,8 @@ const Shipping = () => {
         )}
 
         {/* Cart Totals */}
-        <div className="pt-5 space-y-5">
-          <h2 className="text-3xl font-semibold text-gray-900">
+        <div className="p-8 backdrop-blur-md bg-white/80 border border-gray-200 rounded-2xl shadow-lg space-y-6 transition-all duration-300 hover:shadow-xl">
+          <h2 className="text-3xl font-bold text-gray-900">
             Cart <span className="text-black">Summary</span>
           </h2>
 
@@ -300,7 +296,7 @@ const Shipping = () => {
                 return (
                   <div
                     key={index}
-                    className="flex justify-between py-3 text-gray-800"
+                    className="flex justify-between py-3 text-gray-700"
                   >
                     <div>
                       <p className="font-medium">{itemName}</p>
@@ -336,11 +332,11 @@ const Shipping = () => {
             </div>
           </div>
 
-          <h2 className="text-2xl font-semibold text-gray-900 pt-6">
+          <h2 className="text-2xl font-bold text-gray-900 pt-4">
             Payment <span className="text-black">Method</span>
           </h2>
           <div className="flex flex-col gap-3">
-            <label className="flex items-center justify-between px-5 py-3 bg-gray-100 rounded-xl cursor-pointer hover:bg-gray-200">
+            <label className="flex items-center justify-between px-5 py-3 bg-gray-100 rounded-xl cursor-pointer hover:bg-gray-200 transition">
               <div className="flex items-center gap-3">
                 <input
                   type="radio"
@@ -354,7 +350,7 @@ const Shipping = () => {
               </div>
             </label>
 
-            <label className="flex items-center justify-between px-5 py-3 bg-gray-100 rounded-xl cursor-pointer hover:bg-gray-200">
+            <label className="flex items-center justify-between px-5 py-3 bg-gray-100 rounded-xl cursor-pointer hover:bg-gray-200 transition">
               <div className="flex items-center gap-3">
                 <input
                   type="radio"
@@ -371,9 +367,9 @@ const Shipping = () => {
           <button
             onClick={handleFormSubmission}
             disabled={!hasAddress}
-            className={`mt-8 w-full text-white py-3 text-lg rounded-full font-medium tracking-wide transition ${
+            className={`mt-8 w-full text-white py-3 text-lg rounded-full font-semibold tracking-wide transition-all ${
               hasAddress
-                ? "bg-black hover:opacity-90"
+                ? "bg-black hover:scale-[1.02]"
                 : "bg-gray-400 cursor-not-allowed"
             }`}
           >

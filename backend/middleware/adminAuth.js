@@ -9,7 +9,7 @@ const adminAuth = async (req, res, next) => {
       return res.status(401).json({ success: false, message: "Unauthorized: No token provided" });
     }
 
-    // ✅ use the same key name as in adminLogin
+    //  use the same key name as in adminLogin
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
     const admin = await userModel.findOne({ email: decoded.email });
