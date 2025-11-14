@@ -1,10 +1,41 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import axios from "axios";
+import { toast } from "react-toastify";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Contact = () => {
+  const [loader, setLoader] = useState(false);
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    setLoader(true)
+    e.preventDefault();
+
+    try {
+      await axios.post(`${import.meta.env.VITE_URL}/contact/send`, form);
+      toast.success("Message sent successfully!");
+      setForm({ name: "", email: "", subject: "", message: "" });
+    } catch (err) {
+      toast.error("Failed to send message");
+    }
+    finally {
+      setLoader(false);
+    }
+  };
+
   const leftRef = useRef(null);
   const rightRef = useRef(null);
 
@@ -54,8 +85,7 @@ const Contact = () => {
         </h1>
         <p className="text-gray-600 text-lg leading-relaxed">
           Whether you have a question about your order, need styling advice, or
-          just want to say hello — we’d love to hear from you. Our fashion
-          experts are always here to help.
+          just want to say hello — we’d love to hear from you.
         </p>
       </div>
 
@@ -67,10 +97,12 @@ const Contact = () => {
           className="bg-gradient-to-br from-black via-gray-900 to-red-800 text-white p-12 flex flex-col justify-between"
         >
           <div>
-            <h2 className="text-3xl font-[Playfair_Display] mb-4">Get in Touch</h2>
+            <h2 className="text-3xl font-[Playfair_Display] mb-4">
+              Get in Touch
+            </h2>
             <p className="text-gray-300 leading-relaxed mb-8">
-              Reach us anytime — our dedicated team ensures your style and
-              satisfaction are always top priority.
+              Reach us anytime — our dedicated team ensures your satisfaction is
+              always top priority.
             </p>
 
             <ul className="space-y-6 text-gray-300">
@@ -105,7 +137,7 @@ const Contact = () => {
 
         {/* Right Section - Contact Form */}
         <div ref={rightRef} className="p-12 bg-white">
-          <form className="space-y-7">
+          <form className="space-y-7" onSubmit={handleSubmit}>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="flex flex-col">
                 <label className="text-sm text-gray-700 font-medium mb-2">
@@ -113,7 +145,10 @@ const Contact = () => {
                 </label>
                 <input
                   type="text"
+                  name="name"
                   placeholder="Your full name"
+                  value={form.name}
+                  onChange={handleChange}
                   className="border border-gray-300 bg-gray-50 p-3.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 transition"
                 />
               </div>
@@ -124,7 +159,10 @@ const Contact = () => {
                 </label>
                 <input
                   type="email"
+                  name="email"
                   placeholder="you@example.com"
+                  value={form.email}
+                  onChange={handleChange}
                   className="border border-gray-300 bg-gray-50 p-3.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 transition"
                 />
               </div>
@@ -136,7 +174,10 @@ const Contact = () => {
               </label>
               <input
                 type="text"
+                name="subject"
                 placeholder="Let us know how we can help"
+                value={form.subject}
+                onChange={handleChange}
                 className="border border-gray-300 bg-gray-50 p-3.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 transition"
               />
             </div>
@@ -147,6 +188,9 @@ const Contact = () => {
               </label>
               <textarea
                 rows="5"
+                name="message"
+                value={form.message}
+                onChange={handleChange}
                 placeholder="Write your message..."
                 className="border border-gray-300 bg-gray-50 p-3.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 transition resize-none"
               ></textarea>
@@ -154,10 +198,21 @@ const Contact = () => {
 
             <button
               type="submit"
-              className="w-full py-4 bg-gradient-to-r from-red-600 to-black text-white font-semibold rounded-lg text-lg transition transform hover:scale-[1.02] hover:shadow-xl"
+              disabled={loader}
+              className={`w-full py-4 text-white font-semibold rounded-lg text-lg transition transform 
+    ${loader ? "bg-gray-400 cursor-not-allowed" : "bg-gradient-to-r from-red-600 to-black hover:scale-[1.02] hover:shadow-xl"}
+  `}
             >
-              Send Message
+              {loader ? (
+                <div className="flex justify-center items-center gap-3">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Sending...
+                </div>
+              ) : (
+                "Send Message"
+              )}
             </button>
+
           </form>
         </div>
       </div>

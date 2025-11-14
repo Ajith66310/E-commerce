@@ -9,6 +9,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import http from "http";
 import { initializeSocket } from "./utils/socket.js";
+import contactRouter from "./routes/contactRoute.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -36,6 +37,7 @@ app.use("/", userRouter);
 app.use("/admin", adminRouter);
 app.use("/api", productRouter);
 app.use("/order", orderRouter);
+app.use("/contact",contactRouter);
 
 // Start server after DB connection
 (async () => {
