@@ -340,15 +340,18 @@ const googleLogin = async (req, res) => {
   const { email, googleId } = req.body;
 
   const data = await userModel.findOne({ email: email })
-   if (data.isBlocked === true) {
-    return res.status(404).json({ message: "User blocked by admin" });
-  }
-
+   
+  
   if (!data) {
     return res.status(404).json({ message: "User not found, Please register" });
   }
+  
+  const googleIdVerify = bcrypt.compare(googleId, data.googleId)
+  
 
-  const googleIdVerify = await bcrypt.compare(googleId, data.googleId)
+  if (data.isBlocked) {
+    return res.status(404).json({ message: "User blocked by admin" });
+  }
 
   if (data.email === email && googleIdVerify) {
     const token = jwt.sign({ id: data._id, email: data.email }, process.env.SECRET_KEY, { expiresIn: "7d" });

@@ -4,6 +4,7 @@ import axios from "axios";
 import RelatedProducts from "../components/RelatedProducts";
 import { useDispatch, useSelector } from "react-redux";
 import { addItem, toggleCart } from "../redux/cartSlice";
+import { toast } from "react-toastify";
 
 const Product = () => {
   const { id } = useParams();
@@ -93,6 +94,7 @@ const Product = () => {
 
 
     const token = localStorage.getItem("token");
+
     if (!token) {
       toast.error("Please login to add items");
       return;
