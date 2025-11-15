@@ -125,7 +125,8 @@ const Product = () => {
       <div className="flex flex-col lg:flex-row gap-8 bg-white p-6 rounded-2xl">
         {/* LEFT: Images */}
         <div className="flex flex-col lg:flex-row gap-4 w-full lg:w-2/3 items-center lg:items-start">
-          <div className="hidden lg:flex flex-col gap-3 w-34">
+          
+          <div className="hidden  lg:flex flex-col gap-3 w-34 ">
             {product.images?.map((img, i) => (
               <img
                 key={i}
@@ -146,7 +147,7 @@ const Product = () => {
             />
           </div>
 
-          <div className="flex lg:hidden gap-3 mt-4 overflow-hidden">
+          <div className="flex lg:hidden gap-3 mt-4 overflow-hidden overflow-x-auto">
             {product.images?.map((img, i) => (
               <img
                 key={i}
@@ -158,6 +159,7 @@ const Product = () => {
               />
             ))}
           </div>
+          
         </div>
 
         {/* RIGHT: Info */}

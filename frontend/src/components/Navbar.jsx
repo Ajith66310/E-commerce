@@ -49,7 +49,7 @@ const Navbar = () => {
           </p>
         </div>
 
-        <div id="nav-links" className="flex justify-center items-center gap-8 font-serif text-red-800">
+        <div id="nav-links" className="flex justify-center font-extrabold items-center gap-8 font-[Playfair] text-lg text-red-800">
           <NavLink to="/" className="hover:text-red-900">HOME</NavLink>
           <NavLink to="/fashion" className="hover:text-red-900">FASHION</NavLink>
           <NavLink to="/favourite" className="hover:text-red-900">FAVOURITE</NavLink>
@@ -104,8 +104,8 @@ const Navbar = () => {
       </div>
 
       <div className="md:hidden fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-lg flex items-center justify-between px-5 py-4 border-b border-gray-200">
-        <p className="text-2xl font-extrabold  tracking-wide">
-          BONKERS<span className="text-gray-900">CORNER</span>
+        <p className="text-2xl text-red-800 font-extrabold  tracking-wide">
+          Vestido Club
         </p>
 
         <div className="flex items-center gap-6 text-red-800">
@@ -136,7 +136,7 @@ const Navbar = () => {
               <p className="text-white p-4 font-semibold">Back</p>
             </div>
 
-            <div className="flex flex-col mt-4 space-y-4 pl-6 text-lg">
+            <div className="flex font-[Playfair] font-extrabold flex-col mt-4 space-y-4 pl-6 text-lg">
               <NavLink onClick={() => setUserIcon(false)} to="/" className="hover:text-red-400">
                 HOME
               </NavLink>
