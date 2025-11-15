@@ -51,7 +51,8 @@ app.use("/contact",contactRouter);
 (async () => {
   try {
     await connectDB();
-    server.listen(8080, () => console.log("Server running on port 8080"));
+     const port = process.env.PORT 
+    server.listen(port, () => console.log("Server running on port 8080"));
   } catch (error) {
     console.error("Failed to connect to database:", error);
     process.exit(1);
