@@ -177,12 +177,12 @@ const Shipping = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
         {/* Delivery Information */}
         {editToggle && (
-          <div className="p-8 backdrop-blur-md bg-white/80 border h-[35vh] border-gray-200 rounded-2xl shadow-lg space-y-5 transition-all duration-300 hover:shadow-xl">
+          <div className="p-8 backdrop-blur-md bg-white/80 border max-md:h-[50vh] h-[40vh] border-gray-200 rounded-2xl shadow-lg space-y-5 transition-all duration-300 hover:shadow-xl">
             <h2 className="text-3xl font-bold text-gray-900">
               Delivery <span className="text-black">Information</span>
             </h2>
 
-            <div className="flex flex-col sm:flex-row sm:justify-between gap-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between  gap-6">
               <div className="flex-1 text-base leading-relaxed">
                 {hasAddress ? (
                   <>
@@ -201,7 +201,7 @@ const Shipping = () => {
 
               <button
                 onClick={() => setEditToggle(false)}
-                className="self-start px-6 py-2.5 text-sm font-medium text-white bg-black rounded-full hover:scale-105 transition-transform"
+                className="self-start  px-6 py-2.5 text-sm font-medium text-white bg-black rounded-full hover:scale-105 transition-transform"
               >
                 {hasAddress ? "Change Address" : "Add Address"}
               </button>
