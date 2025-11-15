@@ -48,8 +48,8 @@ const adminFetchUser = async (req, res) => {
   }
 };
 
-// getUserOrders
-const getUserOrders = async (req, res) => {
+// admingetUserOrders
+const adminGetUserOrders = async (req, res) => {
   try {
     const orders = await orderModel
       .find()
@@ -162,4 +162,4 @@ const blockUser = async (req, res) => {
   }
 };
 
-export {blockUser,adminRemoveUser,adminFetchUser,adminLogin,getUserOrders,getDashboardData}
+export {blockUser,adminRemoveUser,adminFetchUser,adminLogin,adminGetUserOrders,getDashboardData}
