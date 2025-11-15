@@ -45,8 +45,7 @@ app.use(cors({
 }));
 
 // Handle preflight
-app.options("*", cors());
-
+app.options("/*", cors());
 
 // Routes
 app.use("/", userRouter);
