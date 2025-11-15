@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 const allowedOrigins = [
-"https://vestido-club-ecommerce-foog.vercel.app",
+     "https://vestido-club-ecommerce-foog.vercel.app",
       "https://vestido-club-ecommerce.vercel.app",
     ];
 
