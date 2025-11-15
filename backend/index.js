@@ -44,8 +44,6 @@ app.use(cors({
   credentials: true
 }));
 
-// Handle preflight
-app.options("/*", cors());
 
 // Routes
 app.use("/", userRouter);
