@@ -9,27 +9,27 @@ import cloudinary from '../config/cloudinary.js';
 import streamifier from 'streamifier';
 
 
-const redis = new Redis();
+const redis = new Redis(process.env.REDIS_URL);
 
 const registerOtpMail = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-   //  Email format: must be username@gmail.com
+    //  Email format: must be username@gmail.com
     const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Invalid email format. Must be username@gmail.com" });
     }
 
     // //  Password format: at least 8 chars, one uppercase, one lowercase, one number, one special char
-const passwordRegex =  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=|\\{}[\]:;"'<>,.?/~`]).{8,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=|\\{}[\]:;"'<>,.?/~`]).{8,}$/;
     if (!passwordRegex.test(password)) {
       return res.status(400).json({
         message:
           "Password must include at least 8 characters, one uppercase, one lowercase, one number, and one special character",
       });
     }
- 
+
 
 
     const existing = await userModel.findOne({ email });
@@ -126,7 +126,7 @@ const signupOtpVerify = async (req, res) => {
 
 const resendOtp = async (req, res) => {
   try {
-    const tempToken = req.cookies.tempToken; 
+    const tempToken = req.cookies.tempToken;
 
     if (!tempToken) return res.status(400).json({ message: "Missing token" });
 
@@ -148,21 +148,21 @@ const resendOtp = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-   //  Email format: must be username@gmail.com
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ message: "Invalid email format. Must be username@gmail.com" });
-    }
+  //  Email format: must be username@gmail.com
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: "Invalid email format. Must be username@gmail.com" });
+  }
 
-    // //  Password format: at least 8 chars, one uppercase, one lowercase, one number, one special char
-const passwordRegex =  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=|\\{}[\]:;"'<>,.?/~`]).{8,}$/;
-    if (!passwordRegex.test(password)) {
-      return res.status(400).json({
-        message:
-          "Password must include at least 8 characters, one uppercase, one lowercase, one number, and one special character",
-      });
-    }
- 
+  // //  Password format: at least 8 chars, one uppercase, one lowercase, one number, one special char
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=|\\{}[\]:;"'<>,.?/~`]).{8,}$/;
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({
+      message:
+        "Password must include at least 8 characters, one uppercase, one lowercase, one number, and one special character",
+    });
+  }
+
 
   const data = await userModel.findOne({ email: email });
 
@@ -179,10 +179,10 @@ const passwordRegex =  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=|\\{
       return res.status(400).json({ message: "Enter a valid password" })
     }
 
-if (result) {
-  const token = jwt.sign({ id: data._id, email: data.email }, process.env.SECRET_KEY, { expiresIn: '7d' });
-  return res.status(200).json({ message: 'Login successful.', token });
-}
+    if (result) {
+      const token = jwt.sign({ id: data._id, email: data.email }, process.env.SECRET_KEY, { expiresIn: '7d' });
+      return res.status(200).json({ message: 'Login successful.', token });
+    }
 
   })
 }
@@ -236,7 +236,7 @@ const resetOtpVerify = async (req, res) => {
     const tempResetToken = req.cookies.tempResetToken;
 
 
-     
+
     if (!tempResetToken) {
       return res.status(400).json({ message: "Token missing" });
     }
@@ -312,9 +312,19 @@ const resetPassword = async (req, res) => {
 
   const { token, password, confirmPassword } = req.body;
 
+  // //  Password format: at least 8 chars, one uppercase, one lowercase, one number, one special char
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=|\\{}[\]:;"'<>,.?/~`]).{8,}$/;
+  if (!passwordRegex.test(confirmPassword)) {
+    return res.status(400).json({
+      message:
+        "Password must include at least 8 characters, one uppercase, one lowercase, one number, and one special character",
+    });
+  }
+
   if (password !== confirmPassword) {
     return res.status(400).json({ message: "Enter Matching Password" })
   }
+
 
   const decode = jwt.verify(token, process.env.SECRET_KEY)
 
@@ -340,14 +350,14 @@ const googleLogin = async (req, res) => {
   const { email, googleId } = req.body;
 
   const data = await userModel.findOne({ email: email })
-   
-  
+
+
   if (!data) {
     return res.status(404).json({ message: "User not found, Please register" });
   }
-  
+
   const googleIdVerify = bcrypt.compare(googleId, data.googleId)
-  
+
 
   if (data.isBlocked) {
     return res.status(404).json({ message: "User blocked by admin" });
@@ -423,7 +433,7 @@ const fetchUser = async (req, res) => {
 
 const userAddress = async (req, res) => {
   try {
-    
+
     const { email, address } = req.body;
     const parsedAddress = JSON.parse(address);
 
@@ -431,7 +441,7 @@ const userAddress = async (req, res) => {
     if (req.file) {
       imageUrl = await new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: 'user_profiles',allowed_formats:["jpg","png","webp"]},
+          { folder: 'user_profiles', allowed_formats: ["jpg", "png", "webp"] },
           (error, result) => {
             if (error) return reject(error);
             resolve(result.secure_url);
@@ -457,18 +467,18 @@ const userAddress = async (req, res) => {
 
 const fetchUserAddress = async (req, res) => {
   try {
-    const token = req.headers.token; 
+    const token = req.headers.token;
 
     if (!token || typeof token !== "string") {
       return res.status(401).json({ message: "Token missing or invalid" });
     }
 
-    const decoded = jwt.verify(token,process.env.SECRET_KEY); 
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
-    const data = await userModel.findOne({email:decoded.email})
-    
-    if(data.address){
-      res.json({ success: true, data });    
+    const data = await userModel.findOne({ email: decoded.email })
+
+    if (data.address) {
+      res.json({ success: true, data });
     }
 
   } catch (error) {
@@ -478,4 +488,4 @@ const fetchUserAddress = async (req, res) => {
 };
 
 
-export { fetchUserAddress,userAddress, fetchUser, resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };
+export { fetchUserAddress, userAddress, fetchUser, resendResetOtp, resendOtp, resetOtpVerify, googleSignup, registerOtpMail, signupOtpVerify, resetOtpMail, login, resetPassword, googleLogin };
