@@ -25,20 +25,28 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(
-  cors({
-    origin: [
-      "https://vestido-club-ecommerce-foog.vercel.app",
-      "https://vestido-club-ecommerce.vercel.app",
-    ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
 
-// Handle preflight (VERY IMPORTANT for Render + Vercel)
+const allowedOrigins = [
+"https://vestido-club-ecommerce-foog.vercel.app",
+      "https://vestido-club-ecommerce.vercel.app",
+    ];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Accept", "X-Requested-With", "token","auth-token"],
+  credentials: true
+}));
+
+// Handle preflight
 app.options("*", cors());
+
 
 // Routes
 app.use("/", userRouter);
