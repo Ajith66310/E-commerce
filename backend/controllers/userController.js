@@ -2,14 +2,14 @@ import sendMail from '../middleware/nodemailer.js';
 import userModel from '../models/userModel.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
-import Redis from 'ioredis'
 import { RegisterSuccessEmail } from "../templates/RegisterSuccessEmail.js";
 import { resend, FROM_EMAIL } from "../middleware/resendMailer.js";
 import cloudinary from '../config/cloudinary.js';
 import streamifier from 'streamifier';
+import { Redis } from '@upstash/redis'
 
 
-const redis = new Redis(process.env.REDIS_URL);
+const redis = Redis.fromEnv()
 
 const registerOtpMail = async (req, res) => {
   try {
