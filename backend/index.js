@@ -30,7 +30,6 @@ app.use(
     origin: [
       "https://vestido-club-ecommerce-foog.vercel.app",
       "https://vestido-club-ecommerce.vercel.app",
-      "https://vestidoclub-ecommerce.onrender.com"
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
