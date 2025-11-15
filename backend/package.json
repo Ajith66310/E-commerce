@@ -28,6 +28,7 @@
     "google-auth-library": "^10.5.0",
     "ioredis": "^5.8.2",
     "jsonwebtoken": "^9.0.2",
+    "mime-types": "^3.0.1",
     "mongodb": "^6.21.0",
     "mongoose": "^8.19.4",
     "multer": "^2.0.2",
