@@ -9,7 +9,7 @@ import Users from './pages/Users.jsx';
 import Products from './pages/Products.jsx';
 import AddProduct from './pages/AddProduct.jsx'
 import Orders from './pages/Orders.jsx'
-import NotFound from '../../frontend/src/pages/NotFound.jsx';
+import NotFound from './pages/NotFound.jsx';
 
 function App() {
 

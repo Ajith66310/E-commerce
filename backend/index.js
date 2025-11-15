@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: ["http://localhost:5173", "http://localhost:5174","https://vestido-club-ecommerce-foog.vercel.app","https://vestido-club-ecommerce-uk69-git-main-ajith-k-vs-projects.vercel.app"],
     credentials: true,
   })
 );
