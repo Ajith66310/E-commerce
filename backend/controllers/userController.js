@@ -2,7 +2,6 @@ import sendMail from '../middleware/nodemailer.js';
 import userModel from '../models/userModel.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
-import Redis from 'ioredis'
 import { RegisterSuccessEmail } from "../templates/RegisterSuccessEmail.js";
 import { resend, FROM_EMAIL } from "../middleware/resendMailer.js";
 import cloudinary from '../config/cloudinary.js';
