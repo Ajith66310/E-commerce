@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { User as UserIcon, Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -41,6 +42,7 @@ const handleRemove = async (id) => {
 
     setUsers((prev) => prev.filter((u) => u._id !== id));
 
+    toast.success(res.data.message);
   } catch (err) {
     console.error(err);
   } finally {
