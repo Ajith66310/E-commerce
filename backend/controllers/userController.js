@@ -63,12 +63,13 @@ const registerOtpMail = async (req, res) => {
     await sendMail(email, "Your Registration OTP", `Your OTP is: ${otp} (valid 1 min)`);
 
     const tempToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "15m" });
-    res.cookie("tempToken", tempToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      maxAge: 5 * 60 * 1000,
-    });
+   res.cookie("tempToken", tempToken, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "None",
+  maxAge: 5 * 60 * 1000,
+});
+
 
     return res.status(200).json({ message: "OTP sent to email" });
   } catch (err) {
@@ -212,12 +213,13 @@ const resetOtpMail = async (req, res) => {
     // Issue temp token with only email
     const tempResetToken = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "15m" });
 
-    res.cookie("tempResetToken", tempResetToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true only in HTTPS
-      sameSite: "Strict", // prevents CSRF
-      maxAge: 5 * 60 * 1000, // 5 min
-    });
+  res.cookie("tempResetToken", tempResetToken, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "None",
+  maxAge: 5 * 60 * 1000,
+});
+
 
     return res.status(200).json({
       message: "OTP sent to email.",
