@@ -10,7 +10,7 @@
   padding: 0;
 }
 
-/* Swiper.css */
+/* Slide image */
 .swiper-slide img {
   width: 100%;
   height: 100%;
@@ -21,37 +21,23 @@
 .swiper-pagination-bullet {
   background-color: red !important;
 }
+
 .swiper-pagination-bullet-active {
   background-color: darkred !important;
 }
 
-/* Navigation buttons */
-.swiper-button-next,
-.swiper-button-prev {
-  color: red;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-}
-.swiper-button-next::after,
-.swiper-button-prev::after {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-
-/* Optional parallax background (if used) */
+/* Optional parallax background */
 .parallax-bg {
   position: absolute;
   left: 0;
   top: 0;
   width: 130%;
   height: 100%;
-  -webkit-background-size: cover;
   background-size: cover;
   background-position: center;
 }
 
+/* Text styles inside slider */
 .swiper-slide .title {
   font-size: 41px;
   font-weight: 300;

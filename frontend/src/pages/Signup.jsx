@@ -147,17 +147,16 @@ const Signup = () => {
           </div>
 
           <div className='flex justify-center flex-col text-2xl gap-5 mt-4'>
-            <div>
+           <div className="flex justify-center mt-4">
               <GoogleLogin
                 onSuccess={handleSuccess}
                 onError={handleError}
                 text="signup_with"
-              />
-            </div>
+                />
+                </div>
           </div>
         </form>
       </div>
-
     </>
   )
 }

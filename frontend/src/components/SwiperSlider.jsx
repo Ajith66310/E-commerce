@@ -2,10 +2,9 @@ import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-import "swiper/css/navigation";
 import "swiper/css/autoplay";
 import "./Swiper.css";
-import { Pagination, Navigation, Autoplay } from "swiper/modules";
+import { Pagination, Autoplay } from "swiper/modules";
 import images from "../assets/images.js";
 
 export default function App() {
@@ -13,13 +12,12 @@ export default function App() {
     <div className="w-full">
       <Swiper
         pagination={{ dynamicBullets: true }}
-        navigation={true}
         autoplay={{
           delay: 3000,
           disableOnInteraction: false,
         }}
         loop={true}
-        modules={[Pagination, Navigation, Autoplay]}
+        modules={[Pagination, Autoplay]}
         className="mySwiper"
       >
         {/* Slide 1 */}
@@ -28,7 +26,7 @@ export default function App() {
             <img
               src={images.hero_img2}
               alt="Fashion 1"
-              className="w-full h-full object-cover object-top" // Keeps top visible
+              className="w-full h-full object-cover object-top" 
             />
             <div className="absolute bottom-8 left-4 sm:left-10 text-white drop-shadow-lg">
               <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold">

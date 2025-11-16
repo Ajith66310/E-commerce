@@ -4,7 +4,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { GoogleLogin } from '@react-oauth/google';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 
 const Login = () => {
@@ -30,28 +30,28 @@ const Login = () => {
     }
   }
 
-  const handleSuccess = async(credentialResponse) => {
+  const handleSuccess = async (credentialResponse) => {
     const decoded = jwtDecode(credentialResponse.credential);
     try {
-   const response = await axios.post(`${import.meta.env.VITE_URL}/google-login`, {
-      email:decoded.email,
-      googleId:decoded.sub
-    })  
-    toast.success(response.data.message)
-    localStorage.setItem("token",response.data.token)
-    navigate('/')
-    } 
+      const response = await axios.post(`${import.meta.env.VITE_URL}/google-login`, {
+        email: decoded.email,
+        googleId: decoded.sub
+      })
+      toast.success(response.data.message)
+      localStorage.setItem("token", response.data.token)
+      navigate('/')
+    }
 
     catch (error) {
-  if (error.response?.data?.message) {
-    toast.error(error.response.data.message);
-  } else {
-    toast.error("Something went wrong, please try again");
-    console.error(error);
-  }
-  }
-  
-};
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something went wrong, please try again");
+        console.error(error);
+      }
+    }
+
+  };
 
   const handleError = () => {
     console.log("Login Failed");
@@ -127,7 +127,7 @@ const Login = () => {
           </div>
 
           <div className='flex justify-center flex-col text-2xl gap-5 mt-4'>
-            <div>
+            <div className="flex justify-center mt-4">
               <GoogleLogin
                 onSuccess={handleSuccess}
                 onError={handleError}
