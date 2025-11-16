@@ -96,6 +96,10 @@ const Fashion = () => {
   // Skeleton loading placeholders
   const skeletons = Array.from({ length: 8 });
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <div className="flex flex-col pt-[80px] w-full relative  pb-[30vh] bg-gradient-to-b from-white to-gray-50">
       <Marquee />
@@ -127,30 +131,30 @@ const Fashion = () => {
       <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-6 px-4 sm:px-6 md:px-12">
         {loading
           ? skeletons.map((_, i) => (
-              <div
-                key={i}
-                className="flex flex-col bg-gray-100 rounded-2xl overflow-hidden animate-pulse shadow-sm"
-              >
-                <div className="w-full h-64 bg-gray-200"></div>
-                <div className="p-4 space-y-3">
-                  <div className="h-5 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                  <div className="h-8 bg-gray-200 rounded w-full mt-3"></div>
-                </div>
+            <div
+              key={i}
+              className="flex flex-col bg-gray-100 rounded-2xl overflow-hidden animate-pulse shadow-sm"
+            >
+              <div className="w-full h-64 bg-gray-200"></div>
+              <div className="p-4 space-y-3">
+                <div className="h-5 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-8 bg-gray-200 rounded w-full mt-3"></div>
               </div>
-            ))
+            </div>
+          ))
           : filteredProducts.map((item) => (
-              <ProductItem
-                key={item._id}
-                title={item.title}
-                id={item._id}
-                img={item.images && item.images[0]}
-                price={item.price}
-                percentage={item.percentage}
-                textColor="black"
-                btnText="View"
-              />
-            ))}
+            <ProductItem
+              key={item._id}
+              title={item.title}
+              id={item._id}
+              img={item.images && item.images[0]}
+              price={item.price}
+              percentage={item.percentage}
+              textColor="black"
+              btnText="View"
+            />
+          ))}
       </div>
 
       {/* Sidebar Overlay */}
@@ -161,9 +165,8 @@ const Fashion = () => {
       {/* Sidebar */}
       <div
         ref={sidebarRef}
-        className={`fixed inset-y-0 left-0 w-72 sm:w-80 bg-white z-50 transform transition-transform duration-500 ease-in-out ${
-          showSidebar ? "translate-x-0" : "-translate-x-full"
-        } shadow-2xl rounded-r-2xl overflow-y-auto`}
+        className={`fixed inset-y-0 left-0 w-72 sm:w-80 bg-white z-50 transform transition-transform duration-500 ease-in-out ${showSidebar ? "translate-x-0" : "-translate-x-full"
+          } shadow-2xl rounded-r-2xl overflow-y-auto`}
       >
         <div className="flex justify-between items-center p-6 border-b border-gray-200 sticky top-0 bg-white z-50">
           <h2 className="text-xl font-bold text-gray-800 font-[Playfair_Display]">
