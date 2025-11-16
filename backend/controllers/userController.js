@@ -1,9 +1,8 @@
-import sendMail from '../middleware/nodemailer.js';
+import { sendMail } from "../middleware/mailjetMailer.js";
 import userModel from '../models/userModel.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
 import { RegisterSuccessEmail } from "../templates/RegisterSuccessEmail.js";
-import { resend, FROM_EMAIL } from "../middleware/resendMailer.js";
 import cloudinary from '../config/cloudinary.js';
 import streamifier from 'streamifier';
 import { Redis } from '@upstash/redis'
@@ -108,13 +107,12 @@ const signupOtpVerify = async (req, res) => {
 
     // Send success mail
     try {
-      const emailHtml = RegisterSuccessEmail(user.name);
-      await resend.emails.send({
-        from: FROM_EMAIL,
-        to: "ajithnubie@gmail.com",
-        subject: "🎉 Registration Successful",
-        html: emailHtml,
-      });
+      await sendMail(
+        user.email,
+        "🎉 Registration Successful",
+        emailHtml
+      );
+
     } catch (mailErr) {
       console.error("Resend mail failed:", mailErr);
     }
@@ -273,7 +271,7 @@ const resetOtpVerify = async (req, res) => {
       </div>
     `;
 
-    await sendMail(email, 'Password Reset Link', htmlContent, true);
+    await sendMail(email, 'Password Reset Link', htmlContent);
 
     return res.status(200).json({ message: "Reset link sent to the mail address" });
   } catch (err) {
@@ -404,12 +402,12 @@ const googleSignup = async (req, res) => {
       const token = jwt.sign({ id: data._id, email: data.email }, process.env.SECRET_KEY, { expiresIn: "7d" });
       try {
         const emailHtml = RegisterSuccessEmail(data.name);
-        await resend.emails.send({
-          from: FROM_EMAIL,
-          to: "ajithnubie@gmail.com",
-          subject: "🎉 Registration Successful",
-          html: emailHtml,
-        });
+        await sendMail(
+          data.email,
+          "🎉 Registration Successful",
+          emailHtml
+        );
+
       } catch (mailErr) {
         console.error("Resend mail failed:", mailErr);
       }

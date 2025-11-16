@@ -34,9 +34,8 @@
     "mongodb": "^6.21.0",
     "mongoose": "^8.19.4",
     "multer": "^2.0.2",
-    "nodemailer": "^7.0.10",
+    "node-mailjet": "^6.0.11",
     "razorpay": "^2.9.6",
-    "resend": "^6.4.2",
     "sharp": "^0.34.5",
     "socket.io": "^4.8.1",
     "streamifier": "^0.1.1"
