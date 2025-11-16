@@ -14,42 +14,20 @@ import { initializeSocket } from "./utils/socket.js";
 const app = express();
 const server = http.createServer(app);
 
-// Initialize Socket.io with CORS for frontend
-const { io, notifyUser } = initializeSocket(server, {
-  cors: {
-    origin: [
-      "https://vestido-club-ecommerce-foog.vercel.app",
-      "https://vestido-club-ecommerce.vercel.app",
-    ],
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
-
-// Export notifyUser if needed in controllers
-export { notifyUser };
-
-// Middleware
-app.use(express.json());
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
-
-// Enable CORS for API requests
+// Allowed origins
 const allowedOrigins = [
   "https://vestido-club-ecommerce-foog.vercel.app",
   "https://vestido-club-ecommerce.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:5174"
 ];
 
+/* CORS */
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET","PATCH", "POST", "PUT", "DELETE", "OPTIONS"],
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
       "Authorization",
@@ -58,18 +36,32 @@ app.use(
       "token",
       "auth-token",
     ],
-    credentials: true,
   })
 );
 
-// Routes
+/*  JSON + COOKIE -*/
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+/* SOCKET.IO INIT -*/
+const { io, notifyUser } = initializeSocket(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+export { notifyUser };
+
+/* ROUTES -*/
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
 app.use("/api", productRouter);
 app.use("/order", orderRouter);
 app.use("/contact", contactRouter);
 
-// Start server after DB connection
+/*  SERVER START -*/
 (async () => {
   try {
     await connectDB();
