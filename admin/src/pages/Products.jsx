@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import gsap from "gsap";
-import { Loader2 } from "lucide-react"; 
+import { Loader2 } from "lucide-react";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -17,7 +17,7 @@ const Products = () => {
 
   const fetchProducts = async (page) => {
     try {
-      setLoading(true); 
+      setLoading(true);
       const res = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/api/adminfetchproducts?page=${page}&limit=${limit}`
       );
@@ -78,7 +78,12 @@ const Products = () => {
       setLoadingDelete(id);
       await axios.delete(
         `${import.meta.env.VITE_BACKEND_URL}/api/deleteproduct/${id}`,
-        { withCredentials: true }
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        }
       );
       toast.success("Product Removed");
       fetchProducts(currentPage);
@@ -106,7 +111,12 @@ const Products = () => {
       await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/updateproduct/${id}`,
         formData,
-        { withCredentials: true }
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        }
       );
       toast.success("Product updated successfully!");
       setEditingProduct(null);
@@ -177,11 +187,10 @@ const Products = () => {
                 <button
                   onClick={() => handleDelete(p._id)}
                   disabled={loadingDelete === p._id}
-                  className={`px-4 py-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white font-medium hover:shadow-md hover:scale-[1.02] transition flex items-center justify-center gap-2 ${
-                    loadingDelete === p._id
+                  className={`px-4 py-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white font-medium hover:shadow-md hover:scale-[1.02] transition flex items-center justify-center gap-2 ${loadingDelete === p._id
                       ? "opacity-70 cursor-not-allowed"
                       : ""
-                  }`}
+                    }`}
                 >
                   {loadingDelete === p._id ? (
                     <>
