@@ -94,8 +94,10 @@ const AddProduct = () => {
         `${import.meta.env.VITE_BACKEND_URL}/api/add-product`,
         data,
         {
-          headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
         }
       );
 
@@ -125,7 +127,7 @@ const AddProduct = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-10 px-4 font-[Poppins] flex justify-center">
       <div className="w-full max-w-4xl bg-white shadow-2xl rounded-3xl border border-gray-100 p-8 md:p-10">
         <h2 className="text-3xl font-semibold text-gray-800 text-center mb-4">
-         Add New Product
+          Add New Product
         </h2>
         <p className="text-gray-500 text-center mb-8 text-sm md:text-base">
           Enter product details and upload high-quality images.
@@ -313,11 +315,10 @@ const AddProduct = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-4 px-6 rounded-2xl font-semibold text-white text-lg shadow-md transition-transform hover:scale-[1.02] ${
-              loading
+            className={`w-full py-4 px-6 rounded-2xl font-semibold text-white text-lg shadow-md transition-transform hover:scale-[1.02] ${loading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-gradient-to-r from-indigo-500 to-indigo-700 hover:from-indigo-600 hover:to-indigo-800"
-            }`}
+              }`}
           >
             {loading ? (
               <div className="flex justify-center items-center gap-2">
