@@ -118,7 +118,7 @@ const Contact = () => {
                 <p className="text-sm uppercase tracking-widest text-gray-400 mb-1">
                   Email
                 </p>
-                <p className="text-lg font-light">support@bonkerscorner.com</p>
+                <p className="text-lg font-light">support@VestidoClub.com</p>
               </li>
 
               <li>
