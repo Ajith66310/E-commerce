@@ -18,7 +18,7 @@ export const RegisterSuccessEmail = (name) => {
           </p>
 
           <div style="text-align:center;margin:20px 0;">
-            <a href="http://localhost:5173/login" 
+            <a href="${process.env.FRONTEND_URL}/login"
                style="display:inline-block;background:#16a34a;color:#ffffff;padding:12px 24px;
                       border-radius:6px;text-decoration:none;font-weight:bold;">
               Login Now
