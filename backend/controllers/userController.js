@@ -106,6 +106,8 @@ const signupOtpVerify = async (req, res) => {
 
     res.clearCookie("tempToken");
 
+    const emailHtml = RegisterSuccessEmail(user.name);
+
     // Send success mail
     try {
       await sendMail(
@@ -403,6 +405,7 @@ const googleSignup = async (req, res) => {
     if (data) {
       const token = jwt.sign({ id: data._id, email: data.email }, process.env.SECRET_KEY, { expiresIn: "7d" });
       try {
+    
         const emailHtml = RegisterSuccessEmail(data.name);
         await sendMail(
           data.email,
